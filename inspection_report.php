@@ -9,12 +9,12 @@
 
     <meta charset="utf-8" />
     <title>
-        INSPECTION REPORT |
+        Visits |
         <?php echo $_SESSION['user_name']; ?>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="BYCO" name="description" />
-    <meta content="P2P" name="author" />
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesdesign" name="author" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -29,31 +29,62 @@
 </head>
 
 <style>
-#main_data,
-#sub_data,
-.dynamic_table {
-    border: 1px solid;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
+    #main_data,
+    #sub_data,
+    .dynamic_table {
+        border: 1px solid;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
 
-#main_data th,
-#sub_data th,
-.dynamic_table th {
-    border: 1px solid;
-    padding: 8px;
-    text-align: left;
-    background-color: #f2f2f2;
-}
+    #main_data th,
+    #sub_data th,
+    .dynamic_table th {
+        border: 1px solid;
+        padding: 8px;
+        text-align: left;
+        background-color: #f2f2f2;
+    }
 
 
-#main_data td,
-#sub_data td,
-.dynamic_table td {
-    border: 1px solid;
-    padding: 8px;
-    text-align: left;
-}
+    #main_data td,
+    #sub_data td,
+    .dynamic_table td {
+        border: 1px solid;
+        padding: 8px;
+        text-align: left;
+    }
+
+    input[type="radio"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        border: 2px solid black;
+        outline: none;
+        cursor: pointer;
+        position: relative;
+        background-color: white;
+        transition: all 0.3s ease;
+    }
+
+    input[type="radio"]:checked {
+        background-color: black;
+        border: 2px solid black;
+    }
+
+    input[type="radio"]:checked::after {
+        content: '';
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: white;
+    }
 </style>
 
 <body>
@@ -114,29 +145,24 @@
                     </div> -->
                     <div class="card">
                         <div class="card-body" style="overflow: auto;">
-                            <h3>INSPECTION REPORT</h3>
+                            <h3>Inspection Report</h3>
 
                             <table id="myTable" class="display" style="width:100%">
                                 <thead>
 
                                     <tr>
-                                        <th class="text-center">S.NO</th>
-                                        <th class="text-center">DATE</th>
-                                        <th class="text-center">COMPLETE TIME</th>
-                                        <th class="text-center">DEALER SIGN</th>
-                                        <th class="text-center">USER</th>
-                                        <th class="text-center">ROLE</th>
-                                        <th class="text-center">SITE CODE</th>
-                                        <th class="text-center">SITE NAME</th>
-                                        <th class="text-center">MODE</th>
-                                        <th class="text-center">STATUS</th>
-                                        <th class="text-center">INSPECTION</th>
-                                        <th class="text-center">SALES PERFORMANCE</th>
-                                        <th class="text-center">MEASUREMENT & PRICE</th>
-                                        <th class="text-center">WET STOCK MANAGEMENT</th>
-                                        <th class="text-center">DISPENSING UNIT METER READING</th>
-                                        <th class="text-center">STOCK VARIATIONS</th>
-
+                                        <th class="text-center">S.No</th>
+                                        <th class="text-center">Date</th>
+                                        <th class="text-center">Complete Time</th>
+                                        <th class="text-center">Dealer Sign</th>
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">JD Code</th>
+                                        <th class="text-center">Dealer</th>
+                                        <th class="text-center">Mode</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Inspection</th>
+                                        <th class="text-center">Stock Reconciliation</th>
+                                        <!-- <th class="text-center">Imgaes</th> -->
 
                                     </tr>
 
@@ -156,67 +182,77 @@
             <?php include 'footer.php'; ?>
 
         </div>
-        <!-- end main content-->
         <div id="survey_modal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true"
             data-bs-scroll="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <!-- <h5 class="modal-title" id="myModalLabel">Create Permit Type</h5> -->
                         <h5 class="modal-title" id="myModalLabel">
-                            <h5 id="labelc">Survey Response</h5>
+                            <span id="labelc">Survey Response</span>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-12">
-
-                                <button class="btn btn-info" id="exportBtn" style="float: right;">Export to
-                                    PDF</button>
+                        <div class="row mb-3">
+                            <div class="col-md-12 text-end">
+                                <button class="btn btn-info me-2 " id="exportBtnsurvey">Export to PDF</button>
+                                <button onclick="printImage_img()" class="btn btn-primary" style="float: right;"
+                                    id="exporting_imcprint">Print</button>
                             </div>
-
                         </div>
-                        <div class="container-fluid" id="exporting">
-
+                        <div class="container-fluid headr exporting_imcprint" id="exporting">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-12 mb-3">
                                     <img src="<?php echo $api_url_files . '' . $logo; ?>" alt="Image description"
                                         style="width: 100px;">
-
                                 </div>
                                 <div class="col-md-12">
-                                    Planned Date : <span id="survey_time"></span>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="6" class="p-0 text-center"
+                                                    style="background-color: black; color: #fff;">
+                                                    Visit Report
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Retail Outlet Name</strong></td>
+                                                <td><span id="survey_dealer_name"></span></td>
+                                                <td><strong>Location</strong></td>
+                                                <td><span id="survey_location"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Site Manager Name</strong></td>
+                                                <td><span id="survey_manager_name"></span></td>
+                                                <td><strong>Planned Date</strong></td>
+                                                <td><span id="survey_time"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Completion Date</strong></td>
+                                                <td><span id="survey_complete_time"></span></td>
+                                                <td><strong>TM Name</strong></td>
+                                                <td><span id="survey_ispector_name"></span></td>
+                                            </tr>
+                                            <tr class="d-none">
+                                                <td><strong>Planned Type</strong></td>
+                                                <td><span id="survey_type"></span></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <!-- <div class="col-md-12">
-                                    Completion Date : <span id="survey_complete_time"></span>
-                                </div> -->
-                                <div id='last_recon'>
-
-                                </div>
-
-                                <div class="col-md-12">
-                                    Site Name : <span id="survey_dealer_name"></span>
-                                </div>
-                                <div class="col-md-12">
-                                    TM Name : <span id="survey_ispector_name"></span>
-                                </div>
-                                <div class="col-md-12 d-none">
-                                    Planned Type : <span id="survey_type"></span>
-                                </div>
+                                <div id='last_recon'></div>
                             </div>
-                            <div class="row" id="survey-container">
-
-                            </div>
-
+                            <div class="row" id="survey-container"></div>
                         </div>
-
-
                     </div>
-
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
+                </div>
+            </div>
         </div>
+
+        <!-- end main content-->
 
         <div id="sales_performance" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true"
             data-bs-scroll="true">
@@ -377,7 +413,7 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <img src="<?php echo $api_url_files . '' . $logo; ?>" alt="Image description"
+                                    <img src="<?php echo $api_url . '' . $logo; ?>" alt="Image description"
                                         style="width: 100px;">
 
                                 </div>
@@ -586,329 +622,329 @@
     <?php include 'script_tags.php'; ?>
 
     <script>
-    var table;
-    var type;
-    var subtype;
+        var table;
+        var type;
+        var subtype;
 
-    $(document).ready(function() {
-        // $('.js-example-basic-multiple').select2();
-        sale_table = $('#sale_table').DataTable({
-            dom: 'Bfrtip',
-
-
-            buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
-
-        });
-
-        wet_stock = $('#wet_stock').DataTable({
-            dom: 'Bfrtip',
+        $(document).ready(function () {
+            // $('.js-example-basic-multiple').select2();
+            sale_table = $('#sale_table').DataTable({
+                dom: 'Bfrtip',
 
 
-            buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+                buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-        });
+            });
 
-        despensing_unit_table = $('#despensing_unit_table').DataTable({
-            dom: 'Bfrtip',
-
-
-            buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
-
-        });
-
-        stock_variations_table = $('#stock_variations_table').DataTable({
-            dom: 'Bfrtip',
+            wet_stock = $('#wet_stock').DataTable({
+                dom: 'Bfrtip',
 
 
-            buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+                buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-        });
+            });
 
-        $("#role").on("change", function() {
-            var selectedRole = $(this).val();
-            // Hide all secondary dropdowns
-            $("#salesRole, #zmRole, #tmRole,#logisticsSelect").hide();
-            if (selectedRole === "Sales") {
-                $("#salesRole").show();
-            } else if (selectedRole === "Logistics") {
-                $("#logisticsSelect").show();
+            despensing_unit_table = $('#despensing_unit_table').DataTable({
+                dom: 'Bfrtip',
+
+
+                buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+
+            });
+
+            stock_variations_table = $('#stock_variations_table').DataTable({
+                dom: 'Bfrtip',
+
+
+                buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+
+            });
+
+            $("#role").on("change", function () {
+                var selectedRole = $(this).val();
+                // Hide all secondary dropdowns
+                $("#salesRole, #zmRole, #tmRole,#logisticsSelect").hide();
+                if (selectedRole === "Sales") {
+                    $("#salesRole").show();
+                } else if (selectedRole === "Logistics") {
+                    $("#logisticsSelect").show();
+                }
+            });
+
+            $("#sales").on("change", function () {
+                var selectedSalesRole = $(this).val();
+                // alert(selectedSalesRole)
+                // Hide all secondary dropdowns
+                $("#zmRole, #tmRole").hide();
+                if (selectedSalesRole === "TM") {
+                    $("#zmRole").show();
+                } else if (selectedSalesRole === "ASM") {
+                    $("#tmRole").show();
+                }
+            });
+
+            lubes_table = $('#myTable').DataTable({
+                dom: 'Bfrtip',
+
+
+                buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+
+            });
+            fetchtable();
+            var names = <?php echo isset($_GET['name']) ? 'true' : 'false'; ?>;
+            if (names) {
+                var usersnames = <?php echo isset($_GET['name']) ? json_encode($_GET['name']) : 'null'; ?>;
+                // alert(usersnames);
+                lubes_table.search(usersnames).draw();
             }
-        });
+            $('#add_btn').click(function () {
 
-        $("#sales").on("change", function() {
-            var selectedSalesRole = $(this).val();
-            // alert(selectedSalesRole)
-            // Hide all secondary dropdowns
-            $("#zmRole, #tmRole").hide();
-            if (selectedSalesRole === "TM") {
-                $("#zmRole").show();
-            } else if (selectedSalesRole === "ASM") {
-                $("#tmRole").show();
-            }
-        });
+                $('#row_id').val("");
 
-        lubes_table = $('#myTable').DataTable({
-            dom: 'Bfrtip',
+                $('#insert_form')[0].reset();
+                // alert("running")
+
+            });
+
+            $('#insert_form').on("submit", function (event) {
+                event.preventDefault();
+                // alert("Name")
+                update_id = $('#row_id').val();
+
+                if (update_id == 0) {
+                    var data = new FormData(this);
+                    $.ajax({
+                        url: "<?php echo $api_url; ?>create/create_containers_sizes.php",
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        method: "POST",
+                        data: data,
+                        beforeSend: function () {
+                            $('#insert').val("Saving");
+                            document.getElementById("insert").disabled = true;
+
+                        },
+                        success: function (data) {
+                            console.log(data)
+
+                            if (data != 1) {
+                                Swal.fire(
+                                    'Server Error!',
+                                    'Record Not Created',
+                                    'error'
+                                )
+                                $('#insert').val("Save");
+                                document.getElementById("insert").disabled = false;
+                            } else {
 
 
-            buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+                                setTimeout(function () {
+                                    Swal.fire(
+                                        'Success!',
+                                        'Record Created Successfully',
+                                        'success'
+                                    )
+                                    $('#insert_form')[0].reset();
+                                    $('#offcanvasRight').modal('hide');
+                                    fetchtable();
+                                    $("#salesRole, #zmRole, #tmRole,#logisticsSelect")
+                                        .hide();
+                                    $('#insert').val("Save");
+                                    document.getElementById("insert").disabled = false;
 
-        });
-        fetchtable();
-        var names = <?php echo isset($_GET['name']) ? 'true' : 'false'; ?>;
-        if (names) {
-            var usersnames = <?php echo isset($_GET['name']) ? json_encode($_GET['name']) : 'null'; ?>;
-            // alert(usersnames);
-            lubes_table.search(usersnames).draw();
+                                    location.reload();
+
+
+                                }, 2000);
+
+                            }
+
+                        }
+                    });
+                } else {
+
+                    var data = new FormData(this);
+
+                    $.ajax({
+                        url: "<?php echo $api_url; ?>update/container_size.php",
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        method: "POST",
+                        data: data,
+                        beforeSend: function () {
+                            $('#insert').val("Saving");
+                            document.getElementById("insert").disabled = true;
+
+                        },
+                        success: function (data) {
+                            console.log(data)
+
+                            if (data != 1) {
+                                Swal.fire(
+                                    'Server Error!',
+                                    'Record Not Updated',
+                                    'error'
+                                )
+                                $('#insert').val("Save");
+                                document.getElementById("insert").disabled = false;
+                            } else {
+
+
+                                setTimeout(function () {
+                                    Swal.fire(
+                                        'Success!',
+                                        'Record Updated Successfully',
+                                        'success'
+                                    )
+                                    $('#insert_form')[0].reset();
+                                    $('#offcanvasRight').modal('hide');
+                                    fetchtable();
+                                    $("#salesRole, #zmRole, #tmRole,#logisticsSelect")
+                                        .hide();
+                                    $('#insert').val("Save");
+                                    document.getElementById("insert").disabled = false;
+
+                                    location.reload();
+
+
+                                }, 2000);
+
+                            }
+
+                        }
+                    });
+
+                }
+
+            });
+            // load_all_select();
+        })
+        //     function deleteData(id){
+
+        // var settings = {
+        //         "url": "<?php echo $api_url; ?>get/get_container_sizes.php?key=03201232927&id=" + id + "",
+        //         "method": "GET",
+        //         "timeout": 0,
+        //     };
+
+        //     $.ajax({
+        //         ...settings,
+        //         statusCode: {
+        //             200: function(response) {
+
+
+        //                 $('#row_id').val(response[0]['id'])
+        //                 $('#name').val(response[0]['sizes']);
+
+        //             }
+        //         }
+        //     })
+        //     $('#offcanvasRight').offcanvas('show');
+
+        // }
+
+        function deleteData(id) {
+
+            var settings = {
+                "url": "<?php echo $api_url; ?>delete/delete_container_size.php?key=03201232927&id=" + id + "",
+                "method": "GET",
+                "timeout": 0,
+            };
+
+            $.ajax({
+                ...settings,
+                statusCode: {
+                    200: function (response) {
+                        Swal.fire(
+                            'Success!',
+                            'Record Deleted Successfully',
+                            'success'
+                        )
+                        setTimeout(function () {
+
+                            // location.reload();
+
+
+                        }, 2000);
+
+                    },
+                    success: function (data) {
+                        // Additional success handling if needed
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        Swal.fire(
+                            'Server Error!',
+                            'Record Not Deleted',
+                            'error'
+                        )
+
+                        // console.log("Request failed with status code: " + xhr.status);
+                    }
+                }
+            })
+
         }
-        $('#add_btn').click(function() {
 
-            $('#row_id').val("");
+        function editData(id) {
 
-            $('#insert_form')[0].reset();
-            // alert("running")
+            var settings = {
+                "url": "<?php echo $api_url; ?>get/get_container_sizes.php?key=03201232927&id=" + id + "",
+                "method": "GET",
+                "timeout": 0,
+            };
 
-        });
+            $.ajax({
+                ...settings,
+                statusCode: {
+                    200: function (response) {
 
-        $('#insert_form').on("submit", function(event) {
-            event.preventDefault();
-            // alert("Name")
-            update_id = $('#row_id').val();
-
-            if (update_id == 0) {
-                var data = new FormData(this);
-                $.ajax({
-                    url: "<?php echo $api_url; ?>create/create_containers_sizes.php",
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    method: "POST",
-                    data: data,
-                    beforeSend: function() {
-                        $('#insert').val("Saving");
-                        document.getElementById("insert").disabled = true;
-
-                    },
-                    success: function(data) {
-                        console.log(data)
-
-                        if (data != 1) {
-                            Swal.fire(
-                                'Server Error!',
-                                'Record Not Created',
-                                'error'
-                            )
-                            $('#insert').val("Save");
-                            document.getElementById("insert").disabled = false;
-                        } else {
-
-
-                            setTimeout(function() {
-                                Swal.fire(
-                                    'Success!',
-                                    'Record Created Successfully',
-                                    'success'
-                                )
-                                $('#insert_form')[0].reset();
-                                $('#offcanvasRight').modal('hide');
-                                fetchtable();
-                                $("#salesRole, #zmRole, #tmRole,#logisticsSelect")
-                                    .hide();
-                                $('#insert').val("Save");
-                                document.getElementById("insert").disabled = false;
-
-                                location.reload();
-
-
-                            }, 2000);
-
-                        }
-
+                        $('#row_id').val(response[0]['id'])
+                        $('#name').val(response[0]['sizes']);
                     }
-                });
-            } else {
-
-                var data = new FormData(this);
-
-                $.ajax({
-                    url: "<?php echo $api_url; ?>update/container_size.php",
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    method: "POST",
-                    data: data,
-                    beforeSend: function() {
-                        $('#insert').val("Saving");
-                        document.getElementById("insert").disabled = true;
-
-                    },
-                    success: function(data) {
-                        console.log(data)
-
-                        if (data != 1) {
-                            Swal.fire(
-                                'Server Error!',
-                                'Record Not Updated',
-                                'error'
-                            )
-                            $('#insert').val("Save");
-                            document.getElementById("insert").disabled = false;
-                        } else {
-
-
-                            setTimeout(function() {
-                                Swal.fire(
-                                    'Success!',
-                                    'Record Updated Successfully',
-                                    'success'
-                                )
-                                $('#insert_form')[0].reset();
-                                $('#offcanvasRight').modal('hide');
-                                fetchtable();
-                                $("#salesRole, #zmRole, #tmRole,#logisticsSelect")
-                                    .hide();
-                                $('#insert').val("Save");
-                                document.getElementById("insert").disabled = false;
-
-                                location.reload();
-
-
-                            }, 2000);
-
-                        }
-
-                    }
-                });
-
-            }
-
-        });
-        // load_all_select();
-    })
-    //     function deleteData(id){
-
-    // var settings = {
-    //         "url": "<?php echo $api_url; ?>get/get_container_sizes.php?key=03201232927&id=" + id + "",
-    //         "method": "GET",
-    //         "timeout": 0,
-    //     };
-
-    //     $.ajax({
-    //         ...settings,
-    //         statusCode: {
-    //             200: function(response) {
-
-    //                 $('#row_id').val(response[0]['id'])
-    //                 $('#name').val(response[0]['sizes']);
-
-    //             }
-    //         }
-    //     })
-    //     $('#offcanvasRight').offcanvas('show');
-
-    // }
-
-    function deleteData(id) {
-
-        var settings = {
-            "url": "<?php echo $api_url; ?>delete/delete_container_size.php?key=03201232927&id=" + id + "",
-            "method": "GET",
-            "timeout": 0,
-        };
-
-        $.ajax({
-            ...settings,
-            statusCode: {
-                200: function(response) {
-                    Swal.fire(
-                        'Success!',
-                        'Record Deleted Successfully',
-                        'success'
-                    )
-                    setTimeout(function() {
-
-                        // location.reload();
-
-
-                    }, 2000);
-
-                },
-                success: function(data) {
-                    // Additional success handling if needed
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                    Swal.fire(
-                        'Server Error!',
-                        'Record Not Deleted',
-                        'error'
-                    )
-
-                    // console.log("Request failed with status code: " + xhr.status);
                 }
-            }
-        })
+            })
+            $('#offcanvasRight').offcanvas('show');
 
-    }
+        }
 
-    function editData(id) {
+        function get_tas_sales_data(task_id, dealer_id, dealer_name, isp_date, comp_date, username, type, last_visit_id) {
+            // Clear existing content
+            // $('#survey-container').empty();
+            var currentDate = new Date();
 
-        var settings = {
-            "url": "<?php echo $api_url; ?>get/get_container_sizes.php?key=03201232927&id=" + id + "",
-            "method": "GET",
-            "timeout": 0,
-        };
+            // Format the date as needed
+            var formattedDate = currentDate.toLocaleString(); // Adjust the format based on your requirements
 
-        $.ajax({
-            ...settings,
-            statusCode: {
-                200: function(response) {
+            // Display the formatted date
+            $('#labelc').text('Sales Performance');
+            $('#survey_time').text(isp_date);
+            $('#survey_complete_time').text(comp_date);
 
-                    $('#row_id').val(response[0]['id'])
-                    $('#name').val(response[0]['sizes']);
+            $('#survey_dealer_name').text(dealer_name);
+            $('#survey_ispector_name').text(username);
+            $('#survey_type').text(type);
 
-                }
-            }
-        })
-        $('#offcanvasRight').offcanvas('show');
+            last_vists_dates('sales_performance', last_visit_id, comp_date);
 
-    }
+            $('#survey-container').empty();
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
 
-    function get_tas_sales_data(task_id, dealer_id, dealer_name, isp_date, comp_date, username, type, last_visit_id) {
-        // Clear existing content
-        // $('#survey-container').empty();
-        var currentDate = new Date();
-
-        // Format the date as needed
-        var formattedDate = currentDate.toLocaleString(); // Adjust the format based on your requirements
-
-        // Display the formatted date
-        $('#labelc').text('Sales Performance');
-        $('#survey_time').text(isp_date);
-        $('#survey_complete_time').text(comp_date);
-
-        $('#survey_dealer_name').text(dealer_name);
-        $('#survey_ispector_name').text(username);
-        $('#survey_type').text(type);
-
-        last_vists_dates('sales_performance', last_visit_id, comp_date, task_id);
-
-        $('#survey-container').empty();
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
-
-        fetch("<?php echo $api_url; ?>get/get_dealers_sales_performance.php?key=03201232927&task_id=" +
+            fetch("<?php echo $api_url; ?>get/get_dealers_sales_performance.php?key=03201232927&task_id=" +
                 task_id +
                 "&dealer_id=" + dealer_id + "", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log(result)
-                if (result.length > 0) {
-                    var first = result.length > 0 ? result[0] : null;
-                    var second = result.length > 0 ? result[1] : null;
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result)
+                    if (result.length > 0) {
+                        var first = result.length > 0 ? result[0] : null;
+                        var second = result.length > 0 ? result[1] : null;
 
-                    var table = `<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Sales Performance</h6>
+                        var table = `<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Sales Performance</h6>
                         <table class="dynamic_table" style="width:100%">
                     <tr>
                         <th></th>
@@ -950,147 +986,145 @@
                    
                 </table>`;
 
-                    $('#survey-container').append(table);
-                    // sale_table.clear().draw();
+                        $('#survey-container').append(table);
+                        // sale_table.clear().draw();
 
-                    // $.each(result, function(index, data) {
-                    //     sale_table.row.add([
-                    //         index + 1,
-                    //         data.name,
-                    //         data.monthly_target,
-                    //         // data.name,
-                    //         data.target_achived,
-                    //         data.differnce,
-                    //         data.reason,
-                    //         data.created_at
+                        // $.each(result, function(index, data) {
+                        //     sale_table.row.add([
+                        //         index + 1,
+                        //         data.name,
+                        //         data.monthly_target,
+                        //         // data.name,
+                        //         data.target_achived,
+                        //         data.differnce,
+                        //         data.reason,
+                        //         data.created_at
 
-                    //     ]).draw(false);
+                        //     ]).draw(false);
 
-                    // });
-                }
-                $('#survey_modal').modal('show');
-            })
-            .catch(error => console.log('error', error));
-
-
-
-    }
-
-    function get_task_wet_stock(task_id, dealer_id, dealer_name, isp_date, comp_date, username, type, last_visit_id) {
-        // Clear existing content
-        // $('#survey-container').empty();
-        var currentDate = new Date();
-
-        // Format the date as needed
-        var formattedDate = currentDate.toLocaleString(); // Adjust the format based on your requirements
-
-        // Display the formatted date
-        $('#labelc').text('Wet Stock Management');
-        $('#survey_time').text(isp_date);
-        $('#survey_complete_time').text(comp_date);
-
-        $('#survey_dealer_name').text(dealer_name);
-        $('#survey_ispector_name').text(username);
-        $('#survey_type').text(type);
-        last_vists_dates('wet_stock', last_visit_id, comp_date, task_id);
-
-        $('#survey-container').empty();
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
-
-        fetch("<?php echo $api_url; ?>get/get_dealer_wet_stock.php?key=03201232927&task_id=" + task_id +
-                "&dealer_id=" + dealer_id + "", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log(result)
-                if (result.length > 0) {
-                    var t1_1 = result.length > 1 ? result[0] : null;
-                    var t1_2 = result.length > 1 ? result[1] : null;
-                    var t1_3 = result.length > 1 ? result[2] : null;
-                    var t1_4 = result.length > 1 ? result[3] : null;
-                    var sumPMG = 0;
-                    var sumHSD = 0;
-                    var limitPMG = 0;
-                    var limitHSD = 0;
-
-                    // Iterate through the JSON data
-                    $.each(result, function(index, item) {
-                        // Calculate the difference (dip_new - dip_old)
-                        // var difference = parseInt(item.dip_new) - parseInt(item.dip_old);
-                        var difference = parseInt(item.dip_new);
-                        // Check the product name
-                        if (item.name === "PMG") {
-                            sumPMG += difference; // Add the difference to PMG sum
-                        } else if (item.name === "HSD") {
-                            sumHSD += difference; // Add the difference to HSD sum
-                        }
-                    });
-
-                    console.log("Sum of PMG: ", sumPMG);
-                    console.log("Sum of HSD: ", sumHSD);
-                    var PMGArray = [];
-                    var HSDArray = [];
-                    var PMGArraylimit = [];
-                    var HSDArraylimit = [];
-
-                    // Initialize arrays with empty strings
-                    for (var i = 0; i < 4; i++) {
-                        PMGArray.push('---');
-                        HSDArray.push('---');
-                        PMGArraylimit.push('---');
-                        HSDArraylimit.push('---');
+                        // });
                     }
+                    $('#survey_modal').modal('show');
+                })
+                .catch(error => console.log('error', error));
 
-                    // Iterate through the JSON data
-                    $.each(result, function(index, item) {
-                        // Calculate the difference (dip_new - dip_old)
-                        // var difference = parseInt(item.dip_new) - parseInt(item.dip_old);
-                        var difference = parseInt(item.dip_new);
 
-                        // Check the product name and store the difference in the corresponding array
-                        if (item.name === "PMG") {
-                            PMGArray[index] = difference
-                                .toLocaleString(); // Convert to string to keep consistency with empty strings
-                            PMGArraylimit[index] = (item.max_limit).toLocaleString();
-                        } else if (item.name === "HSD") {
-                            HSDArray[index] = difference
-                                .toLocaleString(); // Convert to string to keep consistency with empty strings
-                            HSDArraylimit[index] = (item.max_limit).toLocaleString();
 
+        }
+
+        function get_task_wet_stock(task_id, dealer_id, dealer_name, isp_date, comp_date, username, type, last_visit_id) {
+            // Clear existing content
+            // $('#survey-container').empty();
+            var currentDate = new Date();
+
+            // Format the date as needed
+            var formattedDate = currentDate.toLocaleString(); // Adjust the format based on your requirements
+
+            // Display the formatted date
+            $('#labelc').text('Wet Stock Management');
+            $('#survey_time').text(isp_date);
+            $('#survey_complete_time').text(comp_date);
+
+            $('#survey_dealer_name').text(dealer_name);
+            $('#survey_ispector_name').text(username);
+            $('#survey_type').text(type);
+            last_vists_dates('wet_stock', last_visit_id, comp_date);
+
+            $('#survey-container').empty();
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+
+            fetch("<?php echo $api_url; ?>get/get_dealer_wet_stock.php?key=03201232927&task_id=" + task_id +
+                "&dealer_id=" + dealer_id + "", requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result)
+                    if (result.length > 0) {
+                        var t1_1 = result.length > 1 ? result[0] : null;
+                        var t1_2 = result.length > 1 ? result[1] : null;
+                        var t1_3 = result.length > 1 ? result[2] : null;
+                        var t1_4 = result.length > 1 ? result[3] : null;
+                        var sumPMG = 0;
+                        var sumHSD = 0;
+                        var limitPMG = 0;
+                        var limitHSD = 0;
+
+                        // Iterate through the JSON data
+                        $.each(result, function (index, item) {
+                            // Calculate the difference (dip_new - dip_old)
+                            var difference = parseInt(item.dip_new) - parseInt(item.dip_old);
+                            // Check the product name
+                            if (item.name === "PMG") {
+                                sumPMG += difference; // Add the difference to PMG sum
+                            } else if (item.name === "HSD") {
+                                sumHSD += difference; // Add the difference to HSD sum
+                            }
+                        });
+
+                        console.log("Sum of PMG: ", sumPMG);
+                        console.log("Sum of HSD: ", sumHSD);
+                        var PMGArray = [];
+                        var HSDArray = [];
+                        var PMGArraylimit = [];
+                        var HSDArraylimit = [];
+
+                        // Initialize arrays with empty strings
+                        for (var i = 0; i < 4; i++) {
+                            PMGArray.push('---');
+                            HSDArray.push('---');
+                            PMGArraylimit.push('---');
+                            HSDArraylimit.push('---');
                         }
-                    });
 
-                    console.log("PMG Array: ", PMGArray);
-                    console.log("HSD Array: ", HSDArray);
+                        // Iterate through the JSON data
+                        $.each(result, function (index, item) {
+                            // Calculate the difference (dip_new - dip_old)
+                            var difference = parseInt(item.dip_new) - parseInt(item.dip_old);
 
-                    var sumPMG = 0;
+                            // Check the product name and store the difference in the corresponding array
+                            if (item.name === "PMG") {
+                                PMGArray[index] = difference
+                                    .toLocaleString(); // Convert to string to keep consistency with empty strings
+                                PMGArraylimit[index] = (item.max_limit).toLocaleString();
+                            } else if (item.name === "HSD") {
+                                HSDArray[index] = difference
+                                    .toLocaleString(); // Convert to string to keep consistency with empty strings
+                                HSDArraylimit[index] = (item.max_limit).toLocaleString();
 
-                    // Iterate over the array and accumulate the values
-                    $.each(PMGArray, function(index, value) {
+                            }
+                        });
 
-                        if (value !== '---') {
-                            // Remove commas and parse the string to float
-                            var floatValue = parseFloat(value.replace(/,/g, ''));
-                            // Add the float value to the sum
-                            sumPMG += floatValue;
-                        }
-                    });
+                        console.log("PMG Array: ", PMGArray);
+                        console.log("HSD Array: ", HSDArray);
 
-                    var sumHSD = 0;
+                        var sumPMG = 0;
 
-                    // Iterate over the array and accumulate the values
-                    $.each(HSDArray, function(index, value) {
-                        if (value !== '---') {
-                            // Remove commas and parse the string to float
-                            var floatValue = parseFloat(value.replace(/,/g, ''));
-                            // Add the float value to the sum
-                            sumHSD += floatValue;
-                        }
-                    });
+                        // Iterate over the array and accumulate the values
+                        $.each(PMGArray, function (index, value) {
 
-                    var table = `<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Wet Stock Management</h6>
+                            if (value !== '---') {
+                                // Remove commas and parse the string to float
+                                var floatValue = parseFloat(value.replace(/,/g, ''));
+                                // Add the float value to the sum
+                                sumPMG += floatValue;
+                            }
+                        });
+
+                        var sumHSD = 0;
+
+                        // Iterate over the array and accumulate the values
+                        $.each(HSDArray, function (index, value) {
+                            if (value !== '---') {
+                                // Remove commas and parse the string to float
+                                var floatValue = parseFloat(value.replace(/,/g, ''));
+                                // Add the float value to the sum
+                                sumHSD += floatValue;
+                            }
+                        });
+
+                        var table = `<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Wet Stock Management</h6>
                         <table class="dynamic_table" style="width:100%">
                     <tr>
                         <th>Date</th>
@@ -1154,195 +1188,173 @@
                 </table>
                `;
 
-                    $('#survey-container').append(table);
+                        $('#survey-container').append(table);
 
-                    // wet_stock.clear().draw();
+                        // wet_stock.clear().draw();
 
-                    // $.each(result, function (index, data) {
-                    //     wet_stock.row.add([
-                    //         index + 1,
-                    //         data.name,
-                    //         data.lorry_no,
-                    //         // data.name,
-                    //         data.dip_old,
-                    //         data.dip_new,
-                    //         data.created_at
+                        // $.each(result, function (index, data) {
+                        //     wet_stock.row.add([
+                        //         index + 1,
+                        //         data.name,
+                        //         data.lorry_no,
+                        //         // data.name,
+                        //         data.dip_old,
+                        //         data.dip_new,
+                        //         data.created_at
 
-                    //     ]).draw(false);
+                        //     ]).draw(false);
 
-                    // });
-                }
-                $('#survey_modal').modal('show');
-            })
-            .catch(error => console.log('error', error));
+                        // });
+                    }
+                    $('#survey_modal').modal('show');
+                })
+                .catch(error => console.log('error', error));
 
 
-
-    }
-
-    function last_vists_dates(report, last_visit_id, comp_date, current_id) {
-        $('#last_recon').empty();
-
-        const requestOptions = {
-            method: "GET",
-            redirect: "follow"
-        };
-
-        if (last_visit_id != null) {
-
-            var t_id = last_visit_id + "," + current_id;
-        } else {
-            var t_id = current_id;
 
         }
-        const url =
-            "<?php echo $api_url; ?>get/inspection/get_current_second_last_visit_recon.php?key=03201232927&id=" +
-            t_id + "&report=" + report;
 
-        console.log(url);
+        function last_vists_dates(report, last_visit_id, comp_date) {
+            $('#last_recon').empty();
 
-        fetch(url, requestOptions)
-            .then((response) => response.json())
-            .then((result) => {
-                console.log('lastinf');
-                console.log(result.length);
+            const requestOptions1 = {
+                method: "GET",
+                redirect: "follow"
+            };
 
-                if (result.length === 2) {
-                    const lastTime = result[1]['created_at'];
-                    const completeTimeStr = result[0]['created_at'];
-                    const lastVisitDateStr = result[1]['created_at'];
+            fetch("<?php echo $api_url; ?>get/inspection/get_second_last_visit_recon.php?key=03201232927&id=" +
+                last_visit_id + "&report=" + report + "",
+                requestOptions1)
+                .then((response) => response.json())
+                .then((result) => {
+                    console.log('lastinf')
+                    console.log(result)
+                    if (result.length > 0) {
 
-                    $('#survey_complete_time').text(completeTimeStr);
+                        var last_time = result[0]['created_at'];
 
-                    const completeTime = new Date(completeTimeStr);
-                    const lastVisitDate = new Date(lastVisitDateStr);
 
-                    const differenceMs = completeTime - lastVisitDate;
-                    let differenceDays = differenceMs / (1000 * 60 * 60 * 24);
-                    differenceDays = Math.round(differenceDays);
 
-                    const divs = `
-                    <div class="col-md-12">
-                                    Completion Date : <span id="">${completeTimeStr}</span>
+                        var completeTimeStr = comp_date;
+                        var lastVisitDateStr = last_time;
+
+                        // Parse the date-time strings into Date objects
+                        var completeTime = new Date(completeTimeStr);
+                        var lastVisitDate = new Date(lastVisitDateStr);
+
+                        // Calculate the difference in milliseconds
+                        var differenceMs = completeTime - lastVisitDate;
+
+                        // Convert milliseconds to days
+                        var differenceDays = differenceMs / (1000 * 60 * 60 * 24);
+
+                        // Round the difference to get whole days
+                        differenceDays = Math.round(differenceDays);
+                        var divs = `<div class="col-md-12">
+                                    Last Visit Date : <span id="">${last_time}</span>
                                 </div>
-                    <div class="col-md-12">
-                        Last Visit Date: <span id="">${lastTime}</span>
-                    </div>
-                    <div class="col-md-12">
-                        Days Since Last Visit: <span id="">${differenceDays}</span>
-                    </div>`;
+                                <div class="col-md-12">
+                                    Days Since Last Visit : <span id="">${differenceDays}</span>
+                                </div>`;
+                        $('#last_recon').append(divs);
 
-                    $('#last_recon').append(divs);
-                } else if (result.length === 1) {
-                    const completeTimeStr = result[0]['created_at'];
-                    const divs = `
-                    <div class="col-md-12">
-                                    Completion Date : <span id="">${completeTimeStr}</span>
-                                </div>
-                    <div class="col-md-12">
-                        Last Visit Date: <span id="">First Time</span>
-                    </div>`;
+                        // alert(result[0]['created_at']);
+                    } else {
+                        // alert("First TIme")
+                        var divs = `<div class="col-md-12">
+                                    Last Visit Date : <span id="">First Time</span>
+                                </div>`;
 
-                    $('#last_recon').append(divs);
-                } else {
-                    const divs = `
-                    <div class="col-md-12">
-                        Last Visit Date: <span id="">First Time</span>
-                    </div>`;
-
-                    $('#last_recon').append(divs);
-                }
-            })
-            .catch((error) => console.error('Error:', error));
-    }
-
-
-    function get_task_despensing_unit(task_id, dealer_id, dealer_name, isp_date, comp_date, username, type,
-        last_visit_id) {
-        // Clear existing content
-        // $('#survey-container').empty();
-        var currentDate = new Date();
-        // alert(last_visit_id)
-        // Format the date as needed
-        var formattedDate = currentDate.toLocaleString();
-        $('#labelc').text('Dispensing Unit Meter Reading');
-        $('#survey_time').text(isp_date);
-        $('#survey_complete_time').text(comp_date);
-
-        $('#survey_dealer_name').text(dealer_name);
-        $('#survey_ispector_name').text(username);
-        $('#survey_type').text(type);
-
-
-        last_vists_dates('despensing_unit', last_visit_id, comp_date, task_id);
-
-        $('#survey-container').empty();
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
-        console.log("<?php echo $api_url; ?>get/get_dealer_task_despensing_unit.php?key=03201232927&task_id=" +
-            task_id +
-            "&dealer_id=" + dealer_id + "")
-        fetch("<?php echo $api_url; ?>get/get_dealer_task_despensing_unit.php?key=03201232927&task_id=" + task_id +
-                "&dealer_id=" + dealer_id + "", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                if (result.length > 0) {
-                    // despensing_unit_table.clear().draw();
-
-                    // $.each(result, function(index, data) {
-                    //     despensing_unit_table.row.add([
-                    //         index + 1,
-                    //         data.product_name,
-                    //         data.nozle_name,
-                    //         // data.name,
-                    //         data.old_reading,
-                    //         data.new_reading,
-                    //         data.created_at
-
-                    //     ]).draw(false);
-
-                    // });
-                    var sub_data = result;
-                    console.log(sub_data)
-                    var PMGArray = [];
-                    var HSDArray = [];
-
-                    // Initialize arrays with empty strings
-                    for (var i = 0; i < 8; i++) {
-                        PMGArray.push('---');
-                        HSDArray.push('---');
+                        $('#last_recon').append(divs);
                     }
+                })
+                .catch((error) => console.error(error));
+        }
 
-                    // Iterate through the JSON data
-                    $.each(result, function(index, item) {
-                        // Calculate the difference (dip_new - dip_old)
-                        var difference = item;
+        function get_task_despensing_unit(task_id, dealer_id, dealer_name, isp_date, comp_date, username, type,
+            last_visit_id) {
+            // Clear existing content
+            // $('#survey-container').empty();
+            var currentDate = new Date();
+            // alert(last_visit_id)
+            // Format the date as needed
+            var formattedDate = currentDate.toLocaleString();
+            $('#labelc').text('Dispensing Unit Meter Reading');
+            $('#survey_time').text(isp_date);
+            $('#survey_complete_time').text(comp_date);
 
-                        // Check the product name and store the difference in the corresponding array
-                        if (item.product_name === "PMG") {
-                            PMGArray[index] =
-                                difference; // Convert to string to keep consistency with empty strings
-                        } else if (item.product_name === "HSD") {
-                            HSDArray[index] =
-                                difference; // Convert to string to keep consistency with empty strings
+            $('#survey_dealer_name').text(dealer_name);
+            $('#survey_ispector_name').text(username);
+            $('#survey_type').text(type);
+
+
+            last_vists_dates('despensing_unit', last_visit_id, comp_date);
+
+            $('#survey-container').empty();
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+
+            fetch("<?php echo $api_url; ?>get/get_dealer_task_despensing_unit.php?key=03201232927&task_id=" + task_id +
+                "&dealer_id=" + dealer_id + "", requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.length > 0) {
+                        // despensing_unit_table.clear().draw();
+
+                        // $.each(result, function(index, data) {
+                        //     despensing_unit_table.row.add([
+                        //         index + 1,
+                        //         data.product_name,
+                        //         data.nozle_name,
+                        //         // data.name,
+                        //         data.old_reading,
+                        //         data.new_reading,
+                        //         data.created_at
+
+                        //     ]).draw(false);
+
+                        // });
+                        var sub_data = result;
+                        console.log(sub_data)
+                        var PMGArray = [];
+                        var HSDArray = [];
+
+                        // Initialize arrays with empty strings
+                        for (var i = 0; i < 8; i++) {
+                            PMGArray.push('---');
+                            HSDArray.push('---');
                         }
-                    });
 
-                    console.log("PMG Array: ", PMGArray);
-                    console.log("HSD Array: ", HSDArray);
+                        // Iterate through the JSON data
+                        $.each(result, function (index, item) {
+                            // Calculate the difference (dip_new - dip_old)
+                            var difference = item;
 
-                    var dis_0 = sub_data.length > 1 ? sub_data[0] : null;
-                    var dis_1 = sub_data.length > 1 ? sub_data[1] : null;
-                    var dis_2 = sub_data.length > 1 ? sub_data[2] : null;
-                    var dis_3 = sub_data.length > 1 ? sub_data[3] : null;
-                    var dis_4 = sub_data.length > 1 ? sub_data[4] : null;
-                    var dis_5 = sub_data.length > 1 ? sub_data[5] : null;
-                    var dis_6 = sub_data.length > 1 ? sub_data[6] : null;
-                    var dis_7 = sub_data.length > 1 ? sub_data[7] : null;
+                            // Check the product name and store the difference in the corresponding array
+                            if (item.product_name === "PMG") {
+                                PMGArray[index] =
+                                    difference; // Convert to string to keep consistency with empty strings
+                            } else if (item.product_name === "HSD") {
+                                HSDArray[index] =
+                                    difference; // Convert to string to keep consistency with empty strings
+                            }
+                        });
 
-                    var table_sub = `<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Dispensing Unit Meter Reading</h6>
+                        console.log("PMG Array: ", PMGArray);
+                        console.log("HSD Array: ", HSDArray);
+
+                        var dis_0 = sub_data.length > 1 ? sub_data[0] : null;
+                        var dis_1 = sub_data.length > 1 ? sub_data[1] : null;
+                        var dis_2 = sub_data.length > 1 ? sub_data[2] : null;
+                        var dis_3 = sub_data.length > 1 ? sub_data[3] : null;
+                        var dis_4 = sub_data.length > 1 ? sub_data[4] : null;
+                        var dis_5 = sub_data.length > 1 ? sub_data[5] : null;
+                        var dis_6 = sub_data.length > 1 ? sub_data[6] : null;
+                        var dis_7 = sub_data.length > 1 ? sub_data[7] : null;
+
+                        var table_sub = `<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Dispensing Unit Meter Reading</h6>
                 <table class="dynamic_table" style="width:100%">
                     <tr>
                         <th></th>
@@ -1440,108 +1452,52 @@
                     </tr>
                     
                 </table> <h6>P=Present</h6><h6>L=Last</h6>`;
-                    $('#survey-container').append(table_sub);
-                }
+                        $('#survey-container').append(table_sub);
+                    }
 
-                $('#survey_modal').modal('show');
-            })
-            .catch(error => console.log('error', error));
+                    $('#survey_modal').modal('show');
+                })
+                .catch(error => console.log('error', error));
 
 
 
-    }
+        }
 
-    function get_cacual(task_id, dealer_id, dealer_name, isp_date, comp_date, username, type, last_visit_id) {
-        // Clear existing content
-        var currentDate = new Date();
+        function get_task_stock_variations(task_id, dealer_id, dealer_name, isp_date, comp_date, username, type,
+            last_visit_id) {
+            // Clear existing content
+            var currentDate = new Date();
 
-        // Format the date as needed
-        var formattedDate = currentDate.toLocaleString(); // Adjust the format based on your requirements
+            // Format the date as needed
+            var formattedDate = currentDate.toLocaleString(); // Adjust the format based on your requirements
 
-        // Display the formatted date
-        $('#labelc').text('Stock Variations');
-        $('#survey_time').text(isp_date);
-        $('#survey_complete_time').text(comp_date);
+            // Display the formatted date
+            $('#labelc').text('Stock Variations');
+            $('#survey_time').text(isp_date);
+            $('#survey_complete_time').text(comp_date);
 
-        $('#survey_dealer_name').text(dealer_name);
-        $('#survey_ispector_name').text(username);
-        $('#survey_type').text(type);
-        last_vists_dates('stock_variation', last_visit_id, comp_date, task_id);
+            $('#survey_dealer_name').text(dealer_name);
+            $('#survey_ispector_name').text(username);
+            $('#survey_type').text(type);
+            last_vists_dates('stock_variation', last_visit_id, comp_date);
 
-        $('#survey-container').empty();
+            $('#survey-container').empty();
 
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
 
-        fetch("<?php echo $api_url; ?>get/get_cacual_visit_detail.php?key=03201232927&task_id=" + task_id +
+            fetch("<?php echo $api_url; ?>get/get_dealer_task_stock_variation.php?key=03201232927&task_id=" + task_id +
                 "&dealer_id=" + dealer_id + "", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log(result)
-                if (result.length > 0) {
-                    var first = result[0];
-                    var second = result.length > 1 ? result[1] : null;
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result)
+                    if (result.length > 0) {
+                        var first = result[0];
+                        var second = result.length > 1 ? result[1] : null;
 
-                    var table = `<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Casual Visit</h6><table class="dynamic_table" style="width:100%">
-                    <tr>
-                        <th>Time</th>
-                        <th>Description</th>
-                    </tr>
-                    <tr>
-                        <td>${first.visit_time}</td>
-                        <td>${first.description}</td>
-                    </tr>
-                    
-                </table>`;
-
-                    $('#survey-container').append(table);
-                }
-
-                $('#survey_modal').modal('show');
-            })
-            .catch(error => console.log('error', error));
-
-
-
-    }
-
-    function get_task_stock_variations(task_id, dealer_id, dealer_name, isp_date, comp_date, username, type,
-        last_visit_id) {
-        // Clear existing content
-        var currentDate = new Date();
-
-        // Format the date as needed
-        var formattedDate = currentDate.toLocaleString(); // Adjust the format based on your requirements
-
-        // Display the formatted date
-        $('#labelc').text('Stock Variations');
-        $('#survey_time').text(isp_date);
-        $('#survey_complete_time').text(comp_date);
-
-        $('#survey_dealer_name').text(dealer_name);
-        $('#survey_ispector_name').text(username);
-        $('#survey_type').text(type);
-        last_vists_dates('stock_variation', last_visit_id, comp_date, task_id);
-
-        $('#survey-container').empty();
-
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
-
-        fetch("<?php echo $api_url; ?>get/get_dealer_task_stock_variation.php?key=03201232927&task_id=" + task_id +
-                "&dealer_id=" + dealer_id + "", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log(result)
-                if (result.length > 0) {
-                    var first = result[0];
-                    var second = result.length > 1 ? result[1] : null;
-
-                    var table = `<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Stock Variations</h6><table class="dynamic_table" style="width:100%">
+                        var table = `<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Stock Variations</h6><table class="dynamic_table" style="width:100%">
                     <tr>
                         <th></th>
                         <th></th>
@@ -1592,40 +1548,32 @@
                     </tr>
                 </table>`;
 
-                    $('#survey-container').append(table);
-                }
+                        $('#survey-container').append(table);
+                    }
 
-                $('#survey_modal').modal('show');
-            })
-            .catch(error => console.log('error', error));
+                    $('#survey_modal').modal('show');
+                })
+                .catch(error => console.log('error', error));
 
 
 
-    }
+        }
 
-    function fetchtable() {
-        blocking();
-        var fromdate = $('#fromdate').val();
-        var todate = $('#todate').val();
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
-        console.log(
-            "<?php echo $api_url; ?>get/get_all_dealers_inspection_report_data.php?key=03201232927&pre=<?php echo $_SESSION['privilege'] ?>&id=<?php echo $_SESSION['user_id'] ?>&from=" +
-            fromdate + "&to=" + todate + "");
-        fetch("<?php echo $api_url; ?>get/get_all_dealers_inspection_report_data.php?key=03201232927&pre=<?php echo $_SESSION['privilege'] ?>&id=<?php echo $_SESSION['user_id'] ?>&from=" +
+        function fetchtable() {
+            var fromdate = $('#fromdate').val();
+            var todate = $('#todate').val();
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+            fetch("<?php echo $api_url; ?>get/get_all_dealers_inspection_report_data.php?key=03201232927&pre=<?php echo $_SESSION['privilege'] ?>&id=<?php echo $_SESSION['user_id'] ?>&from=" +
                 fromdate + "&to=" + todate + "",
                 requestOptions)
-            .then(response => response.json())
-            .then(response => {
-
-                if (response.length > 0) {
-
-
+                .then(response => response.json())
+                .then(response => {
 
                     lubes_table.clear().draw();
-                    $.each(response, function(index, data) {
+                    $.each(response, function (index, data) {
                         // console.log(data.dealer_name)
                         // console.log(response)
 
@@ -1642,21 +1590,18 @@
                                 '<button type="button"  class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-mail-bulk font-size-16 align-middle text-danger"></i></button>';
                         }
 
-                        var inspection_btn = '<button type="button"  onclick="displaySurvey(' + data.id +
-                            ',' +
-                            data.id + ',' + data.dealer_id + ',  \'' + data.dealer_name.replace("'",
-                                "\\'") +
+                        var inspection_btn = '<button type="button"  onclick="displaySurvey(' + data.id + ',' +
+                            data.id + ',' + data.dealer_id + ',  \'' + data.dealer_name.replace("'", "\\'") +
                             '\',\'' + data.time +
                             '\',\'' + data.visit_close_time + '\',\'' + data.name + '\',\'' + data.type +
-                            '\',' + data.last_visit_id + ',\'' + data.privilege +
-                            '\')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>';
+                            '\',' + data.last_visit_id +
+                            ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>';
                         var inpection = (data.inspection == 1) ? inspection_btn : "---";
 
                         var sales_performace_btn = '<button type="button" onclick="get_tas_sales_data(' +
                             data
-                            .id + ',' + data
-                            .dealer_id + ', \'' + data.dealer_name.replace("'", "\\'") + '\',\'' + data
-                            .time +
+                                .id + ',' + data
+                                .dealer_id + ', \'' + data.dealer_name.replace("'", "\\'") + '\',\'' + data.time +
                             '\',\'' + data.visit_close_time + '\',\'' + data.name +
                             '\',\'' + data.type +
                             '\',' + data.last_visit_id +
@@ -1665,11 +1610,9 @@
 
                         var measurement_btn = '<button type="button" onclick="measure_price(' +
                             data
-                            .id + ',' + data.id + ',' + data.dealer_id + ',  \'' + data.dealer_name.replace(
-                                "'",
-                                "\\'") + '\',\'' + data.time + '\',\'' + data.visit_close_time + '\',\'' +
-                            data
-                            .name +
+                                .id + ',' + data.id + ',' + data.dealer_id + ',  \'' + data.dealer_name.replace("'",
+                                    "\\'") + '\',\'' + data.time + '\',\'' + data.visit_close_time + '\',\'' + data
+                                .name +
                             '\',\'' + data.type +
                             '\',' + data.last_visit_id +
                             ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>';
@@ -1678,8 +1621,7 @@
                         var wet_stock_btn = '<button type="button"  onclick="get_task_wet_stock(' + data
                             .id +
                             ',' + data
-                            .dealer_id + ',  \'' + data.dealer_name.replace("'", "\\'") + '\',\'' + data
-                            .time +
+                                .dealer_id + ',  \'' + data.dealer_name.replace("'", "\\'") + '\',\'' + data.time +
                             '\',\'' + data.visit_close_time + '\',\'' + data.name +
                             '\',\'' + data.type +
                             '\',' + data.last_visit_id +
@@ -1691,74 +1633,59 @@
                             data.id +
                             ',' +
                             data.dealer_id + ',  \'' + data.dealer_name.replace("'", "\\'") + '\',\'' + data
-                            .time + '\',\'' + data.visit_close_time + '\',\'' + data.name +
+                                .time + '\',\'' + data.visit_close_time + '\',\'' + data.name +
                             '\',\'' + data.type +
                             '\',' + data.last_visit_id +
                             ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>';
                         var dispensing_units = (data.dispensing_status == 1) ? dispensing_unit_btn : "---";
 
-                        var stock_variatins_btn =
-                            '<button type="button"  onclick="get_task_stock_variations(' +
-                            data.id +
-                            ',' +
-                            data.dealer_id + ', \'' + data.dealer_name.replace("'", "\\'") + '\',\'' + data
-                            .time + '\',\'' + data
-                            .visit_close_time + '\',\'' + data.name + '\',\'' + data.type +
-                            '\',' + data.last_visit_id +
+                        var stock_variatins_btn = '<button type="button"  onclick="get_task_stock_variations(' +
+                            data.id + ',' + data.dealer_id + ', \'' + data.dealer_name.replace("'", "\\'") +
+                            '\',\'' + data.time + '\',\'' + data.visit_close_time + '\',\'' + data.name +
+                            '\',\'' + data.type + '\',' + data.last_visit_id +
                             ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>';
                         var stock_variations = (data.stock_variations_status == 1) ? stock_variatins_btn :
                             "---";
+
+                        var stock_recon_btn = '<button type="button"  onclick="get_recon_stock(' + data.id +
+                            ',' + data.dealer_id + ', \'' + data.dealer_name.replace("'", "\\'") + '\',\'' +
+                            data.time + '\',\'' + data.visit_close_time + '\',\'' + data.name + '\',\'' + data
+                                .type + '\',' + data.last_visit_id +
+                            ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>';
+
+                        var stock_recon = (data.stock_recon == 1) ? stock_recon_btn : "---";
+
                         var dealer_sign = (data.dealer_sign != null) ?
-                            '<a href="<?php echo $api_url_files;?>uploads/' + data
-                            .dealer_sign +
+                            '<a href="<?php echo $api_url_files; ?>uploads/' + data.dealer_sign +
                             '" target="_blank"><i class="fas fa-file-image text-success" style="font-size: 20px;font-weight: bold;"></i></a>' :
                             "---";
 
+                        // var stock_images_btn = '<button type="button"  onclick="get_images_stock(' + data.id +
+                        //     ',' + data.dealer_id + ', \'' + data.dealer_name.replace("'", "\\'") + '\',\'' +
+                        //     data.time + '\',\'' + data.visit_close_time + '\',\'' + data.name + '\',\'' + data
+                        //     .type + '\',' + data.last_visit_id +
+                        //     ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>';
 
-
-                        var cacual_btn =
-                            '<button type="button"  onclick="get_cacual(' +
-                            data.id +
-                            ',' +
-                            data.dealer_id + ', \'' + data.dealer_name.replace("'", "\\'") + '\',\'' + data
-                            .time + '\',\'' + data
-                            .visit_close_time + '\',\'' + data.name + '\',\'' + data.type +
-                            '\',' + data.last_visit_id +
-                            ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>';
-
-                        var type_btn = (data.status == 1) ? cacual_btn : "";
-                        var insp_type = data.type + ' - ' + type_btn;
-                        var type_txt = (data.type == 'Casual') ? insp_type : data.type;
-                        var current_status = '';
-                        if (data.privilege == 'RM' && data.inspection == 1) {
-                            current_status = 'Complete';
-                        } else {
-                            current_status = data.current_status
-                        }
+                        // var stock_images = (data.images == 1) ? stock_images_btn : "---";
 
 
                         lubes_table.row.add([
 
 
                             index + 1,
-                            data.time,
-                            data.visit_close_time,
-                            dealer_sign,
+                            data.time.split(' ')[0],
+                            data.visit_close_time || 'N/A',
+                            dealer_sign || 'N/A',
                             data.name,
-                            data.privilege,
-                            data.sap_no,
+                            data.dealer_sap || 'N/A',
                             data.dealer_name,
-                            type_txt,
-                            current_status,
+                            data.type === "Inpection" ? "Inspection" : data.type,
+                            data.current_status,
                             inpection,
-                            sales_performance,
-                            measurements,
-                            wet_stocks,
-                            dispensing_units,
-                            stock_variations,
-                            (data.status == 1) ? emailer : "---",
+                            stock_recon,
+                            // stock_images,
+                            (data.status == 1) ? emailer : "N/A",
                         ]).draw(false);
-                        $.unblockUI();
 
                         // } else {
                         //     lubes_table.row.add([
@@ -1780,246 +1707,601 @@
 
 
                     });
-                } else {
-                    $.unblockUI();
-                }
+
+                })
+                .catch(error => console.log('error', error));
 
 
-            })
-            .catch(error => console.log('error', error));
 
-
-    }
-
-    function displaySurvey(id, inspection_id, dealer_id, dealer_name, isp_date, comp_date, username, type,
-        last_visit_id, privilege) {
-        // Clear existing content
-        // alert(dealer_name);
-        var currentDate = new Date();
-
-        // Format the date as needed
-        var formattedDate = currentDate.toLocaleString(); // Adjust the format based on your requirements
-
-        var pril = "<?php echo $_SESSION['privilege'] ?>";
-
-        // Display the formatted date
-        $('#labelc').text('Inspection');
-        $('#survey_time').text(isp_date);
-        $('#survey_complete_time').text(comp_date);
-
-        $('#survey_dealer_name').text(dealer_name);
-        $('#survey_ispector_name').text(username);
-        $('#survey_type').text(type);
-
-        last_vists_dates('inspection', last_visit_id, comp_date, inspection_id);
-
-        $('#survey-container').empty();
-
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
-
-        var page_link = '';
-        if (privilege != 'RM') {
-            page_link = 'get_dealer_survey_response';
-        } else {
-            page_link = 'get_dealer_survey_response_rm';
         }
-        console.log("<?php echo $api_url; ?>get/" + page_link + ".php?key=03201232927&inspection_id=" +
-            inspection_id +
-            "&task_id=" + id + "&dealer_id=" + dealer_id + "")
-
-        fetch("<?php echo $api_url; ?>get/" + page_link + ".php?key=03201232927&inspection_id=" +
-                inspection_id +
-                "&task_id=" + id + "&dealer_id=" + dealer_id + "", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log(result)
-                create_div(result)
-            })
-            .catch(error => console.log('error', error));
 
 
+        function get_recon_stock(task_id, dealer_id, dealer_name, isp_date, comp_date, username, type, last_visit_id) {
+            // Clear existing content
+            var currentDate = new Date();
 
-    }
+            // Format the date as needed
+            var formattedDate = currentDate.toLocaleString(); // Adjust the format based on your requirements
+
+            // Display the formatted date
+            $('#labelc').text('Stock Reconciliation');
+            $('#survey_time').text(isp_date);
+            $('#survey_complete_time').text(comp_date);
+
+            $('#survey_dealer_name').text(dealer_name);
+            $('#survey_ispector_name').text(username);
+            $('#survey_type').text(type);
+            last_vists_dates('stock_variation', last_visit_id, comp_date);
+
+            $('#survey-container').empty();
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+            // console.log("<?php echo $api_url; ?>get/get_dealer_stock_recon_new.php?key=03201232927&task_id=" +
+            //         task_id + "&dealer_id=" + dealer_id + "")
+            fetch("<?php echo $api_url; ?>get/get_dealer_stock_recon_new.php?key=03201232927&task_id=" +
+                task_id + "&dealer_id=" + dealer_id + "", requestOptions)
+                .then(response => response.json())
+                .then(async result => {
+                    console.log(result)
+                    stock_reco_new(result);
+                    // create_div_esh(result)
+                    // try {
+                    //     const result2 = await div_decant_headers(id, dealer_id);
+                    // } catch (error) {
+                    //     console.log('error', error);
+                    // }
+                })
+                .catch(error => console.log('error', error));
+        }
+
+        function get_images_stock(task_id, dealer_id, dealer_name, isp_date, comp_date, username, type, last_visit_id) {
+            // Clear existing content
+            var currentDate = new Date();
+
+            // Format the date as needed
+            var formattedDate = currentDate.toLocaleString(); // Adjust the format based on your requirements
+
+            // Display the formatted date
+            $('#labelc').text('Stock Images');
+            $('#survey_time').text(isp_date);
+            $('#survey_complete_time').text(comp_date);
+
+            $('#survey_dealer_name').text(dealer_name);
+            $('#survey_ispector_name').text(username);
+            $('#survey_type').text(type);
+            last_vists_dates('stock_variation', last_visit_id, comp_date);
+
+            $('#survey-container').empty();
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+            fetch("<?php echo $api_url; ?>get/get_task_images.php?key=03201232927&task_id=" +
+                task_id + "&dealer_id=" + dealer_id + "", requestOptions)
+                .then(response => response.json())
+                .then(async result => {
+                    console.log(result)
+                    stock_images_new(result);
+                    // create_div_esh(result)
+                    // try {
+                    //     const result2 = await div_decant_headers(id, dealer_id);
+                    // } catch (error) {
+                    //     console.log('error', error);
+                    // }
+                })
+                .catch(error => console.log('error', error));
+        }
 
 
-    function create_div(response) {
-        // Iterate through the API response
-        var total_ques = 0;
-        var r_yes = 0;
-        var r_no = 0;
-        var r_n_a = 0;
+        function stock_images_new(data) {
+            var api_url = '<?php echo $api_url; ?>'; // Replace this with your actual API URL
+            var table = `<div class="container-fluid">
+                    <div class="row my-3">`;
 
-        var $sectionDiv = $('<div class="col-md-12"></div>');
-        var table1 = $('<table class="dynamic_table">').attr('id', 'questions_toral');
-        var tableHead1 = $('<thead>');
-        var tableBody1 = $('<tbody>');
-
-        var headerRow1 = $('<tr>');
-        headerRow1.append($('<th>').text('Total Questions'));
-        headerRow1.append($('<th>').text('Yes'));
-        headerRow1.append($('<th>').text('No'));
-        headerRow1.append($('<th>').text('N/A'));
-        headerRow1.append($('<th>').text('%'));
-        tableHead1.append(headerRow1);
-        table1.append(tableHead1);
-        response.forEach(function(section) {
-            section.Questions.forEach(function(question) {
-                console.log(question.response)
-                total_ques++;
-                if (question.response == 'Yes') {
-                    r_yes++;
-                } else if (question.response == 'No') {
-                    r_no++;
-                } else if (question.response == 'N/A') {
-                    r_n_a++;
+            data.forEach(resp => {
+                if (resp) {
+                    console.log(resp);
+                    table += `<div class="col-md-3">
+                        <img src="${api_url}/${resp.image}" alt="Inspection images" class="img-fluid">
+                    </div>`;
                 }
-            })
-
-            console.log('Ques ' + total_ques);
-        })
-
-        var percentage = (r_yes / (total_ques - r_n_a)) * 100;
-        var row1 = $('<tr>');
-        row1.append($('<td>').text(total_ques));
-        row1.append($('<td>').text(r_yes));
-        row1.append($('<td>').text(r_no));
-        row1.append($('<td>').text(r_n_a));
-        row1.append($('<td>').text(Math.round(percentage)));
-        tableBody1.append(row1);
-
-        table1.append(tableBody1);
-
-        // Append table to the body of the document
-        // $('body').append(table);
-
-        $sectionDiv.append(table1);
-
-        response.forEach(function(section) {
-            //  $sectionDiv = $('<div class="col-md-12"></div>');
-            // Create a div for each section
-            var output = "";
-
-            // Append section name
-            var i = 1;
-
-
-            // $sectionDiv.append('<h5>' + section.name + '</h5>');
-
-
-            // Create a div for each question
-            // output = '<div class="table-responsive"><style>table, th, td {border: 1px solid black;border-collapse: collapse;}th, td {padding:10px;}</style> ';
-
-
-
-
-
-            var table = $('<table class="dynamic_table">').attr('id', 'questionsTable' + (i));
-            var tableHead = $('<thead>');
-            var tableBody = $('<tbody>');
-
-            // Create table headers
-            var headerRow = $('<tr>');
-            headerRow.append($('<th>').text('SNo'));
-            headerRow.append($('<th>').text(section.name));
-            headerRow.append($('<th>').text('Yes'));
-            headerRow.append($('<th>').text('No'));
-            headerRow.append($('<th>').text('N/A'));
-            headerRow.append($('<th>').text('Comments'));
-            headerRow.append($('<th>').text('File'));
-            tableHead.append(headerRow);
-            table.append(tableHead);
-            var j = 1;
-            section.Questions.forEach(function(question) {
-                // Create a div for each question
-
-                var row = $('<tr>');
-                row.append($('<td>').text(j));
-                row.append($('<td>').text(question.question));
-                row.append($('<td>').html(question.response === 'Yes' ?
-                    '<i class="fas fa-check text-success" style="font-size: 20px;font-weight: bold;"></i>' :
-                    ''));
-                row.append($('<td>').html(question.response === 'No' ?
-                    '<i class="fas fa-check text-success" style="font-size: 20px;font-weight: bold;"></i>' :
-                    ''));
-                row.append($('<td>').html(question.response === 'N/A' ?
-                    '<i class="fas fa-check text-success" style="font-size: 20px;font-weight: bold;"></i>' :
-                    ''));
-                row.append($('<td>').text(question.comment));
-                row.append($('<td>').html(question.cancel_file === null ? '---' :
-                    '<a href="http://151.106.17.246:8080/pumabridgeApis/uploads/' + question
-                    .cancel_file +
-                    '" target="_blank"><i class="fas fa-file-image text-success" style="font-size: 20px;font-weight: bold;"></i></a>'
-                ));
-                tableBody.append(row);
-
-
-                // Append table body to table
-                j++;
             });
-            table.append(tableBody);
 
-            // Append table to the body of the document
-            // $('body').append(table);
+            table += `</div>
+            </div>`;
 
-            $sectionDiv.append(table);
-            i++;
-            // Append section div to the survey container
-            $('#survey-container').append($sectionDiv);
-        });
-        $('#survey_modal').modal('show');
-    }
+            $('#survey-container').html(table);
+            $('#survey_modal').modal('show');
+        }
 
-    function measure_price(id, inspection_id, dealer_id, dealer_name, isp_date, comp_date, username, type,
-        last_visit_id) {
-        // Clear existing content
-        var currentDate = new Date();
 
-        // Format the date as needed
-        var formattedDate = currentDate.toLocaleString();
-        $('#labelc').text('Measurement & Price');
-        $('#survey_time').text(isp_date);
-        $('#survey_complete_time').text(comp_date);
 
-        $('#survey_dealer_name').text(dealer_name);
-        $('#survey_ispector_name').text(username);
-        $('#survey_type').text(type);
-        last_vists_dates('price_measurement', last_visit_id, comp_date, inspection_id);
-        $('#survey-container').empty();
+        function stock_reco_new(data) {
+            // var resp = data[0];
 
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
+            data.forEach(resp => {
 
-        fetch("<?php echo $api_url; ?>get/get_dealers_measurement_price_inspection.php?key=03201232927&inspection_id=" +
+                var tank_dip = JSON.parse(resp.tanks);
+                var nozzless = JSON.parse(resp.nozzel);
+                if (data)
+                    var is_totalizer_data = resp.is_totalizer_data ? JSON.parse(resp.is_totalizer_data) : [];
+
+                console.log(tank_dip)
+
+
+                var table = ` <div class="container-fluid ">
+                                        <div class="row my-3">
+                                            <div class="col-md-12">
+                                                <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">
+                                                    Stock Reconcilation ${resp.product_name}</h6>
+                                                    <div class="container">
+                                                <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">Site Name :</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.dealer_name}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">Date :</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.created_at}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row my-3">
+                                            <div class="col-md-12">
+                                                
+                                                    <div class="container">
+                                                <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">Product :</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.product_name}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">Total Days :</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.total_days}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row my-3">
+                                            <div class="col-md-12">
+                                                
+                                                    <div class="container">
+                                                <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">From:</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.last_recon_date}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">To :</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.created_at}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            </div>
+                                            <div class="col-md-12 mt-3">
+                                                <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">
+                                                    Opening and Closing Dips</h6>
+                                                <table class="dynamic_table" style="width:100%">
+                                                    <tr>
+                                                        <th></th>
+                                                        <th colspan="2" style="text-align: center;">Opening</th>
+                                                        <th></th>
+                                                        <th colspan="2" style="text-align: center;">Closing</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Tanks</th>
+                                                        <th>Dip mm</th>
+                                                        <th>Qty in Ltrs</th>
+                                                        <td></td>
+                                                        <th>Dip mm</th>
+                                                        <th>Qty in Ltrs</th>
+                                                        </tr>`;
+
+                // Loop through your JSON data
+                tank_dip.forEach(item => {
+                    table += `
+                                                        <tr>
+                                                        <th>${item.name}</th>
+                                                        <td>${item.opening_dip}</td>
+                                                        <td>${item.opening}</td>
+                                                        <td></td>
+                                                        <td>${item.closing_dip}</td>
+                                                        <td>${item.closing}</td>
+                                                        </tr>`;
+                });
+                table += `<tr>
+                                                        <th colspan="2">Opening Stock</th>
+                                                        <td>${resp.sum_of_opening}</td>
+                                                        <th colspan="2">Physical Stock</th>
+                                                        <td>${resp.sum_of_closing}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">
+                                                    Opening and Closing Meter Readings</h6>
+                                                <table class="dynamic_table" style="width:100%">
+                                                    <tr>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th>Opening (A)</th>
+                                                        <th>Closing (B)</th>
+                                                        <th>Sales (B-A)</th>
+                                                        <th>Images</th>
+
+                                                        </tr>`;
+
+                // Loop through your JSON data
+                nozzless.forEach(item => {
+                    table += `
+                                                        <tr>
+                                                        <th>${item.name}</th>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>${item.opening}</td>
+                                                        <td>${item.closing}</td>
+                                                        <td>${parseFloat(item.closing) - parseFloat(item.opening)}</td>
+                                                        <td><i class="fas fa-file-image text-success" style="font-size: 20px;font-weight: bold;" onclick="get_recon_pictures(${item.id},${resp.task_id})"></i></td>
+                                                        </tr>`;
+                });
+                is_totalizer_data.forEach(item => {
+                    table += `
+                                                        <tr>
+                                                        <th>Change Totalizer of ${item.name} - ${item.dispenser_name}</th>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>${item.opening}</td>
+                                                        <td>${item.closing}</td>
+                                                        <td>${parseFloat(item.closing) - parseFloat(item.opening)}</td>
+                                                        <td><i class="fas fa-file-image text-success" style="font-size: 20px;font-weight: bold;" onclick="get_recon_pictures(${item.id},${resp.task_id})"></i></td>
+                                                        </tr>`;
+                });
+                table += `<tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <th colspan="2">Total Sales for the Period</th>
+                                                        <td>${resp.total_sales}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">
+                                                </h6>
+                                                <table class="dynamic_table" style="width:100%">
+                                                    <tr>
+                                                        <th>Total Reciepts</th>
+                                                        <td class="">${resp.total_recipt} (IN LTRS)</td>
+
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Final Analysis
+                                                </h6>
+                                              
+                                            </div>
+                                            <div class="col-md-12">
+                                                <table class="dynamic_table" style="width:100%">
+                                                    <tr>
+                                                        <th>(C) Opening Stock</th>
+                                                        <th>(D) Receipts</th>
+                                                        <th>(E) Sales</th>
+                                                        <th>(C+D-E) Equals to</th>
+                                                        <th>Book Value</th>
+
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>${resp.sum_of_opening}</td>
+                                                        <td>${resp.total_recipt}</td>
+                                                        <td>${resp.total_sales}</td>
+                                                        <td style="text-align: center;">=</td>
+                                                        <td>${resp.book_value}</td>
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <table class="dynamic_table" style="width:100%">
+                                                    <tr>
+                                                        <th>(F) Physical Stock</th>
+                                                        <th>(G) Book Stock</th>
+                                                        <th>(F-G) Equals to</th>
+                                                        <th>Variance</th>
+
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>${resp.sum_of_closing}</td>
+                                                        <td>${resp.book_value}</td>
+                                                        <td style="text-align: center;">=</td>
+                                                        <td>${resp.variance}</td>
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                           
+                                           
+                                            <div class="col-md-12">
+                                                <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">
+                                                </h6>
+                                                <table class="dynamic_table" style="width:100%">
+                                                    <tr>
+                                                        <th class="w-50">Remarks</th>
+                                                        <td class="w-50" class="">${resp.remark}</td>
+
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">
+                                                </h6>
+                                                <table class="dynamic_table" style="width:100%">
+                                                    <tr>
+                                                        <th class="w-50">Shortage Claim for the period (TLs short received by in Ltrs)</th>
+                                                        <td class="w-50" class="">${resp.shortage_claim}</td>
+
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">
+                                                </h6>
+                                                <table class="dynamic_table" style="width:100%">
+                                                    <tr>
+                                                        <th class="w-50">Net Gain or Loss</th>
+                                                        <td class="w-50" class="">${resp.variance}</td>
+
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">
+                                                </h6>
+                                                <table class="dynamic_table" style="width:100%">
+                                                    <tr>
+                                                        <th class="w-50">Variance as % of Sales (for the period.)</th>
+                                                        <td class="w-50" class="">${resp.variance_of_sales}</td>
+
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">
+                                                </h6>
+                                                <table class="dynamic_table" style="width:100%">
+                                                    <tr>
+                                                        <th class="w-50">Average Daily sales</th>
+                                                        <td class="w-50" class="">${parseFloat(resp.average_daily_sales).toFixed(2)}</td>
+
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                           
+                                            
+                                        </div>
+
+                                    </div>`;
+                $('#survey-container').append(table);
+            });
+            $('#survey_modal').modal('show');
+        }
+
+        function displaySurvey(id, inspection_id, dealer_id, dealer_name, isp_date, comp_date, username, type, last_visit_id) {
+            // Clear existing content
+            var currentDate = new Date();
+
+            // Format the date
+            var formattedDate = currentDate.toLocaleString();
+
+            // Update modal details
+            $('#labelc').text('Inspection');
+            $('#survey_time').text(isp_date);
+            $('#survey_complete_time').text(comp_date);
+            $('#survey_dealer_name').text(dealer_name);
+            $('#survey_ispector_name').text(username);
+            $('#survey_type').text(type);
+
+            last_vists_dates('inspection', last_visit_id, comp_date);
+
+            $('#survey-container').empty();
+
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+
+            // API call
+            fetch("<?php echo $api_url; ?>get/get_dealer_survey_response.php?key=03201232927&inspection_id=" +
+                inspection_id + "&task_id=" + id + "&dealer_id=" + dealer_id + "", requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    console.log("Survey Data:", result); // Optional: for debugging
+                    create_div_new(result); // ✅ Call the updated version
+                })
+                .catch(error => console.log('Error loading survey:', error));
+        }
+
+        function create_div_new(response) {
+            var all_total = 0;
+            var all_total_obt = 0;
+
+            var div_content = `<table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="p-0" style="text-align: center; background-color: black; color: #fff;">Activity</th>
+                <th class="p-0" style="text-align: center; background-color: black; color: #fff;">Yes</th>
+                <th class="p-0" style="text-align: center; background-color: black; color: #fff;">No</th>
+                <th class="p-0" style="text-align: center; background-color: black; color: #fff;">N/A</th>
+                <th class="p-0" style="text-align: center; background-color: black; color: #fff;">Total Marks</th>
+                <th class="p-0" style="text-align: center; background-color: black; color: #fff;">Obtained</th>
+                <th class="p-0" style="text-align: center; background-color: black; color: #fff;">Percentage</th>
+                <th class="p-0" style="text-align: center; background-color: black; color: #fff;">Comments</th>
+                <th class="p-0" style="text-align: center; background-color: black; color: #fff;">File</th>
+            </tr>
+        </thead>
+        <tbody>`;
+
+            response.forEach(function (section, sectionIndex) {
+                div_content += `<tr>
+            <td colspan="9" class="p-0" style="font-weight: bold; background-color: #e5e5e5;"><h6>${sectionIndex + 1}) ${section.name}</h6></td>
+        </tr>`;
+
+                var total_sum = 0;
+                var obt_total_sum = 0;
+                var questionIndex = 1;
+
+                section.Questions.forEach(function (question) {
+                    const total_marks = 10;
+                    let obtained_marks = 0;
+
+                    if (question.response === 'Yes') obtained_marks = 10;
+                    else if (question.response === 'No') obtained_marks = 0;
+                    else if (question.response === 'N/A') obtained_marks = 0;
+
+                    total_sum += total_marks;
+                    obt_total_sum += obtained_marks;
+
+                    div_content += `<tr>
+                <td>${sectionIndex + 1}.${questionIndex}) ${question.question}</td>
+                <td style="text-align: center;">${question.response === 'Yes' ?
+                            '<i class="fas fa-dot-circle text-success" style="font-size: 15px;"></i>' :
+                            '<i class="far fa-circle text-muted" style="font-size: 15px;"></i>'}</td>
+                <td style="text-align: center;">${question.response === 'No' ?
+                            '<i class="fas fa-dot-circle text-danger" style="font-size: 15px;"></i>' :
+                            '<i class="far fa-circle text-muted" style="font-size: 15px;"></i>'}</td>
+                <td style="text-align: center;">${question.response === 'N/A' ?
+                            '<i class="fas fa-dot-circle text-warning" style="font-size: 15px;"></i>' :
+                            '<i class="far fa-circle text-muted" style="font-size: 15px;"></i>'}</td>
+                <td style="text-align: center;">${total_marks}</td>
+                <td style="text-align: center;">${obtained_marks}</td>
+                <td style="text-align: center;">${Math.round((obtained_marks / total_marks) * 100)}%</td>
+                <td>${question.comment || '---'}</td>
+                <td style="text-align: center;">${question.cancel_file ?
+                            `<a href="<?php echo $api_url; ?>uploads/${question.cancel_file}" target="_blank">
+                    <i class="fas fa-file-image text-success" style="font-size: 20px;"></i>
+                </a>` : '---'}</td>
+            </tr>`;
+
+                    questionIndex++;
+                });
+
+                div_content += `<tr>
+            <td colspan="4" class="p-0" style="font-weight: bold; background-color: #dcdcdc; text-align: center;"><h6>Subtotal - ${sectionIndex + 1}</h6></td>
+            <td class="p-0" style="font-weight: bold; background-color: #dcdcdc; text-align: center;">${total_sum}</td>
+            <td class="p-0" style="font-weight: bold; background-color: #dcdcdc; text-align: center;">${obt_total_sum}</td>
+            <td class="p-0" style="font-weight: bold; background-color: #dcdcdc; text-align: center;">${Math.round((obt_total_sum / total_sum) * 100)}%</td>
+            <td class="p-0" style="background-color: #dcdcdc;"></td>
+            <td class="p-0" style="background-color: #dcdcdc;"></td>
+        </tr>`;
+
+                all_total += total_sum;
+                all_total_obt += obt_total_sum;
+            });
+
+            // Grand Total
+            div_content += `<tr>
+        <td colspan="4" class="p-0" style="font-weight: bold; background-color: #b1a7a7; text-align: center;"><h6>Grand Total</h6></td>
+        <td class="p-0" style="font-weight: bold; background-color: #b1a7a7; text-align: center;">${all_total}</td>
+        <td class="p-0" style="font-weight: bold; background-color: #b1a7a7; text-align: center;">${all_total_obt}</td>
+        <td class="p-0" style="font-weight: bold; background-color: #b1a7a7; text-align: center;">${Math.round((all_total_obt / all_total) * 100)}%</td>
+        <td class="p-0" style="background-color: #b1a7a7;"></td>
+        <td class="p-0" style="background-color: #b1a7a7;"></td>
+    </tr>`;
+
+            div_content += `</tbody></table>`;
+
+            // Add images at bottom
+            div_content += `<div class="row">`;
+            response.forEach(section => {
+                section.Questions.forEach(question => {
+                    if (question.cancel_file) {
+                        div_content += `
+                    <div class="col-md-2 mb-3">
+                        <img src="<?php echo $api_url; ?>uploads/${question.cancel_file}" 
+                             alt="File" style="width: 150px; height: 130px;" />
+                    </div>`;
+                    }
+                });
+            });
+            div_content += `</div>`;
+
+            $('#survey-container').html(div_content);
+            $('#survey_modal').modal('show');
+        }
+
+
+
+        function measure_price(id, inspection_id, dealer_id, dealer_name, isp_date, comp_date, username, type,
+            last_visit_id) {
+            // Clear existing content
+            var currentDate = new Date();
+
+            // Format the date as needed
+            var formattedDate = currentDate.toLocaleString();
+            $('#labelc').text('Measurement & Price');
+            $('#survey_time').text(isp_date);
+            $('#survey_complete_time').text(comp_date);
+
+            $('#survey_dealer_name').text(dealer_name);
+            $('#survey_ispector_name').text(username);
+            $('#survey_type').text(type);
+            last_vists_dates('price_measurement', last_visit_id, comp_date);
+            $('#survey-container').empty();
+
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+
+            fetch("<?php echo $api_url; ?>get/get_dealers_measurement_price_inspection.php?key=03201232927&inspection_id=" +
+
                 inspection_id +
                 "&task_id=" + id + "&dealer_id=" + dealer_id + "", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                // displayMainData(result[0].main_data);
-                // displaySubData(result[0].sub_data);
-                var main_data = result[0].main_data;
-                var sub_data = result[0].sub_data;
-                var dis_0 = sub_data.length > 1 ? sub_data[0] : null;
-                var dis_1 = sub_data.length > 1 ? sub_data[1] : null;
-                var dis_2 = sub_data.length > 1 ? sub_data[2] : null;
-                var dis_3 = sub_data.length > 1 ? sub_data[3] : null;
-                var dis_4 = sub_data.length > 1 ? sub_data[4] : null;
-                var dis_5 = sub_data.length > 1 ? sub_data[5] : null;
-                var dis_6 = sub_data.length > 1 ? sub_data[6] : null;
-                var dis_7 = sub_data.length > 1 ? sub_data[7] : null;
-                console.log(sub_data)
+                .then(response => response.json())
+                .then(result => {
+                    // displayMainData(result[0].main_data);
+                    // displaySubData(result[0].sub_data);
+                    var main_data = result[0].main_data;
+                    var sub_data = result[0].sub_data;
+                    var dis_0 = sub_data.length > 1 ? sub_data[0] : null;
+                    var dis_1 = sub_data.length > 1 ? sub_data[1] : null;
+                    var dis_2 = sub_data.length > 1 ? sub_data[2] : null;
+                    var dis_3 = sub_data.length > 1 ? sub_data[3] : null;
+                    var dis_4 = sub_data.length > 1 ? sub_data[4] : null;
+                    var dis_5 = sub_data.length > 1 ? sub_data[5] : null;
+                    var dis_6 = sub_data.length > 1 ? sub_data[6] : null;
+                    var dis_7 = sub_data.length > 1 ? sub_data[7] : null;
+                    console.log(sub_data)
 
 
-                // var sub_row_data =  main_data.length > 1 ? main_data : null;
-                // console.log(sub_row_data)
-                console.log(main_data.appreation)
+                    // var sub_row_data =  main_data.length > 1 ? main_data : null;
+                    // console.log(sub_row_data)
+                    console.log(main_data.appreation)
 
 
-                var table_main = `
+                    var table_main = `
                 <table class="dynamic_table" style="width:100%">
                     <tr>
                         <th>Appreciation Of Dealer if correct</th>
@@ -2048,7 +2330,7 @@
                     
                 </table>`;
 
-                var table_sub = `<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Measurement & Price</h6>
+                    var table_sub = `<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Measurement & Price</h6>
                 <table class="dynamic_table" style="width:100%">
                     <tr>
                         <th></th>
@@ -2110,148 +2392,253 @@
                         <td>${dis_7 ? dis_7.shortage_hsd : '---'}</td>
                        
                     </tr>
-                    
-                    
+    
                 </table>`;
-                $('#survey-container').append(table_sub);
+                    $('#survey-container').append(table_sub);
 
-                $('#survey-container').append(table_main);
+                    $('#survey-container').append(table_main);
 
-                $('#survey_modal').modal('show');
-                // displayData(result[0].main_data, result[0].sub_data);
-            })
-            .catch(error => console.log('error', error));
+                    $('#survey_modal').modal('show');
+                    // displayData(result[0].main_data, result[0].sub_data);
+                })
+                .catch(error => console.log('error', error));
 
+        }
 
+        function displayData(mainData, subData) {
+            $('#main_data tbody').empty();
+            $('#sub_data tbody').empty();
 
-    }
-
-    function displayData(mainData, subData) {
-        $('#main_data tbody').empty();
-        $('#sub_data tbody').empty();
-
-        // Main Data Section
-        console.log(mainData)
-        var newRow = '<tr><td>' + mainData.appreation + '</td><td>' + mainData.measure_taken + '</td><td>' +
-            mainData
-            .warning + '</td><td>' + mainData.pmg_ogra_price + '</td><td>' + mainData.pmg_pump_price + '</td><td>' +
-            mainData.pmg_variance + '</td><td>' + mainData.hsd_ogra_price + '</td><td>' + mainData.hsd_pump_price +
-            '</td><td>' + mainData.hsd_variance + '</td></tr>';
-        $('#main_data tbody').append(newRow);;
+            // Main Data Section
+            console.log(mainData)
+            var newRow = '<tr><td>' + mainData.appreation + '</td><td>' + mainData.measure_taken + '</td><td>' +
+                mainData
+                    .warning + '</td><td>' + mainData.pmg_ogra_price + '</td><td>' + mainData.pmg_pump_price + '</td><td>' +
+                mainData.pmg_variance + '</td><td>' + mainData.hsd_ogra_price + '</td><td>' + mainData.hsd_pump_price +
+                '</td><td>' + mainData.hsd_variance + '</td></tr>';
+            $('#main_data tbody').append(newRow);;
 
 
 
-        // Sub Data Section
+            // Sub Data Section
 
 
-        // Add table rows
-        var ii = 1;
-        $.each(subData, function(index, item) {
-            console.log(item)
+            // Add table rows
+            var ii = 1;
+            $.each(subData, function (index, item) {
+                console.log(item)
 
-            var newRow = '<tr><td>' + ii + '</td><td>' + item.dispensor_name + '</td><td>' + item
-                .pmg_accurate +
-                '</td><td>' + item.shortage_pmg + '</td><td>' + item.hsd_accurate + '</td><td>' + item
-                .shortage_hsd + '</td></tr>';
-            $('#sub_data tbody').append(newRow);;
-            ii++;
-        });
-        $('#m_p_modal').modal('show');
-    }
+                var newRow = '<tr><td>' + ii + '</td><td>' + item.dispensor_name + '</td><td>' + item
+                    .pmg_accurate +
+                    '</td><td>' + item.shortage_pmg + '</td><td>' + item.hsd_accurate + '</td><td>' + item
+                        .shortage_hsd + '</td></tr>';
+                $('#sub_data tbody').append(newRow);;
+                ii++;
+            });
+            $('#m_p_modal').modal('show');
+        }
 
-    function getPDF() {
-        var currentDate = new Date();
+        function getPDF() {
+            const currentDate = new Date();
+            const formattedDate = currentDate.toISOString().slice(0, 10);
+            const element = document.getElementById('exporting');
 
-        // Format the date as needed
-        var formattedDate = currentDate.toLocaleString();
-        var element = document.getElementById('exporting');
-        var opt = {
-            margin: 0.5, // Decrease the margin
-            filename: 'Inspection-Result-' + formattedDate + '.pdf',
-            image: {
-                type: 'text',
-                quality: 0.98
-            },
-            html2canvas: {
+            if (!element) {
+                console.error("No element with ID 'exporting' found.");
+                return;
+            }
+
+            // Ensure modal is fully shown
+            const modal = document.getElementById('survey_modal');
+            const wasHidden = !modal.classList.contains('show');
+
+            if (wasHidden) {
+                modal.classList.add('show');
+                modal.style.display = 'block';
+                document.body.classList.add('modal-open');
+            }
+
+            // Small delay to let DOM render
+            setTimeout(() => {
+                const opt = {
+                    margin: 0.5,
+                    filename: 'Survey-Report-' + formattedDate + '.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'legal', orientation: 'portrait' }
+                };
+
+                $('#exportBtnsurvey').prop('disabled', true).text('Processing...');
+
+                html2pdf().from(element).set(opt).save()
+                    .then(() => {
+                        $('#exportBtnsurvey').prop('disabled', false).text('Export to PDF');
+
+                        // Restore modal state
+                        if (wasHidden) {
+                            modal.classList.remove('show');
+                            modal.style.display = 'none';
+                            document.body.classList.remove('modal-open');
+                            $('.modal-backdrop').remove();
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error generating PDF:", error);
+                        $('#exportBtnsurvey').prop('disabled', false).text('Export to PDF');
+                    });
+            }, 500); // delay to allow full DOM rendering
+        }
+
+        $('#exportBtnsurvey').on('click', getPDF);
+
+        function printImage_img() {
+            // Get the element with the 'exporting_imc' class to print as an image
+            var element = document.querySelector('.exporting_imcprint');
+
+            if (!element) {
+                console.error("No element with the class 'exporting_imc' found.");
+                return;
+            }
+
+            // Use html2canvas to capture the content as an image
+            html2canvas(element, {
                 scale: 2 // Adjust scale for better resolution
-            },
-            jsPDF: {
-                unit: 'in',
-                format: 'A4',
-                orientation: 'landscape',
-                userUnit: 1.0 // Disable text selection
+            }).then(function (canvas) {
+                // Convert the canvas to a data URL (image)
+                var imgData = canvas.toDataURL('image/jpeg', 0.98);
+
+                // Create a new image for printing
+                var imgWindow = window.open('', '_blank');
+                imgWindow.document.write('<html><head><style>body{margin-top:0;}</style></head><body><img src="' +
+                    imgData +
+                    '" style="width:100%; height:auto; display:block; margin:0 auto;"/></body></html>');
+                imgWindow.document.close();
+
+                // Wait for the image to be fully loaded before printing
+                var image = imgWindow.document.querySelector('img');
+                image.onload = function () {
+                    // Once the image is loaded, trigger the print dialog
+                    imgWindow.print();
+
+                    // Optionally, you can close the window after printing is done
+                    imgWindow.onafterprint = function () {
+                        imgWindow.close();
+                    };
+                };
+
+                // Now that the print dialog is triggered, we proceed with the rest
+                $('#exportBtnsurvey').prop('disabled', false).text('Export to PDF');
+
+                // Fix modal scroll/focus
+                setTimeout(function () {
+                    $('body').addClass('modal-open');
+                }, 500);
+
+            }).catch(function (error) {
+                console.error("Error capturing the image:", error);
+            });
+        }
+
+
+
+        function getPDF_imc() {
+            // Get the current date and time
+            var currentDate = new Date();
+            console.log("PDF");
+
+            // Format the date for the filename
+            var formattedDate = currentDate.toISOString().slice(0, 10); // Use ISO format for a clean date string
+
+            // Get the element with the 'exporting' class
+            var element = document.querySelector('.exporting_imc'); // Use querySelector for a single element
+
+            if (!element) {
+                console.error("No element with the class 'exporting' found.");
+                return;
             }
-        };
 
-        html2pdf().from(element).set(opt).save();
-        $('#exportBtn').prop('disabled', false);
+            // Define options for html2pdf
+            var opt = {
+                margin: 0.5, // Adjust margin
+                filename: 'Inspection-Result-' + formattedDate + '.pdf',
+                image: {
+                    type: 'jpeg', // Correct type to 'jpeg' for image export
+                    quality: 0.98
+                },
+                html2canvas: {
+                    scale: 2 // Adjust scale for better resolution
+                },
+                jsPDF: {
+                    unit: 'in',
+                    format: 'legal',
+                    orientation: 'portrait'
+                }
+            };
 
-        setTimeout(function() {
-            $('#exportBtn').text('Export PDF');
-        }, 2000);
+            // Generate the PDF
+            html2pdf()
+                .from(element)
+                .set(opt)
+                .save()
+                .then(() => {
+                    // Re-enable the button and reset the text after saving
+                    $('.exportBtn_imc').prop('disabled', false);
+                    $('.exportBtn_imc').text('Export PDF');
+                })
+                .catch(error => {
+                    console.error("Error generating PDF:", error);
+                });
+
+            // Disable the export button while processing
+            $('.exportBtn_imc').prop('disabled', true);
+            $('.exportBtn_imc').text('Processing...');
+        }
 
 
+        // Attach click event to the export button
+        $('.exportBtn_imc').on('click', function () {
+            console.log("Click");
+            $('.exportBtn_imc').prop('disabled', true).text('Downloading');
 
-    };
-
-    // Attach click event to the export button
-    $('#exportBtn').on('click', function() {
-        console.log("Click");
-        $('#exportBtn').prop('disabled', true).text('Downloading');
-
-        getPDF();
-    });
-
-    function getPDF2() {
-
-        // var HTML_Width = $("#maesurement_price_div").width();
-        var element = document.getElementById('maesurement_price_div');
-        var opt = {
-            margin: 1,
-            filename: 'Measurement & Price Result.pdf',
-            image: {
-                type: 'jpeg',
-                quality: 0.98
-            },
-            html2canvas: {
-                scale: 2
-            },
-            jsPDF: {
-                unit: 'in',
-                format: 'letter',
-                orientation: 'portrait'
-            }
-        };
-
-        html2pdf().from(element).set(opt).save();
-        setTimeout(function() {
-            maesurement_price_div
-            $('#expoert_measure_price').text('Export PDF');
-        }, 2000);
-
-    };
-
-    $('#expoert_measure_price').on('click', function() {
-        console.log("Click");
-        $('#expoert_measure_price').prop('disabled', true).text('Downloading');
-
-        getPDF2();
-    });
-
-    function blocking() {
-        $.blockUI({
-            message: '<h1>Please Wait...</h1>',
-            css: {
-                border: 'none',
-                padding: '15px',
-                backgroundColor: '#000',
-                '-webkit-border-radius': '10px',
-                '-moz-border-radius': '10px',
-                opacity: .5,
-                color: '#fff'
-            }
+            getPDF_imc();
         });
-    }
+
+
+        function getPDF2() {
+
+            // var HTML_Width = $("#maesurement_price_div").width();
+            var element = document.getElementById('maesurement_price_div');
+            var opt = {
+                margin: 1,
+                filename: 'Measurement & Price Result.pdf',
+                image: {
+                    type: 'jpeg',
+                    quality: 0.98
+                },
+                html2canvas: {
+                    scale: 2
+                },
+                jsPDF: {
+                    unit: 'in',
+                    format: 'letter',
+                    orientation: 'portrait'
+                }
+            };
+
+            html2pdf().from(element).set(opt).save();
+            setTimeout(function () {
+                maesurement_price_div
+                $('#expoert_measure_price').text('Export PDF');
+            }, 2000);
+
+        };
+
+        $('#expoert_measure_price').on('click', function () {
+            console.log("Click");
+            $('#expoert_measure_price').prop('disabled', true).text('Downloading');
+
+            getPDF2();
+        });
     </script>
 </body>
 

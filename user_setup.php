@@ -13,8 +13,8 @@
         <?php echo $_SESSION['user_name']; ?>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="BYCO" name="description" />
-    <meta content="P2P" name="author" />
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesdesign" name="author" />
     <!-- App favicon -->
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -40,34 +40,62 @@
 
 </head>
 <style>
-#map {
-    height: 400px;
-    width: 100%;
-}
-
-#profile_img {
-    height: 200px;
-    object-fit: fill;
-}
-
-.select2-container--default .select2-selection--multiple .select2-selection__rendered {
-    width: 200px;
-}
-
-@media only screen and (max-width: 450px) {
-    #profile_img {
-        height: 150px;
-        object-fit: cover;
+    #map {
+        height: 400px;
+        width: 100%;
     }
-}
 
-.user-profile-img .overlay-content {
-    background-color: transparent;
-}
+    #profile_img {
+        height: 200px;
+        object-fit: fill;
+    }
 
-.nav-pills .nav-link {
-    border: 1px solid #005ac6;
-}
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        width: 200px;
+    }
+
+    @media only screen and (max-width: 450px) {
+        #profile_img {
+            height: 150px;
+            object-fit: cover;
+        }
+    }
+
+    .user-profile-img .overlay-content {
+        background-color: transparent;
+    }
+
+    .nav-pills .nav-link {
+        border: 1px solid #005ac6;
+    }
+</style>
+
+<style>
+    #main_data,
+    #sub_data,
+    .dynamic_table {
+        border: 1px solid;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    #main_data th,
+    #sub_data th,
+    .dynamic_table th {
+        border: 1px solid;
+        padding: 8px;
+        text-align: left;
+        background-color: #f2f2f2;
+    }
+
+
+    #main_data td,
+    #sub_data td,
+    .dynamic_table td {
+        border: 1px solid;
+        padding: 8px;
+        text-align: left;
+    }
 </style>
 
 <body>
@@ -79,7 +107,7 @@
         <?php
         $pre = $_SESSION['privilege'];
         // $disabledAttribute = ($pre != 'Admin') ? 'd-none' : '';
-
+        
         // $disabledAttribute = (strpos($pre, 'TM') === 0) ? 'disabled' : '';
         
         ?>
@@ -100,9 +128,14 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="mt-3" style="display: flex;justify-content:center;">
+
                                         <h5 class="mb-5" id="user">P2P</h5>
 
                                     </div>
+                                    <button id="refresh_recon" class="btn btn-danger mb-3 add_button"
+                                        onclick="deleteDealerSetup()">Refresh
+                                        Dealer <input type="hidden" name="dealer_id" id="refrsh_dealers">
+                                    </button>
                                     <!-- Nav tabs -->
                                     <ul class="nav nav-pills nav-justified" role="tablist">
                                         <li class="nav-item">
@@ -128,12 +161,17 @@
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" data-bs-toggle="tab" href="#nozel" role="tab">
-                                                <span>Nozel</span>
+                                                <span>Nozzle</span>
                                             </a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" data-bs-toggle="tab" href="#users_tab" role="tab">
                                                 <span>Users</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#last_recon" role="tab">
+                                                <span>Update Last Recon</span>
                                             </a>
                                         </li>
 
@@ -182,8 +220,9 @@
                                                     <th class="text-center">Despensor</th>
                                                     <th class="text-center">Description</th>
                                                     <th class="text-center">Created At</th>
-                                                    <?php if ($pre == 'Admin') { ?>
-                                                    <th class="text-center">Delete</th>
+                                                    <?php if ($pre == 'Admin') { ?>                                                                                                                
+                                                        <th class="text-center">Active/Inactive</th>
+                                                        <th class="text-center">Delete</th>
 
                                                     <?php } ?>
 
@@ -211,15 +250,16 @@
                                             <thead>
                                                 <tr>
                                                     <th class="text-center">S.No</th>
-                                                    <th class="text-center">Nozel</th>
+                                                    <th class="text-center">Nozzle</th>
                                                     <th class="text-center">Product</th>
                                                     <th class="text-center">Tank</th>
                                                     <th class="text-center">Dispenser</th>
-                                                    <th class="text-center">Last Reading</th>
+                                                    <!-- <th class="text-center">Last Reading</th> -->
+                                                    <th class="text-center">Active/Inactive</th>
                                                     <th class="text-center">Created At</th>
                                                     <?php if ($pre == 'Admin') { ?>
-                                                    <th class="text-center">Edit Last Recon</th>
-                                                    <th class="text-center">Delete</th>
+                                                        <!-- <th class="text-center">Edit Last Recon</th> -->
+                                                        <th class="text-center">Delete</th>
 
                                                     <?php } ?>
 
@@ -255,11 +295,12 @@
                                                                 <th class="text-center">From</th>
                                                                 <th class="text-center">To</th>
                                                                 <th class="text-center">Indent Price</th>
-                                                                <th class="text-center">Nozel Price</th>
+                                                                <th class="text-center">Nozzle Price</th>
                                                                 <th class="text-center">Update Time</th>
                                                                 <?php if ($pre == 'Admin') { ?>
-                                                                <th class="text-center">Edit</th>
-                                                                <th class="text-center">Log</th>
+                                                                    <th class="text-center">Edit</th>
+                                                                    <th class="text-center">Log</th>
+                                                                    <th class="text-center">Delete</th>
                                                                 <?php } ?>
                                                             </tr>
                                                         </thead>
@@ -295,9 +336,10 @@
                                                     <th class="text-center">Capacity</th>
                                                     <th class="text-center">Current Dip</th>
                                                     <?php if ($pre == 'Admin') { ?>
-                                                    <th class="text-center">Dip</th>
-                                                    <th class="text-center">Dip Backlog</th>
-                                                    <th class="text-center">Delete</th>
+                                                        <th class="text-center">Dip</th>
+                                                        <th class="text-center">Dip Backlog</th>
+                                                        <th class="text-center">Active/Inactive</th>
+                                                        <th class="text-center">Delete</th>
                                                     <?php } ?>
 
 
@@ -342,7 +384,49 @@
                                                                 <th class="text-center">Phone</th>
                                                                 <!-- <th class="text-center">Active/In-Active</th> -->
                                                                 <?php if ($pre == 'Admin') { ?>
-                                                                <th class="text-center">Edit</th>
+                                                                    <th class="text-center">Edit</th>
+
+                                                                <?php } ?>
+                                                                <!-- <th class="text-center">Delete</th> -->
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <!-- end card body -->
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="last_recon" role="tabpanel">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="mx-n3 px-3" data-simplebar style="max-height: 580px;">
+
+
+
+                                            <div class="mt-4">
+                                                <div class="table-responsive">
+                                                    <table class="table table-nowrap table-hover mb-1"
+                                                        id="last_recon_table">
+                                                        <thead class="bg-light">
+                                                            <tr>
+                                                                <th class="text-center">S #</th>
+                                                                <th class="text-center">Planned Date</th>
+                                                                <th class="text-center">Site Name</th>
+                                                                <th class="text-center">Product </th>
+                                                                <th class="text-center">Total Days</th>
+                                                                <th class="text-center">From</th>
+                                                                <th class="text-center">To</th>
+                                                                <!-- <th class="text-center">Active/In-Active</th> -->
+                                                                <?php if ($pre == 'Admin') { ?>
+                                                                    <th class="text-center">Edit</th>
 
                                                                 <?php } ?>
                                                                 <!-- <th class="text-center">Delete</th> -->
@@ -534,89 +618,29 @@
             </div><!-- /.modal-dialog -->
         </div>
 
-        <div id="recon_update_modal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true"
-            data-bs-scroll="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <!-- <h5 class="modal-title" id="myModalLabel">Create Permit Type</h5> -->
-                        <h5 class="modal-title" id="myModalLabel">
-                            <h5 id="labelc">Update Nozel Last Recon Reading</h5>
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post" id="nozel_last_recon_update" enctype="multipart/form-data">
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="example-text-input" class="col-md-12 col-form-label">Nozel</label>
-
-                                    <input type="text" class="form-control" name='nozel_name' id="nozel_name" required readonly>
-
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="example-text-input" class="col-md-12 col-form-label">Current Reading</label>
-
-                                    <input type="text" class="form-control" name='nozel_last_recon' id="nozel_last_recon" required readonly>
-
-                                </div>
-                               
-
-                                <div class="col-md-6">
-                                    <label for="example-text-input" class="col-md-12 col-form-label">New Reading</label>
-
-                                    <input type="text" class="form-control" name='nozel_new_reading' id="nozel_new_reading" required >
-                                    <input type="hidden" name="recon_id" id="recon_id" >
-                                    <input type="hidden" name="nozel_id" id="nozel_id" >
-                                    <input type="hidden" name="last_task_id" id="last_task_id" >
-                                    <input type="hidden" name="recon_product_id" id="recon_product_id" >
-
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="example-text-input" class="col-md-2 col-form-label">Description</label>
-
-                                    <textarea class="form-control" id="recon_description" name="recon_description" rows="4"
-                                        cols="50" required></textarea>
-
-                                </div>
-
-                               
-
-
-                                <div class="col-12" style="text-align: right;">
-                                    <input type="hidden" name="user_id" id="user_id" value="<?php echo $_SESSION['user_id']; ?>">
-                                    <input type="hidden" name="dealer_id" value="<?php echo $_GET['id'] ?>">
-                                    <input type="hidden" name="row_id" id='dealer_user_id'>
-                                    <button type="button" class="btn btn-secondary waves-effect"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <input class="btn btn-primary waves-effect waves-light" type="submit"
-                                        name="recon_btn" id="recon_btn" value="Save">
-                                </div>
-                            </div>
-                        </form>
-
-                    </div>
-
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div>
-
         <div id="survey_modal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true"
             data-bs-scroll="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <!-- <h5 class="modal-title" id="myModalLabel">Create Permit Type</h5> -->
                         <h5 class="modal-title" id="myModalLabel">
-                            <h5 id="labelc">Survey Response</h5>
+                            <h5 id="labelc">Edit Last Recon</h5>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
 
-                        <div class="container-fluid">
+                        <div class="container-fluid" id="exporting">
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!-- <img src="<?php echo $api_url . '' . $logo; ?>" alt="Image description"
+                                        style="width: 100px;"> -->
+
+                                </div>
+
+                            </div>
                             <div class="row" id="survey-container">
 
                             </div>
@@ -741,7 +765,7 @@
                                             <tr>
                                                 <th class="text-center">S.No</th>
                                                 <th class="text-center">Product</th>
-                                                <th class="text-center">Nozel #</th>
+                                                <th class="text-center">Nozzle #</th>
                                                 <th class="text-center">Old Dip</th>
                                                 <th class="text-center">New Dip</th>
                                                 <th class="text-center">Time</th>
@@ -1077,13 +1101,28 @@
                                     </select>
                                 </div>
 
-                                <div class="col-4 d-none">
+                                <div class="col-4 ">
                                     <label for="">Min Limit</label>
                                     <input type="number" class="form-control" name="min_limit" value="0">
                                 </div>
+                                <div class="col-4 ">
+                                    <label for="">Max Limit</label>
+                                    <input type="number" class="form-control" name="max_limit" value="0">
+                                </div>
+
                                 <div class="col-4">
                                     <label for="">Capacity</label>
                                     <input type="number" class="form-control" name="max_limit">
+                                </div>
+
+                                <div class="col-4">
+                                    <label for="">Current Dip</label>
+                                    <input type="number" class="form-control" name="current_dip">
+                                </div>
+
+                                <div class="col-4">
+                                    <label for="">Current Reading</label>
+                                    <input type="number" class="form-control" name="current_reading">
                                 </div>
 
                             </div>
@@ -1129,7 +1168,7 @@
                                 </div>
 
                                 <div class="col-6">
-                                    <label for=""> Nozel</label><br>
+                                    <label for=""> Nozzle</label><br>
                                     <select class="form-control multi_select" id="nozel_select" name="nozzels_id[]"
                                         multiple placeholder="This is a placeholder">
 
@@ -1268,7 +1307,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
-                                        <label for="example-text-input" class="col-md-2 col-form-label">Nozel
+                                        <label for="example-text-input" class="col-md-2 col-form-label">Nozzle
                                             Price</label>
                                         <div class="col-md-10">
                                             <input type="number" class="form-control" id='nozel_price_pro' step="any"
@@ -1479,7 +1518,7 @@
                                                     <th class="text-center">From</th>
                                                     <th class="text-center">To</th>
                                                     <th class="text-center">Indent Price</th>
-                                                    <th class="text-center">Nozel Price</th>
+                                                    <th class="text-center">Nozzle Price</th>
                                                     <th class="text-center">Created At</th>
                                                 </tr>
                                             </thead>
@@ -1556,6 +1595,79 @@
         </div><!-- /.modal-dialog -->
     </div>
 
+    <div id="recon_update_modal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true"
+        data-bs-scroll="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- <h5 class="modal-title" id="myModalLabel">Create Permit Type</h5> -->
+                    <h5 class="modal-title" id="myModalLabel">
+                        <h5 id="labelc">Update Nozzle Last Recon Reading</h5>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="nozel_last_recon_update" enctype="multipart/form-data">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="example-text-input" class="col-md-12 col-form-label">Nozzle</label>
+
+
+                                <input type="text" class="form-control" name='nozel_name' id="nozel_name" required
+                                    readonly>
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="example-text-input" class="col-md-12 col-form-label">Current Reading</label>
+
+                                <input type="text" class="form-control" name='nozel_last_recon' id="nozel_last_recon"
+                                    required readonly>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <label for="example-text-input" class="col-md-12 col-form-label">New Reading</label>
+
+                                <input type="text" class="form-control" name='nozel_new_reading' id="nozel_new_reading"
+                                    required>
+                                <input type="hidden" name="recon_id" id="recon_id">
+                                <input type="hidden" name="nozel_id" id="nozel_id">
+                                <input type="hidden" name="last_task_id" id="last_task_id">
+                                <input type="hidden" name="recon_product_id" id="recon_product_id">
+
+                            </div>
+                            <div class="col-md-6">
+                                <label for="example-text-input" class="col-md-2 col-form-label">Description</label>
+
+                                <textarea class="form-control" id="recon_description" name="recon_description" rows="4"
+                                    cols="50" required></textarea>
+
+                            </div>
+
+
+
+
+                            <div class="col-12" style="text-align: right;">
+                                <input type="hidden" name="user_id" id="user_id"
+                                    value="<?php echo $_SESSION['user_id']; ?>">
+                                <input type="hidden" name="dealer_id" value="<?php echo $_GET['id'] ?>">
+                                <input type="hidden" name="row_id" id='dealer_user_id'>
+                                <button type="button" class="btn btn-secondary waves-effect"
+                                    data-bs-dismiss="modal">Close</button>
+                                <input class="btn btn-primary waves-effect waves-light" type="submit" name="recon_btn"
+                                    id="recon_btn" value="Save">
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
 
 
 
@@ -1594,1073 +1706,1137 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNyJWb04pByaU1CTmimoWNl3b86VV6qZ8&callback=initMap"></script>
 
 <script>
-var table;
-var lat, lng;
-var geofence;
-var marker;
-var coordinates;
-let map;
-var circle;
+    var table;
+    var lat, lng;
+    var geofence;
+    var marker;
+    var coordinates;
+    let map;
+    var circle;
+    var last_recon_table;
 
-// ================================================================ modal intitailize start
+    // ================================================================ modal intitailize start
 
-$(document).on('click', '#update_ledgers', function() {
+    $(document).on('click', '#update_ledgers', function () {
 
-    // var id = $(this).attr("id");
-    $('#ledger_modal').modal('show');
-})
-$(document).on('click', '#add', function() {
+        // var id = $(this).attr("id");
+        $('#ledger_modal').modal('show');
+    })
+    $(document).on('click', '#add', function () {
 
-    // var id = $(this).attr("id");
-    $('#add_facility').modal('show');
-});
+        // var id = $(this).attr("id");
+        $('#add_facility').modal('show');
+    });
 
-$(document).on('click', '#addnozel', function() {
+    $(document).on('click', '#addnozel', function () {
 
-    // var id = $(this).attr("id");
-    $('#add_nozel').modal('show');
-});
+        // var id = $(this).attr("id");
+        $('#add_nozel').modal('show');
+    });
 
-$(document).on('click', '#add_dispenser', function() {
+    $(document).on('click', '#add_dispenser', function () {
 
-    // var id = $(this).attr("id");
-    $('#dispenser_modal').modal('show');
-});
+        // var id = $(this).attr("id");
+        $('#dispenser_modal').modal('show');
+    });
 
-$(document).on('click', '#add_tanks', function() {
+    $(document).on('click', '#add_tanks', function () {
 
-    // var id = $(this).attr("id");
-    $('#add_tanks_modal').modal('show');
-});
+        // var id = $(this).attr("id");
+        $('#add_tanks_modal').modal('show');
+    });
 
-$(document).on('click', '#nozel_tanks_panel_add', function() {
+    $(document).on('click', '#nozel_tanks_panel_add', function () {
 
-    // var id = $(this).attr("id");
-    $('#add_nozel_tanks').modal('show');
-});
-$(document).on('click', '#add_complaints', function() {
+        // var id = $(this).attr("id");
+        $('#add_nozel_tanks').modal('show');
+    });
+    $(document).on('click', '#add_complaints', function () {
 
-    // var id = $(this).attr("id");
-    $('#complaints_modals').modal('show');
-});
-$(document).on('click', '#add_users', function() {
+        // var id = $(this).attr("id");
+        $('#complaints_modals').modal('show');
+    });
+    $(document).on('click', '#add_users', function () {
 
-    // var id = $(this).attr("id");
-    $('#users_modal').modal('show');
-});
+        // var id = $(this).attr("id");
+        $('#users_modal').modal('show');
+    });
 
-$(document).on('click', '#add_products', function() {
+    $(document).on('click', '#add_products', function () {
 
-    // var id = $(this).attr("id");
-    $('#products_modal').modal('show');
-});
+        // var id = $(this).attr("id");
+        $('#products_modal').modal('show');
+    });
 
-$(document).on('click', '#add_targets', function() {
+    $(document).on('click', '#add_targets', function () {
 
-    // var id = $(this).attr("id");
-    $('#target_modal').modal('show');
-});
+        // var id = $(this).attr("id");
+        $('#target_modal').modal('show');
+    });
 
-//=============================================================modal intitailize start
+    //=============================================================modal intitailize start
 
-//  ============================================================tabel instailize start
+    //  ============================================================tabel instailize start
 
 
 
 
-table2 = $('#myTable2').DataTable({
-    dom: 'Bfrtip',
+    table2 = $('#myTable2').DataTable({
+        dom: 'Bfrtip',
 
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-});
-table3 = $('#myTable3').DataTable({
-    dom: 'Bfrtip',
+    });
+    table3 = $('#myTable3').DataTable({
+        dom: 'Bfrtip',
 
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-});
+    });
 
-table4 = $('#tanks_table').DataTable({
-    dom: 'Bfrtip',
+    table4 = $('#tanks_table').DataTable({
+        dom: 'Bfrtip',
 
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-});
+    });
 
-table = $('#myTable').DataTable({
-    dom: 'Bfrtip',
+    table = $('#myTable').DataTable({
+        dom: 'Bfrtip',
 
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-});
+    });
 
-nozel_tanks_table = $('#nozel_tanks_panel_table').DataTable({
-    dom: 'Bfrtip',
+    nozel_tanks_table = $('#nozel_tanks_panel_table').DataTable({
+        dom: 'Bfrtip',
 
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-});
-complaint_table = $('#complaint_table').DataTable({
-    dom: 'Bfrtip',
+    });
+    complaint_table = $('#complaint_table').DataTable({
+        dom: 'Bfrtip',
 
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-});
+    });
 
-users_table = $('#users_table').DataTable({
-    dom: 'Bfrtip',
+    users_table = $('#users_table').DataTable({
+        dom: 'Bfrtip',
 
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-});
-products_table = $('#products_table').DataTable({
-    dom: 'Bfrtip',
+    });
+    last_recon_table = $('#last_recon_table').DataTable({
+        dom: 'Bfrtip',
 
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-});
+    });
+    products_table = $('#products_table').DataTable({
+        dom: 'Bfrtip',
 
-product_price_backlog = $('#product_price_backlog').DataTable({
-    dom: 'Bfrtip',
 
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+    });
 
-});
-suborders_tables = $('#suborders_tables').DataTable({
-    dom: 'Bfrtip',
+    product_price_backlog = $('#product_price_backlog').DataTable({
+        dom: 'Bfrtip',
 
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-});
+    });
+    suborders_tables = $('#suborders_tables').DataTable({
+        dom: 'Bfrtip',
 
-lubes_table = $('#lubes_table').DataTable({
-    dom: 'Bfrtip',
 
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+    });
 
-});
+    lubes_table = $('#lubes_table').DataTable({
+        dom: 'Bfrtip',
 
-targeted_table = $('#targeted_table').DataTable({
-    dom: 'Bfrtip',
 
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+    });
 
-});
+    targeted_table = $('#targeted_table').DataTable({
+        dom: 'Bfrtip',
 
-sale_table = $('#sale_table').DataTable({
-    dom: 'Bfrtip',
 
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+    });
 
-});
+    sale_table = $('#sale_table').DataTable({
+        dom: 'Bfrtip',
 
-wet_stock = $('#wet_stock').DataTable({
-    dom: 'Bfrtip',
 
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+    });
 
-});
+    wet_stock = $('#wet_stock').DataTable({
+        dom: 'Bfrtip',
 
-despensing_unit_table = $('#despensing_unit_table').DataTable({
-    dom: 'Bfrtip',
 
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+    });
 
-});
+    despensing_unit_table = $('#despensing_unit_table').DataTable({
+        dom: 'Bfrtip',
 
-stock_variations_table = $('#stock_variations_table').DataTable({
-    dom: 'Bfrtip',
 
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+    });
 
-});
+    stock_variations_table = $('#stock_variations_table').DataTable({
+        dom: 'Bfrtip',
 
-dispenser_table = $('#dispenser_table').DataTable({
-    dom: 'Bfrtip',
 
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-    buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
+    });
 
-});
+    dispenser_table = $('#dispenser_table').DataTable({
+        dom: 'Bfrtip',
 
 
-//========================================================== tabel intailize end
+        buttons: ['copy', 'excel', 'csv', 'pdf', 'print']
 
-var decryptedId = "";
-$(document).ready(function() {
-    var encryptedIdFromUrl = '<?php echo $_GET['id']; ?>'; // Replace with the actual encrypted ID
-    var key = 'Hamza Ansari';
-    var iv = CryptoJS.lib.WordArray.random(16);
+    });
 
-    // Decrypt the ID
-    decryptedId = decryptId(encryptedIdFromUrl, key, iv);
-    // alert(decryptedId)
 
-    setTimeout(function() {
-        // Code to be executed after the delay
-        $('input[name="dealer_id"]').val(decryptedId);
-        console.log('This code executes after a 2-second delay');
-    }, 2000);
+    //========================================================== tabel intailize end
 
-    var prel_role = "<?php echo $_SESSION['privilege'] ?>";
-    if (prel_role != 'Admin') {
-        $('.add_button').addClass('d-none');
-    } else {
-        $('.add_button').removeClass('d-none');
+    var decryptedId = "";
+    $(document).ready(function () {
+        var encryptedIdFromUrl = '<?php echo $_GET['id']; ?>'; // Replace with the actual encrypted ID
+        var key = 'Hamza Ansari';
+        var iv = CryptoJS.lib.WordArray.random(16);
+
+        // Decrypt the ID
+        decryptedId = decryptId(encryptedIdFromUrl, key, iv);
+        // alert(decryptedId)
+
+        setTimeout(function () {
+            // Code to be executed after the delay
+            $('input[name="dealer_id"]').val(decryptedId);
+            console.log('This code executes after a 2-second delay');
+        }, 2000);
+
+        var prel_role = "<?php echo $_SESSION['privilege'] ?>";
+        if (prel_role != 'Admin') {
+            $('.add_button').addClass('d-none');
+        } else {
+            $('.add_button').removeClass('d-none');
+
+        }
+
+        fetchtable();
+        // order_details();
+        // orderlist();
+        facilities();
+        nozels();
+        tanks_view();
+        nozels_tanks_form();
+        multiselect();
+        tank_select();
+        // dealers_complaints();
+        dealers_products();
+        dealers_users();
+        get_last_recon();
+        // get_dealer_target();
+        d_dispenser();
+        // get_response_answers(1);
+        all_products();
+        // get_ledger_backlog()
+        $('.multi_select').select2({
+            dropdownParent: $('#add_nozel_tanks')
+        });
+        ////=================================================== graph 
+
+        var options = {
+            series: [{
+                name: 'Inflation',
+                data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2]
+            }],
+            chart: {
+                height: 350,
+                type: 'bar',
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 10,
+                    dataLabels: {
+                        position: 'top', // top, center, bottom
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    return val + "%";
+                },
+                offsetY: -20,
+                style: {
+                    fontSize: '12px',
+                    colors: ["#304758"]
+                }
+            },
+
+            xaxis: {
+                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
+                    "Dec"
+                ],
+                position: 'top',
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                },
+                crosshairs: {
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            colorFrom: '#D8E3F0',
+                            colorTo: '#BED1E6',
+                            stops: [0, 100],
+                            opacityFrom: 0.4,
+                            opacityTo: 0.5,
+                        }
+                    }
+                },
+                tooltip: {
+                    enabled: true,
+                }
+            },
+            yaxis: {
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false,
+                },
+                labels: {
+                    show: false,
+                    formatter: function (val) {
+                        return val + "%";
+                    }
+                }
+
+            },
+            title: {
+                text: 'Monthly Inflation in Argentina, 2002',
+                floating: true,
+                offsetY: 330,
+                align: 'center',
+                style: {
+                    color: '#444'
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+
+
+
+
+    });
+
+
+
+    ///================================================================ get functions start 
+    function product_tankss() {
+        var product = $('#nozzels_products').val();
+        // alert(product)
+
+        $.ajax({
+            url: '<?php echo $api_url; ?>get/get_dealers_product_tank.php?key=03201232927&dealer_id=' +
+                decryptedId + '&product=' +
+                product + '',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                $('#product_tank').empty();
+                // Iterate through the data and append options to the select element
+                $('#product_tank').append($('<option>', {
+                    value: '',
+                    text: 'Select Tank '
+                }));
+                $.each(data, function (index, item) {
+
+                    $('#product_tank').append($('<option>', {
+                        value: item.id,
+                        text: item.lorry_no
+                    }));
+                });
+
+                // Refresh the Select2 element to display the newly added options
+                // $('#depots').trigger('change.select2');
+            },
+            error: function (error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    }
+
+
+    function multiselect() {
+        $.ajax({
+            url: '<?php echo $api_url; ?>get/get_dealers_tanks.php?key=03201232927&dealer_id=' + decryptedId +
+                '&key=03201232927',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                // Iterate through the data and append options to the select element
+                $('#tanks_select').append($('<option>', {
+                    value: '',
+                    text: 'Select Tank '
+                }));
+                $.each(data, function (index, item) {
+
+                    $('#tanks_select').append($('<option>', {
+                        value: item.id,
+                        text: item.lorry_no
+                    }));
+                });
+
+                // Refresh the Select2 element to display the newly added options
+                // $('#depots').trigger('change.select2');
+            },
+            error: function (error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    }
+
+    function tank_select() {
+        $.ajax({
+            url: '<?php echo $api_url; ?>get/get_dealers_nozels.php?key=03201232927&dealer_id=' + decryptedId +
+                '&key=03201232927',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                // Iterate through the data and append options to the select element
+                $('#nozel_select').append($('<option>', {
+                    value: '',
+                    text: 'Select Nozzle '
+                }));
+                $.each(data, function (index, item) {
+
+                    $('#nozel_select').append($('<option>', {
+                        value: item.id,
+                        text: item.name
+                    }));
+                });
+
+                // Refresh the Select2 element to display the newly added options
+                // $('#depots').trigger('change.select2');
+            },
+            error: function (error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    }
+
+
+
+
+    function initMap() {
+
+        gmarkers = [];
+        map = new google.maps.Map(document.getElementById("map-canvas"), {
+            center: {
+                lat: parseFloat(30.3753),
+                lng: parseFloat(69.3451)
+            },
+            zoom: 16,
+            mapTypeId: "roadmap",
+
+        });
+
+
+        // google.maps.event.addListener(drawingManager, 'polygoncomplete', polygon);
+    }
+
+    function fetchtable() {
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch("<?php echo $api_url; ?>get/dealer_profile.php?id=" + decryptedId + "&key=03201232927", requestOptions)
+            .then(response => response.json())
+            .then(response => {
+                // var cordinates = response[0]['cordinates'];
+                // var index = cordinates.indexOf(',');
+                //  lat = cordinates.substring(0, index);
+                //  long = cordinates.substring(index + 1); 
+                //  console.log(lat+"lat");
+                //  console.log(long+"long");
+                console.log(response);
+
+                coordinates = response[0]['co-ordinates'];
+                [lat, lng] = coordinates.split(', ');
+                console.log("Latitude (lat):", lat);
+                console.log("Longitude (lng):", lng);
+                $('#user').text(response[0]['name'])
+                $('#position').text(response[0]['housekeeping']);
+                $('#date').text(response[0]['created_at']);
+                $('#location').text(response[0]['location']);
+                $('#phone_no').text(response[0]['contact']);
+                $('#email').text(response[0]['email']);
+                $('#indent_price').text(response[0]['indent_price']);
+                $('#nozel_price').text(response[0]['Nozel_price']);
+                $('#ledger').text(response[0]['acount']);
+                $('#ledger_old_value').val(response[0]['acount']);
+                $('#ledger_amount').val(response[0]['acount']);
+
+
+
+                var banner = response[0]['banner'];
+                var logo = response[0]['logo'];
+                var base_url = '<?php echo $api_url; ?>';
+
+                if (banner != '') {
+                    banner = base_url + 'uploads/' + banner;
+
+                    $("#profile_img").attr("src", banner);
+
+                } else {
+
+                }
+
+                if (logo != '') {
+                    logo = base_url + 'uploads/' + logo;
+                    $("#profile_logo").attr("src", logo);
+
+                } else {
+
+                }
+                const newCenter = {
+                    lat: parseFloat(lat),
+                    lng: parseFloat(lng)
+                }; // New center coordinates
+                map.setCenter(newCenter);
+
+                var circle = new google.maps.Circle({
+                    center: {
+                        lat: parseFloat(lat),
+                        lng: parseFloat(lng)
+                    },
+                    radius: 100, // in meters
+                    map: map,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.2,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.4,
+                    strokeWeight: 2
+                });
+
+                // Create a marker
+                var marker = new google.maps.Marker({
+                    position: {
+                        lat: parseFloat(lat),
+                        lng: parseFloat(lng)
+                    },
+                    map: map,
+                });
+                var infoWindow = new google.maps.InfoWindow({
+                    content: response[0]['name']
+                });
+
+                // // Open the info window on the marker by default
+                infoWindow.open(map, marker);
+
+            })
+            .catch(error => console.log('error', error));
+
 
     }
 
-    fetchtable();
-    // order_details();
-    // orderlist();
-    facilities();
-    nozels();
-    tanks_view();
-    nozels_tanks_form();
-    multiselect();
-    tank_select();
-    // dealers_complaints();
-    dealers_products();
-    dealers_users();
-    // dealers_visits();
-    // get_dealer_target();
-    d_dispenser();
-    // get_response_answers(1);
-    all_products();
-    // get_ledger_backlog()
-    $('.multi_select').select2({
-        dropdownParent: $('#add_nozel_tanks')
-    });
-    ////=================================================== graph 
-
-    var options = {
-        series: [{
-            name: 'Inflation',
-            data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2]
-        }],
-        chart: {
-            height: 350,
-            type: 'bar',
-        },
-        plotOptions: {
-            bar: {
-                borderRadius: 10,
-                dataLabels: {
-                    position: 'top', // top, center, bottom
-                },
-            }
-        },
-        dataLabels: {
-            enabled: true,
-            formatter: function(val) {
-                return val + "%";
-            },
-            offsetY: -20,
-            style: {
-                fontSize: '12px',
-                colors: ["#304758"]
-            }
-        },
-
-        xaxis: {
-            categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
-                "Dec"
-            ],
-            position: 'top',
-            axisBorder: {
-                show: false
-            },
-            axisTicks: {
-                show: false
-            },
-            crosshairs: {
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        colorFrom: '#D8E3F0',
-                        colorTo: '#BED1E6',
-                        stops: [0, 100],
-                        opacityFrom: 0.4,
-                        opacityTo: 0.5,
-                    }
-                }
-            },
-            tooltip: {
-                enabled: true,
-            }
-        },
-        yaxis: {
-            axisBorder: {
-                show: false
-            },
-            axisTicks: {
-                show: false,
-            },
-            labels: {
-                show: false,
-                formatter: function(val) {
-                    return val + "%";
-                }
-            }
-
-        },
-        title: {
-            text: 'Monthly Inflation in Argentina, 2002',
-            floating: true,
-            offsetY: 330,
-            align: 'center',
-            style: {
-                color: '#444'
-            }
-        }
-    };
-
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
-
-});
-
-///================================================================ get functions start 
-function product_tankss() {
-    var product = $('#nozzels_products').val();
-    // alert(product)
-
-    $.ajax({
-        url: '<?php echo $api_url; ?>get/get_dealers_product_tank.php?key=03201232927&dealer_id=' +
-            decryptedId + '&product=' +
-            product + '',
-        method: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            console.log(data)
-            $('#product_tank').empty();
-            // Iterate through the data and append options to the select element
-            $('#product_tank').append($('<option>', {
-                value: '',
-                text: 'Select Tank '
-            }));
-            $.each(data, function(index, item) {
-
-                $('#product_tank').append($('<option>', {
-                    value: item.id,
-                    text: item.lorry_no
-                }));
-            });
-
-            // Refresh the Select2 element to display the newly added options
-            // $('#depots').trigger('change.select2');
-        },
-        error: function(error) {
-            console.error('Error fetching data:', error);
-        }
-    });
-}
-
-
-function multiselect() {
-    $.ajax({
-        url: '<?php echo $api_url; ?>get/get_dealers_tanks.php?key=03201232927&dealer_id=' + decryptedId +
-            '&key=03201232927',
-        method: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            // Iterate through the data and append options to the select element
-            $('#tanks_select').append($('<option>', {
-                value: '',
-                text: 'Select Tank '
-            }));
-            $.each(data, function(index, item) {
-
-                $('#tanks_select').append($('<option>', {
-                    value: item.id,
-                    text: item.lorry_no
-                }));
-            });
-
-            // Refresh the Select2 element to display the newly added options
-            // $('#depots').trigger('change.select2');
-        },
-        error: function(error) {
-            console.error('Error fetching data:', error);
-        }
-    });
-}
-
-function tank_select() {
-    $.ajax({
-        url: '<?php echo $api_url; ?>get/get_dealers_nozels.php?key=03201232927&dealer_id=' + decryptedId +
-            '&key=03201232927',
-        method: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            // Iterate through the data and append options to the select element
-            $('#nozel_select').append($('<option>', {
-                value: '',
-                text: 'Select Nozel '
-            }));
-            $.each(data, function(index, item) {
-
-                $('#nozel_select').append($('<option>', {
-                    value: item.id,
-                    text: item.name
-                }));
-            });
-
-            // Refresh the Select2 element to display the newly added options
-            // $('#depots').trigger('change.select2');
-        },
-        error: function(error) {
-            console.error('Error fetching data:', error);
-        }
-    });
-}
-
-
-
-
-function initMap() {
-
-    gmarkers = [];
-    map = new google.maps.Map(document.getElementById("map-canvas"), {
-        center: {
-            lat: parseFloat(30.3753),
-            lng: parseFloat(69.3451)
-        },
-        zoom: 16,
-        mapTypeId: "roadmap",
-
-    });
-
-
-    // google.maps.event.addListener(drawingManager, 'polygoncomplete', polygon);
-}
-
-function fetchtable() {
-
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-    fetch("<?php echo $api_url; ?>get/dealer_profile.php?id=" + decryptedId + "&key=03201232927", requestOptions)
-        .then(response => response.json())
-        .then(response => {
-            // var cordinates = response[0]['cordinates'];
-            // var index = cordinates.indexOf(',');
-            //  lat = cordinates.substring(0, index);
-            //  long = cordinates.substring(index + 1); 
-            //  console.log(lat+"lat");
-            //  console.log(long+"long");
-            console.log(response);
-
-            coordinates = response[0]['co-ordinates'];
-            [lat, lng] = coordinates.split(', ');
-            console.log("Latitude (lat):", lat);
-            console.log("Longitude (lng):", lng);
-            $('#user').text(response[0]['name'])
-            $('#position').text(response[0]['housekeeping']);
-            $('#date').text(response[0]['created_at']);
-            $('#location').text(response[0]['location']);
-            $('#phone_no').text(response[0]['contact']);
-            $('#email').text(response[0]['email']);
-            $('#indent_price').text(response[0]['indent_price']);
-            $('#nozel_price').text(response[0]['Nozel_price']);
-            $('#ledger').text(response[0]['acount']);
-            $('#ledger_old_value').val(response[0]['acount']);
-            $('#ledger_amount').val(response[0]['acount']);
-
-
-
-            var banner = response[0]['banner'];
-            var logo = response[0]['logo'];
-            var base_url = '<?php echo $api_url; ?>';
-
-            if (banner != '') {
-                banner = base_url + 'uploads/' + banner;
-
-                $("#profile_img").attr("src", banner);
-
-            } else {
-
-            }
-
-            if (logo != '') {
-                logo = base_url + 'uploads/' + logo;
-                $("#profile_logo").attr("src", logo);
-
-            } else {
-
-            }
-            const newCenter = {
-                lat: parseFloat(lat),
-                lng: parseFloat(lng)
-            }; // New center coordinates
-            map.setCenter(newCenter);
-
-            var circle = new google.maps.Circle({
-                center: {
-                    lat: parseFloat(lat),
-                    lng: parseFloat(lng)
-                },
-                radius: 100, // in meters
-                map: map,
-                fillColor: '#FF0000',
-                fillOpacity: 0.2,
-                strokeColor: '#FF0000',
-                strokeOpacity: 0.4,
-                strokeWeight: 2
-            });
-
-            // Create a marker
-            var marker = new google.maps.Marker({
-                position: {
-                    lat: parseFloat(lat),
-                    lng: parseFloat(lng)
-                },
-                map: map,
-            });
-            var infoWindow = new google.maps.InfoWindow({
-                content: response[0]['name']
-            });
-
-            // // Open the info window on the marker by default
-            infoWindow.open(map, marker);
-
-        })
-        .catch(error => console.log('error', error));
-
-
-}
-
-function order_details() {
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-    fetch("<?php echo $api_url; ?>get/dealers_order_count.php?id=" + decryptedId + "&key=03201232927",
+    function order_details() {
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch("<?php echo $api_url; ?>get/dealers_order_count.php?id=" + decryptedId + "&key=03201232927",
             requestOptions)
-        .then(response => response.json())
-        .then(response => {
-            console.log(response);
-            $('#total_orders').text(response[0]['total']);
-        })
-        .catch(error => console.log('error', error));
+            .then(response => response.json())
+            .then(response => {
+                console.log(response);
+                $('#total_orders').text(response[0]['total']);
+            })
+            .catch(error => console.log('error', error));
 
 
-}
+    }
 
-function orderlist() {
+    function orderlist() {
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-    fetch("<?php echo $api_url; ?>get/dealers_syb_orders.php?id=" + decryptedId + "&key=03201232927",
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch("<?php echo $api_url; ?>get/dealers_syb_orders.php?id=" + decryptedId + "&key=03201232927",
             requestOptions)
-        .then(response => response.json())
-        .then(response => {
-            console.log(response)
-
-            table.clear().draw();
-            $.each(response, function(index, data) {
-                var status = data.status;
-                console.log(status)
-                var status_value = '';
-
-                if (status == 0) {
-                    status_value =
-                        '<span id=' + data.id +
-                        ' class="badge rounded-pill cursor-pointer bg-primary approved_check" data-key="t-new">Pending</span>';
-                } else if (status == 1) {
-                    status_value =
-                        '<span id=' + data.id +
-                        ' class="badge rounded-pill cursor-pointer bg-info" data-key="t-new">Approved</span>';
-                } else if (status == 2) {
-                    status_value =
-                        '<span id=' + data.id +
-                        ' class="badge rounded-pill cursor-pointer bg-success" data-key="t-new">Complete</span>';
-                } else if (status == 3) {
-                    status_value =
-                        '<span id=' + data.id +
-                        ' class="badge rounded-pill cursor-pointer bg-danger" data-key="t-new">Cancel</span>';
-                } else if (status == 4) {
-                    status_value =
-                        '<span id=' + data.id +
-                        ' class="badge rounded-pill cursor-pointer bg-warning" data-key="t-new">Special Approval</span>';
-                } else if (status == 5) {
-                    status_value =
-                        '<span id=' + data.id +
-                        ' class="badge rounded-pill cursor-pointer bg-dark approved_check" data-key="t-new">ASM Approved</span>';
-                }
-
-
-
-                table.row.add([
-                    index + 1,
-                    data.created_at,
-                    data.name,
-                    // data.name,
-                    data.type,
-                    data.consignee_name,
-                    data.total_amount,
-                    data.legder_balance,
-                    status_value,
-                    '<button type="button" id="view_order" name="view_order" onclick="view_order(' +
-                    data.id +
-                    ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-eye font-size-16 align-middle"></i></button>',
-                    // '<button type="button" id="delete" name="delete" onclick="deleteData(' +
-                    // data.id +
-                    // ')" class="btn btn-soft-danger waves-effect waves-light"><i class="bx bx-trash-alt font-size-16 align-middle"></i></button>'
-                ]).draw(false);
-            });
-
-        })
-        .catch(error => console.log('error', error));
-
-
-}
-
-function dealers_complaints() {
-
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-    fetch("<?php echo $api_url; ?>get/get_dealers_complaints.php?id=" + decryptedId + "&key=03201232927",
-            requestOptions)
-        .then(response => response.json())
-        .then(response => {
-            console.log(response)
-
-            complaint_table.clear().draw();
-            $.each(response, function(index, data) {
-
-
-
-                complaint_table.row.add([
-
-                    index + 1,
-                    data.created_at,
-                    data.name,
-                    data.email,
-                    data.phone,
-                    data.priority,
-                    data.subject,
-                    data.message,
-                    data.status_value
-                ]).draw(false);
-
-
-            });
-
-        })
-        .catch(error => console.log('error', error));
-
-
-}
-
-
-function dealers_visits() {
-    // alert('Hamza')
-
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-    fetch("<?php echo $api_url; ?>get/get_dealers_inspections.php?id=" + decryptedId + "&key=03201232927",
-            requestOptions)
-        .then(response => response.json())
-        .then(response => {
-
-            lubes_table.clear().draw();
-            $.each(response, function(index, data) {
-                console.log('Visit')
+            .then(response => response.json())
+            .then(response => {
                 console.log(response)
 
+                table.clear().draw();
+                $.each(response, function (index, data) {
+                    var status = data.status;
+                    console.log(status)
+                    var status_value = '';
+
+                    if (status == 0) {
+                        status_value =
+                            '<span id=' + data.id +
+                            ' class="badge rounded-pill cursor-pointer bg-primary approved_check" data-key="t-new">Pending</span>';
+                    } else if (status == 1) {
+                        status_value =
+                            '<span id=' + data.id +
+                            ' class="badge rounded-pill cursor-pointer bg-info" data-key="t-new">Approved</span>';
+                    } else if (status == 2) {
+                        status_value =
+                            '<span id=' + data.id +
+                            ' class="badge rounded-pill cursor-pointer bg-success" data-key="t-new">Complete</span>';
+                    } else if (status == 3) {
+                        status_value =
+                            '<span id=' + data.id +
+                            ' class="badge rounded-pill cursor-pointer bg-danger" data-key="t-new">Cancel</span>';
+                    } else if (status == 4) {
+                        status_value =
+                            '<span id=' + data.id +
+                            ' class="badge rounded-pill cursor-pointer bg-warning" data-key="t-new">Special Approval</span>';
+                    } else if (status == 5) {
+                        status_value =
+                            '<span id=' + data.id +
+                            ' class="badge rounded-pill cursor-pointer bg-dark approved_check" data-key="t-new">ASM Approved</span>';
+                    }
 
 
-                lubes_table.row.add([
 
-                    index + 1,
-                    data.time,
-                    data.name,
-                    data.current_status,
-                    '<button type="button"  onclick="displaySurvey(' +
-                    data
-                    .id + ',' + data.id + ',' + data.dealer_id +
-                    ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
-                    '<button type="button" onclick="get_tas_sales_data(' + data.id + ',' + data
-                    .dealer_id +
-                    ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
-                    '<button type="button" onclick="displaySurvey(' +
-                    data
-                    .id + ',' + data.id + ',' + data.dealer_id +
-                    ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
-                    '<button type="button"  onclick="get_task_wet_stock(' + data.id + ',' + data
-                    .dealer_id +
-                    ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
-                    '<button type="button"  onclick="get_task_despensing_unit(' + data.id + ',' +
-                    data.dealer_id +
-                    ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
-                    '<button type="button"  onclick="get_task_stock_variations(' + data.id + ',' +
-                    data.dealer_id +
-                    ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
-                ]).draw(false);
+                    table.row.add([
+                        index + 1,
+                        data.created_at,
+                        data.name,
+                        // data.name,
+                        data.type,
+                        data.consignee_name,
+                        data.total_amount,
+                        data.legder_balance,
+                        status_value,
+                        '<button type="button" id="view_order" name="view_order" onclick="view_order(' +
+                        data.id +
+                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-eye font-size-16 align-middle"></i></button>',
+                        // '<button type="button" id="delete" name="delete" onclick="deleteData(' +
+                        // data.id +
+                        // ')" class="btn btn-soft-danger waves-effect waves-light"><i class="bx bx-trash-alt font-size-16 align-middle"></i></button>'
+                    ]).draw(false);
+                });
+
+            })
+            .catch(error => console.log('error', error));
 
 
-            });
+    }
 
-        })
-        .catch(error => console.log('error', error));
+    function dealers_complaints() {
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch("<?php echo $api_url; ?>get/get_dealers_complaints.php?id=" + decryptedId + "&key=03201232927",
+            requestOptions)
+            .then(response => response.json())
+            .then(response => {
+                console.log(response)
+
+                complaint_table.clear().draw();
+                $.each(response, function (index, data) {
 
 
-}
 
-function tanks_view() {
+                    complaint_table.row.add([
+
+                        index + 1,
+                        data.created_at,
+                        data.name,
+                        data.email,
+                        data.phone,
+                        data.priority,
+                        data.subject,
+                        data.message,
+                        data.status_value
+                    ]).draw(false);
+
+
+                });
+
+            })
+            .catch(error => console.log('error', error));
+
+
+    }
+
+
+    function dealers_visits() {
+        // alert('Hamza')
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch("<?php echo $api_url; ?>get/get_dealers_inspections.php?id=" + decryptedId + "&key=03201232927",
+            requestOptions)
+            .then(response => response.json())
+            .then(response => {
+
+                lubes_table.clear().draw();
+                $.each(response, function (index, data) {
+                    console.log('Visit')
+                    console.log(response)
+
+
+
+                    lubes_table.row.add([
+
+                        index + 1,
+                        data.time,
+                        data.name,
+                        data.current_status,
+                        '<button type="button"  onclick="displaySurvey(' +
+                        data
+                            .id + ',' + data.id + ',' + data.dealer_id +
+                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
+                        '<button type="button" onclick="get_tas_sales_data(' + data.id + ',' + data
+                            .dealer_id +
+                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
+                        '<button type="button" onclick="displaySurvey(' +
+                        data
+                            .id + ',' + data.id + ',' + data.dealer_id +
+                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
+                        '<button type="button"  onclick="get_task_wet_stock(' + data.id + ',' + data
+                            .dealer_id +
+                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
+                        '<button type="button"  onclick="get_task_despensing_unit(' + data.id + ',' +
+                        data.dealer_id +
+                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
+                        '<button type="button"  onclick="get_task_stock_variations(' + data.id + ',' +
+                        data.dealer_id +
+                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
+                    ]).draw(false);
+
+
+                });
+
+            })
+            .catch(error => console.log('error', error));
+
+
+    }
+
+    function tanks_view() {
     var prel_role = "<?php echo $_SESSION['privilege'] ?>";
     var requestOptions = {
         method: 'GET',
         redirect: 'follow'
     };
-    fetch("<?php echo $api_url; ?>get/get_dealers_tanks.php?key=03201232927&dealer_id=" + decryptedId + "",
-            requestOptions)
+
+    fetch("<?php echo $api_url; ?>get/get_dealers_tanks.php?key=03201232927&dealer_id=" + decryptedId + "", requestOptions)
         .then(response => response.json())
         .then(response => {
-            console.log(response)
+            console.log(response);
 
             table4.clear().draw();
+
             if (response.length > 0) {
+                $.each(response, function (index, data) {
 
+                    // Determine switch status based on the 'status' column from the database
+                    let isChecked = data.status == 1 ? 'checked' : ''; // If status is 1 (Active), check the switch
 
-                $.each(response, function(index, data) {
+                    // Generate Active/Inactive switch HTML
+                    let switchHTML = `
+                        <div class="form-check form-switch d-flex justify-content-center">
+                            <input class="form-check-input status-toggle" type="checkbox" role="switch"
+                                id="statusSwitch_${data.id}" ${isChecked} onchange="checks(${data.id}, ${data.dealer_id})">
+                        </div>
+                    `;
 
+                    // Add row to DataTable
                     table4.row.add([
 
-                        index + 1,
-                        data.lorry_no,
-                        data.name,
-                        // data.min_limit,
-                        data.max_limit,
-                        data.current_dip,
-                        (prel_role == 'Admin' ?
-                            '<td> <button type="button" id="tank_dip" name="tank_dip" onclick="add_dip(' +
-                            data
-                            .id + ',' + data.current_dip +
-                            ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-plus-square font-size-16 align-middle"></i></button></td>' :
+                        index + 1, // Serial number
+                        data.lorry_no, // Tank number
+                        data.name, // Name
+                        data.max_limit, // Capacity
+                        data.current_dip, // Current Dip
+
+                        // Admin-only Dip button
+                        (prel_role == 'Admin' ? 
+                            `<td> <button type="button" id="tank_dip" name="tank_dip" onclick="add_dip(${data.id}, '${data.current_dip}')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-plus-square font-size-16 align-middle"></i></button></td>` : 
                             ''),
-                        (prel_role == 'Admin' ?
-                            '<td> <button type="button" id="tank_dip" name="tank_dip" onclick="get_dip_backlog(' +
-                            data
-                            .id + ',' + data.current_dip +
-                            ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button></td>' :
+                        
+                        // Admin-only Dip Backlog button
+                        (prel_role == 'Admin' ? 
+                            `<td> <button type="button" id="tank_dip_backlog" name="tank_dip_backlog" onclick="get_dip_backlog(${data.id}, '${data.current_dip}')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button></td>` : 
                             ''),
-                        (prel_role == 'Admin' ?
-                            '<td><button type="button" id="delete" name="delete" onclick="deleteDatatank(' +
-                            data.id +
-                            ')" class="btn btn-soft-danger waves-effect waves-light"><i class="bx bx-trash-alt font-size-16 align-middle"></i></button></td>' :
+                        
+                        // Admin-only Active/Inactive switch
+                        (prel_role == 'Admin' ? 
+                            `<td>${switchHTML}</td>` : 
+                            `<td>${switchHTML}</td>`), // Non-Admin will still see the switch but no delete option
+                        
+                        // Admin-only Delete button
+                        (prel_role == 'Admin' ? 
+                            `<td><button type="button" id="delete" name="delete" onclick="deleteDatatank(${data.id})" class="btn btn-soft-danger waves-effect waves-light"><i class="bx bx-trash-alt font-size-16 align-middle"></i></button></td>` : 
                             '')
+                    
+                    ]).draw(false);
+                });
+            } else {
+                // If no data is found, add a row to indicate no data
+                table4.row.add([
+                    'No data available', '', '', '', '', '', ''
+                ]).draw();
+            }
+        })
+        .catch(error => console.log('Error:', error)); // Corrected the catch block
+}
+
+
+    function dealers_products() {
+        var prel_role = "<?php echo $_SESSION['privilege'] ?>";
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        fetch("<?php echo $api_url; ?>get/dealers_products.php?key=03201232927&dealer_id=" + decryptedId + "",
+            requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                var selectElement = $("#dealer_products");
+                var nozzels_products = $("#nozzels_products");
+
+                selectElement.append($('<option>', {
+                    value: '',
+                    text: 'Select Product'
+                }));
+
+                var targeted_product = $("#targeted_product");
+
+                targeted_product.append($('<option>', {
+                    value: '',
+                    text: 'Select Product'
+                }));
+
+                nozzels_products.append($('<option>', {
+                    value: '',
+                    text: 'Select Product'
+                }));
+                $.each(result, function (index, data) {
+
+                    console.log(data.name)
+                    selectElement.append($('<option>', {
+                        value: data.id,
+                        text: data.name
+                    }));
+                    nozzels_products.append($('<option>', {
+                        value: data.id,
+                        text: data.name
+                    }));
+                    targeted_product.append($('<option>', {
+                        value: data.id,
+                        text: data.name
+                    }));
+
+                    products_table.row.add([
+
+                        index + 1,
+                        data.name,
+                        data.from,
+                        data.to,
+                        data.indent_price,
+                        data.nozel_price,
+                        data.update_time,
+                        (prel_role == 'Admin' ?
+                            '<td><button type="button" id="edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" name="edit" onclick="edit_product_price(' +
+                            data.id +
+                            ')" class="btn btn-soft-warning waves-effect waves-light"><i class="bx bx-edit-alt font-size-16 align-middle"></i></button></td>' :
+                            ''),
+                        '<button type="button" id="tank_dip" name="tank_dip" onclick="get_product_price_backlog(' +
+                        data
+                            .id +
+                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
+                        '<button type="button" id="delete_product" name="delete_product" onclick="delete_dealer_product(' +
+                        data
+                            .id +
+                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-trash-alt font-size-16 align-middle"></i></button>',
 
 
                     ]).draw(false);
 
-                    $('#atgs').append('<div class="border-bottom loyal-customers-box pt-2">' +
+                    $('#currents_products').append('<div class="border-bottom loyal-customers-box pt-2">' +
                         ' <div class="d-flex align-items-center">' +
-                        '<i class="fas fa-truck-moving font-size-14 text-dark ms-1"></i>' +
+                        '<i class="fas fa-gas-pump font-size-14 text-dark ms-1"></i>' +
                         '<div class="flex-grow-1 ms-3 overflow-hidden">' +
-                        '<h5 class="font-size-15 mb-1 text-truncate">' + data.lorry_no + '</h5>' +
-                        '<p>' + data.update_time + '</p>' +
+                        '<h5 class="font-size-15 mb-1 text-truncate">' + data.name + '</h5>' +
+                        '<p>Duration : ' + data.from + ' - ' + data.to + '</p>' +
+                        '<p>Indent Price : ' + data.indent_price + '</p>' +
+                        '<p>Nozzle Price : ' + data.nozel_price + '</p>' +
                         '</div>' +
                         '<div class="flex-shrink-0">' +
-                        '<h5 class="font-size-14 mb-0 text-truncate w-xs bg-light p-2 rounded text-center"> ' +
-                        data.current_dip +
+                        '<h5 class="font-size-14 mb-0 text-truncate w-xs bg-light p-3 rounded text-center"> ' +
+                        data.update_time +
                         '</h5>' +
                         '</div>' +
                         '</div>' +
                         '</div>')
+                });
+            })
+            .catch(error => console.log('error', error));
+    }
 
+    function all_products() {
+        // alert('Hamza')
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
 
+        fetch("<?php echo $api_url; ?>get/get_all_products.php?key=03201232927",
+            requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                var products_name = $("#products_name");
+
+                products_name.append($('<option>', {
+                    value: '',
+                    text: 'Select Product'
+                }));
+
+                $.each(result, function (index, data) {
+                    console.log('all products')
+                    console.log(data.name)
+                    products_name.append($('<option>', {
+                        value: data.name,
+                        text: data.name
+                    }));
 
 
                 });
-            } else {
-                $('#atgs').append('<div class="border-bottom loyal-customers-box pt-2">' +
-                    ' <div class="d-flex align-items-center">' +
-                    '<i class="fas fa-truck-moving font-size-14 text-dark ms-1"></i>' +
-                    '<div class="flex-grow-1 ms-3 overflow-hidden">' +
-                    '<h5 class="font-size-15 mb-1 text-truncate">No ATGS Found</h5>' +
-                    '</div>' +
-                    '<div class="flex-shrink-0">' +
-                    '<h5 class="font-size-14 mb-0 text-truncate w-xs bg-light p-2 rounded text-center"> ---</h5>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>')
-            }
+            })
+            .catch(error => console.log('error', error));
+    }
 
-        })
-        .catch(error => console.log('error', error));
+    function dealers_users() {
+        var prel_role = "<?php echo $_SESSION['privilege'] ?>";
 
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
 
-
-
-}
-
-function dealers_products() {
-    var prel_role = "<?php echo $_SESSION['privilege'] ?>";
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-
-    fetch("<?php echo $api_url; ?>get/dealers_products.php?key=03201232927&dealer_id=" + decryptedId + "",
+        fetch("<?php echo $api_url; ?>get/dealer_users.php?key=03201232927&dealer_id=" + decryptedId + "",
             requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            var selectElement = $("#dealer_products");
-            var nozzels_products = $("#nozzels_products");
+            .then(response => response.json())
+            .then(result => {
 
-            selectElement.append($('<option>', {
-                value: '',
-                text: 'Select Product'
-            }));
+                $.each(result, function (index, data) {
 
-            var targeted_product = $("#targeted_product");
+                    console.log(data.name)
 
-            targeted_product.append($('<option>', {
-                value: '',
-                text: 'Select Product'
-            }));
+                    users_table.row.add([
 
-            nozzels_products.append($('<option>', {
-                value: '',
-                text: 'Select Product'
-            }));
-            $.each(result, function(index, data) {
-
-                console.log(data.name)
-                selectElement.append($('<option>', {
-                    value: data.id,
-                    text: data.name
-                }));
-                nozzels_products.append($('<option>', {
-                    value: data.id,
-                    text: data.name
-                }));
-                targeted_product.append($('<option>', {
-                    value: data.id,
-                    text: data.name
-                }));
-
-                products_table.row.add([
-
-                    index + 1,
-                    data.name,
-                    data.from,
-                    data.to,
-                    data.indent_price,
-                    data.nozel_price,
-                    data.update_time,
-                    (prel_role == 'Admin' ?
-                        '<td><button type="button" id="edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" name="edit" onclick="editData(' +
-                        data.id +
-                        ')" class="btn btn-soft-warning waves-effect waves-light"><i class="bx bx-edit-alt font-size-16 align-middle"></i></button></td>' :
-                        ''),
-                    '<button type="button" id="tank_dip" name="tank_dip" onclick="get_product_price_backlog(' +
-                    data
-                    .id +
-                    ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-align-justify font-size-16 align-middle"></i></button>',
+                        index + 1,
+                        data.name,
+                        data.email,
+                        data.password,
+                        data.contact,
+                        // data.contact,
+                        (prel_role == 'Admin' ?
+                            '<td><button type="button" id="tank_dip" name="tank_dip" onclick="edit_dealers_users(' +
+                            data
+                                .id +
+                            ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-edit font-size-16 align-middle"></i></button>' :
+                            '')
+                        // '<button type="button" id="tank_dip" name="tank_dip" onclick="delete_dealer_(' +
+                        // data
+                        // .id +
+                        // ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-trash-alt font-size-16 align-middle"></i></button>',
 
 
-                ]).draw(false);
+                    ]).draw(false);
 
-                $('#currents_products').append('<div class="border-bottom loyal-customers-box pt-2">' +
-                    ' <div class="d-flex align-items-center">' +
-                    '<i class="fas fa-gas-pump font-size-14 text-dark ms-1"></i>' +
-                    '<div class="flex-grow-1 ms-3 overflow-hidden">' +
-                    '<h5 class="font-size-15 mb-1 text-truncate">' + data.name + '</h5>' +
-                    '<p>Duration : ' + data.from + ' - ' + data.to + '</p>' +
-                    '<p>Indent Price : ' + data.indent_price + '</p>' +
-                    '<p>Nozel Price : ' + data.nozel_price + '</p>' +
-                    '</div>' +
-                    '<div class="flex-shrink-0">' +
-                    '<h5 class="font-size-14 mb-0 text-truncate w-xs bg-light p-3 rounded text-center"> ' +
-                    data.update_time +
-                    '</h5>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>')
-            });
-        })
-        .catch(error => console.log('error', error));
-}
 
-function all_products() {
-    // alert('Hamza')
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
+                });
+            })
+            .catch(error => console.log('error', error));
+    }
 
-    fetch("<?php echo $api_url; ?>get/get_all_products.php?key=03201232927",
+    function get_last_recon() {
+        var prel_role = "<?php echo $_SESSION['privilege'] ?>";
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        fetch("<?php echo $api_url; ?>get/get_dealer_last_recons.php?key=03201232927&dealer_id=" + decryptedId + "",
             requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            var products_name = $("#products_name");
+            .then(response => response.json())
+            .then(result => {
 
-            products_name.append($('<option>', {
-                value: '',
-                text: 'Select Product'
-            }));
+                $.each(result, function (index, data) {
 
-            $.each(result, function(index, data) {
-                console.log('all products')
-                console.log(data.name)
-                products_name.append($('<option>', {
-                    value: data.name,
-                    text: data.name
-                }));
+                    console.log(data.name)
+
+                    last_recon_table.row.add([
+
+                        index + 1,
+                        data.created_at,
+                        data.dealer_name,
+                        data.product_name,
+                        data.total_days,
+                        data.last_recon_date,
+                        data.created_at,
+                        // data.contact,
+                        (prel_role == 'Admin' ?
+                            '<td><button type="button" id="tank_dip" name="tank_dip" onclick="edit_last_recon(' +
+                            data.task_id + ',' + data.dealer_id + ',' + data.product_id +
+                            ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-edit font-size-16 align-middle"></i></button>' :
+                            '')
+                        // '<button type="button" id="tank_dip" name="tank_dip" onclick="delete_dealer_(' +
+                        // data
+                        // .id +
+                        // ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-trash-alt font-size-16 align-middle"></i></button>',
 
 
-            });
-        })
-        .catch(error => console.log('error', error));
-}
+                    ]).draw(false);
 
-function dealers_users() {
-    var prel_role = "<?php echo $_SESSION['privilege'] ?>";
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
+                });
+            })
+            .catch(error => console.log('error', error));
+    }
 
-    fetch("<?php echo $api_url; ?>get/dealer_users.php?key=03201232927&dealer_id=" + decryptedId + "",
+    function edit_last_recon(task_id, dealer_id, product_id) {
+        $('#survey-container').empty();
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        console.log("<?php echo $api_url; ?>get/get_recon_data_for_edit.php?key=03201232927&task_id=" +
+            task_id + "&dealer_id=" + dealer_id + "&product_id=" + product_id + "")
+        fetch("<?php echo $api_url; ?>get/get_recon_data_for_edit.php?key=03201232927&task_id=" +
+            task_id + "&dealer_id=" + dealer_id + "&product_id=" + product_id + "", requestOptions)
+            .then(response => response.json())
+            .then(async result => {
+                console.log(result)
+                stock_reco_new(result);
+
+            })
+            .catch(error => console.log('error', error));
+    }
+
+    function get_dealer_target() {
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        fetch("<?php echo $api_url; ?>get/get_dealers_product_target.php?key=03201232927&dealer_id=" + decryptedId + "",
             requestOptions)
-        .then(response => response.json())
-        .then(result => {
+            .then(response => response.json())
+            .then(result => {
 
-            $.each(result, function(index, data) {
+                $.each(result, function (index, data) {
 
-                console.log(data.name)
+                    console.log(data.name)
 
-                users_table.row.add([
+                    targeted_table.row.add([
 
-                    index + 1,
-                    data.name,
-                    data.email,
-                    data.password,
-                    data.contact,
-                    // data.contact,
-                    (prel_role == 'Admin' ?
-                        '<td><button type="button" id="tank_dip" name="tank_dip" onclick="edit_dealers_users(' +
-                        data
-                        .id +
-                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-edit font-size-16 align-middle"></i></button>' :
-                        '')
-                    // '<button type="button" id="tank_dip" name="tank_dip" onclick="delete_dealer_(' +
-                    // data
-                    // .id +
-                    // ')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-trash-alt font-size-16 align-middle"></i></button>',
+                        index + 1,
+                        data.name,
+                        data.date_month,
+                        data.target_amount,
+                        data.description
 
 
-                ]).draw(false);
+                    ]).draw(false);
 
 
-            });
-        })
-        .catch(error => console.log('error', error));
-}
+                });
+            })
+            .catch(error => console.log('error', error));
+    }
 
-function get_dealer_target() {
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
 
-    fetch("<?php echo $api_url; ?>get/get_dealers_product_target.php?key=03201232927&dealer_id=" + decryptedId + "",
+
+    function facilities() {
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch("<?php echo $api_url; ?>get/facilities_get.php?key=03201232927&dealer_id=" + decryptedId + "",
             requestOptions)
-        .then(response => response.json())
-        .then(result => {
+            .then(response => response.json())
+            .then(response => {
+                console.log(response)
 
-            $.each(result, function(index, data) {
+                table2.clear().draw();
+                $.each(response, function (index, data) {
 
-                console.log(data.name)
+                    table2.row.add([
 
-                targeted_table.row.add([
-
-                    index + 1,
-                    data.name,
-                    data.date_month,
-                    data.target_amount,
-                    data.description
+                        index + 1,
+                        data.name,
+                        data.created_at
 
 
-                ]).draw(false);
+                    ]).draw(false);
 
 
-            });
-        })
-        .catch(error => console.log('error', error));
-}
+                });
+
+            })
+            .catch(error => console.log('error', error));
 
 
+    }
 
-function facilities() {
+    $('#insert').click(function () {
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-    fetch("<?php echo $api_url; ?>get/facilities_get.php?key=03201232927&dealer_id=" + decryptedId + "",
-            requestOptions)
-        .then(response => response.json())
-        .then(response => {
-            console.log(response)
+        $('#row_id').val("");
+        // alert("running")
 
-            table2.clear().draw();
-            $.each(response, function(index, data) {
+    });
 
-                table2.row.add([
-
-                    index + 1,
-                    data.name,
-                    data.created_at
-
-
-                ]).draw(false);
-
-
-            });
-
-        })
-        .catch(error => console.log('error', error));
-
-
-}
-
-$('#insert').click(function() {
-
-    $('#row_id').val("");
-    // alert("running")
-
-});
-
-function d_dispenser() {
+    function d_dispenser() {
     var prel_role = "<?php echo $_SESSION['privilege'] ?>";
 
     var requestOptions = {
@@ -2679,20 +2855,39 @@ function d_dispenser() {
             dispenser_table.clear().draw();
             $.each(response, function(index, data) {
 
-                dispenser_table.row.add([
+                // Determine if the switch should be checked
+                let isChecked = data.status == 1 ? 'checked' : '';
 
+                // Generate the switch HTML (if user is Admin)
+                let switchHTML = `
+    <div class="form-check form-switch d-flex justify-content-center">
+        <input class="form-check-input status-toggle" type="checkbox" role="switch"
+            id="statusSwitch_${data.id}" ${isChecked}
+            onchange="dispensor_active(${data.id}, ${data.dealer_id})">
+    </div>
+`;
+
+
+                // Generate delete button HTML (if user is Admin)
+                let deleteButtonHTML = `
+    <td>
+        <button type="button" id="delete" name="delete" onclick="deleteDatadispensor(${data.id})"
+            class="btn btn-soft-danger waves-effect waves-light">
+            <i class="bx bx-trash-alt font-size-16 align-middle"></i>
+        </button>
+    </td>
+`;
+
+                // Add row to DataTable
+                dispenser_table.row.add([
                     index + 1,
                     data.name,
                     data.description,
                     data.created_at,
-                    (prel_role == 'Admin' ?
-                        '<td><button type="button" id="delete" name="delete" onclick="deleteDatadispensor(' +
-                        data.id +
-                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="bx bx-trash-alt font-size-16 align-middle"></i></button></td>' :
-                        '')
-
-
+                    (prel_role == 'Admin' ? switchHTML : ''),
+                    (prel_role == 'Admin' ? deleteButtonHTML : '')
                 ]).draw(false);
+
                 $('#product_dispenser').append($('<option>', {
                     value: data.id,
                     text: data.name
@@ -2707,6 +2902,8 @@ function d_dispenser() {
 
 }
 
+
+
 function nozels() {
     var prel_role = "<?php echo $_SESSION['privilege'] ?>";
 
@@ -2714,868 +2911,857 @@ function nozels() {
         method: 'GET',
         redirect: 'follow'
     };
-    fetch("<?php echo $api_url; ?>get/get_dealers_nozels.php?key=03201232927&dealer_id=" + decryptedId + "",
-            requestOptions)
+
+    fetch("<?php echo $api_url; ?>get/get_dealers_nozels.php?key=03201232927&dealer_id=" + decryptedId, requestOptions)
         .then(response => response.json())
         .then(response => {
-            console.log(response)
+            console.log(response);
 
             table3.clear().draw();
-            $.each(response, function(index, data) {
 
+            $.each(response, function (index, data) {
+                // Check status for switch
+                let isChecked = data.status == 1 ? 'checked' : '';
+
+                let switchHTML = `
+<div class="form-check form-switch d-flex justify-content-center">
+    <input class="form-check-input status-toggle" type="checkbox" role="switch"
+        id="statusSwitch_${data.id}" ${isChecked}
+        onchange="check(${data.id})">
+</div>
+`;
+
+                // Add row to DataTable
                 table3.row.add([
-
                     index + 1,
-                    data.name,
-                    data.product_name,
-                    data.tank_name,
-                    data.dispenser_name,
-                    data.new_reading,
-                    data.created_at,
-                    (prel_role == 'Admin' ?'<td><button type="button" id="tank_dip" name="tank_dip" onclick="edit_dealers_last_recon(' +data.id +',' +data.recon_data_id +',' +data.new_reading +',' +data.dealer_id +',\'' + data.name +'\',' +data.task_id +',' +data.products +')" class="btn btn-soft-danger waves-effect waves-light"><i class="fas fa-edit font-size-16 align-middle"></i></button>' : ''),
-                    (prel_role == 'Admin' ?
-                        '<td><button type="button" id="delete" name="delete" onclick="deleteDatanozzels(' +
-                        data.id +
-                        ')" class="btn btn-soft-danger waves-effect waves-light"><i class="bx bx-trash-alt font-size-16 align-middle"></i></button></td>' :
-                        '')
-
-
+                    data.name || 'Nozzle ' + data.id,
+                    data.product_name || 'N/A',
+                    data.tank_name || 'N/A',
+                    data.dispenser_name || 'N/A',
+                    switchHTML,
+                    data.created_at || '',
+                    (prel_role == 'Admin'
+                        ? `<td><button type="button" id="delete" name="delete" onclick="deleteDatanozzels(${data.id})" class="btn btn-soft-danger waves-effect waves-light"><i class="bx bx-trash-alt font-size-16 align-middle"></i></button></td>`
+                        : '')
                 ]).draw(false);
-
-
             });
 
         })
-        .catch(error => console.log('error', error));
-
-
+        .catch(error => {
+            console.error('error', error);
+        });
 }
 
-function nozels_tanks_form() {
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-    fetch("<?php echo $api_url; ?>get/get_dealers_tank_nozzels.php?key=03201232927&dealer_id=" + decryptedId + "",
+    function edit_dealers_last_recon(nozel_id, recon_id, last_recon_reading, dealer_id, nozel_name, task_id, product_id) {
+
+        $('#recon_id').val(recon_id);
+        $('#nozel_id').val(nozel_id);
+        $('#nozel_last_recon').val(last_recon_reading);
+        $('#nozel_name').val(nozel_name);
+        $('#last_task_id').val(task_id);
+        $('#recon_product_id').val(product_id);
+
+        $('#recon_update_modal').modal('show');
+    }
+
+
+    function nozels_tanks_form() {
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch("<?php echo $api_url; ?>get/get_dealers_tank_nozzels.php?key=03201232927&dealer_id=" + decryptedId + "",
             requestOptions)
-        .then(response => response.json())
-        .then(response => {
-            console.log(response)
+            .then(response => response.json())
+            .then(response => {
+                console.log(response)
 
-            nozel_tanks_table.clear().draw();
-            $.each(response, function(index, data) {
-
-                nozel_tanks_table.row.add([
-
-                    index + 1,
-                    data.name,
-                    data.lorry_no,
-                    data.created_at
+                nozel_tanks_table.clear().draw();
+                $.each(response, function (index, data) {
 
 
-                ]).draw(false);
+                    nozel_tanks_table.row.add([
+
+                        index + 1,
+                        data.name,
+                        data.lorry_no,
+                        data.created_at
 
 
-            });
-
-        })
-        .catch(error => console.log('error', error));
+                    ]).draw(false);
 
 
-}
+                });
 
-// $('#insert').click(function() {
-
-//     $('#row_id').val("");
-//     // alert("running")
-
-// });
+            })
+            .catch(error => console.log('error', error));
 
 
-/// ============================================================== get functions end 
+    }
 
-// ================================================================= post Functions 
+    // $('#insert').click(function() {
 
-$('#nozel_last_recon_update').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var data = new FormData(this);
+    //     $('#row_id').val("");
+    //     // alert("running")
 
-    $.ajax({
-        url: "<?php echo $api_url; ?>update/update_nozels_last_recon.php",
-        cache: false,
-        contentType: false,
-        processData: false,
-        method: "POST",
-        data: data,
-        beforeSend: function() {
-            $('#recon_btn').val("Updating");
-            document.getElementById("recon_btn").disabled = true;
-
-        },
-        success: function(data) {
-            console.log(data)
-
-            if (data != 1) {
-                Swal.fire(
-                    'Server Error!',
-                    'Record Not Created',
-                    'error'
-                )
-                $('#recon_btn').val("Save");
-                document.getElementById("recon_btn").disabled = false;
-            } else {
+    // });
 
 
-                setTimeout(function() {
+    /// ============================================================== get functions end 
+
+    // ================================================================= post Functions 
+
+
+    $('#insert_form_ledgers').on("submit", function (event) {
+        event.preventDefault();
+        // alert("Name")
+        var data = new FormData(this);
+
+        $.ajax({
+            url: "<?php echo $api_url; ?>update/update_dealers_ledger.php",
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: "POST",
+            data: data,
+            beforeSend: function () {
+                $('#insert_l').val("Saving");
+                document.getElementById("insert").disabled = true;
+
+            },
+            success: function (data) {
+                console.log(data)
+
+                if (data != 1) {
                     Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
                     )
-                   
-                    location.reload();
-
-                }, 2000);
-
-            }
-
-        },
-        error: function(xhr, status, error) {
-            // Handle API errors
-            console.log('Error:', error);
-            console.log('Status:', status);
-            console.log('Response:', xhr.responseText);
-        }
-    });
-
-});
-$('#insert_form_ledgers').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var data = new FormData(this);
-
-    $.ajax({
-        url: "<?php echo $api_url; ?>update/update_dealers_ledger.php",
-        cache: false,
-        contentType: false,
-        processData: false,
-        method: "POST",
-        data: data,
-        beforeSend: function() {
-            $('#insert_l').val("Saving");
-            document.getElementById("insert").disabled = true;
-
-        },
-        success: function(data) {
-            console.log(data)
-
-            if (data != 1) {
-                Swal.fire(
-                    'Server Error!',
-                    'Record Not Created',
-                    'error'
-                )
-                $('#insert_l').val("Save");
-                document.getElementById("insert_l").disabled = false;
-            } else {
-
-
-                setTimeout(function() {
-                    Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
-                    )
-                    $('#insert_form_ledgers')[0].reset();
-                    $('#add_facility').modal('hide');
-                    facilities();
                     $('#insert_l').val("Save");
                     document.getElementById("insert_l").disabled = false;
-                    location.reload();
+                } else {
 
-                }, 2000);
 
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        )
+                        $('#insert_form_ledgers')[0].reset();
+                        $('#add_facility').modal('hide');
+                        facilities();
+                        $('#insert_l').val("Save");
+                        document.getElementById("insert_l").disabled = false;
+                        // location.reload();
+
+                    }, 2000);
+
+                }
+
+            },
+            error: function (xhr, status, error) {
+                // Handle API errors
+                console.log('Error:', error);
+                console.log('Status:', status);
+                console.log('Response:', xhr.responseText);
             }
+        });
 
-        },
-        error: function(xhr, status, error) {
-            // Handle API errors
-            console.log('Error:', error);
-            console.log('Status:', status);
-            console.log('Response:', xhr.responseText);
-        }
     });
+    $('#insert_form').on("submit", function (event) {
+        event.preventDefault();
+        // alert("Name")
+        var data = new FormData(this);
 
-});
-$('#insert_form').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var data = new FormData(this);
+        $.ajax({
+            url: "<?php echo $api_url; ?>create/dealer_facitlities.php",
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: "POST",
+            data: data,
+            beforeSend: function () {
+                $('#insert').val("Saving");
+                document.getElementById("insert").disabled = true;
 
-    $.ajax({
-        url: "<?php echo $api_url; ?>create/dealer_facitlities.php",
-        cache: false,
-        contentType: false,
-        processData: false,
-        method: "POST",
-        data: data,
-        beforeSend: function() {
-            $('#insert').val("Saving");
-            document.getElementById("insert").disabled = true;
+            },
+            success: function (data) {
+                console.log(data)
 
-        },
-        success: function(data) {
-            console.log(data)
-
-            if (data != 1) {
-                Swal.fire(
-                    'Server Error!',
-                    'Record Not Created',
-                    'error'
-                )
-                $('#insert').val("Save");
-                document.getElementById("insert").disabled = false;
-            } else {
-
-
-                setTimeout(function() {
+                if (data != 1) {
                     Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
                     )
-                    $('#insert_form')[0].reset();
-                    $('#add_facility').modal('hide');
-                    facilities();
                     $('#insert').val("Save");
                     document.getElementById("insert").disabled = false;
-                    location.reload();
+                } else {
 
-                }, 2000);
+
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        )
+                        $('#insert_form')[0].reset();
+                        $('#add_facility').modal('hide');
+                        facilities();
+                        $('#insert').val("Save");
+                        document.getElementById("insert").disabled = false;
+                        // location.reload();
+
+                    }, 2000);
+
+                }
 
             }
+        });
 
-        }
     });
+    $('#users_from').on("submit", function (event) {
+        event.preventDefault();
+        // alert("Name")
+        var data = new FormData(this);
 
-});
-$('#users_from').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var data = new FormData(this);
+        $.ajax({
+            url: "<?php echo $api_url; ?>create/dealers_users.php",
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: "POST",
+            data: data,
+            beforeSend: function () {
+                $('#users_btn').val("Saving");
+                document.getElementById("users_btn").disabled = true;
 
-    $.ajax({
-        url: "<?php echo $api_url; ?>create/dealers_users.php",
-        cache: false,
-        contentType: false,
-        processData: false,
-        method: "POST",
-        data: data,
-        beforeSend: function() {
-            $('#users_btn').val("Saving");
-            document.getElementById("users_btn").disabled = true;
+            },
+            success: function (data) {
+                console.log(data)
 
-        },
-        success: function(data) {
-            console.log(data)
-
-            if (data != 1) {
-                Swal.fire(
-                    'Server Error!',
-                    'Record Not Created',
-                    'error'
-                )
-                $('#users_btn').val("Save");
-                document.getElementById("users_btn").disabled = false;
-            } else {
-
-
-                setTimeout(function() {
+                if (data != 1) {
                     Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
                     )
-                    $('#users_from')[0].reset();
-                    $('#users_modal').modal('hide');
-                    facilities();
                     $('#users_btn').val("Save");
                     document.getElementById("users_btn").disabled = false;
-                    location.reload();
+                } else {
 
 
-                }, 2000);
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        )
+                        $('#users_from')[0].reset();
+                        $('#users_modal').modal('hide');
+                        facilities();
+                        $('#users_btn').val("Save");
+                        document.getElementById("users_btn").disabled = false;
+                        // location.reload();
 
+
+                    }, 2000);
+
+                }
+
+            },
+            error: function (xhr, status, error) {
+                // Handle API errors
+                console.log('Error:', error);
+                console.log('Status:', status);
+                console.log('Response:', xhr.responseText);
             }
 
-        },
-        error: function(xhr, status, error) {
-            // Handle API errors
-            console.log('Error:', error);
-            console.log('Status:', status);
-            console.log('Response:', xhr.responseText);
-        }
+        });
 
     });
 
-});
+    $('#dispenser_form').on("submit", function (event) {
+        event.preventDefault();
+        // alert("Name")
+        var data = new FormData(this);
 
-$('#dispenser_form').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var data = new FormData(this);
+        $.ajax({
+            url: "<?php echo $api_url; ?>create/create_dispenser.php",
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: "POST",
+            data: data,
+            beforeSend: function () {
+                $('#dispenser_btn').val("Saving");
+                document.getElementById("dispenser_btn").disabled = true;
 
-    $.ajax({
-        url: "<?php echo $api_url; ?>create/create_dispenser.php",
-        cache: false,
-        contentType: false,
-        processData: false,
-        method: "POST",
-        data: data,
-        beforeSend: function() {
-            $('#dispenser_btn').val("Saving");
-            document.getElementById("dispenser_btn").disabled = true;
+            },
+            success: function (data) {
+                console.log(data)
 
-        },
-        success: function(data) {
-            console.log(data)
-
-            if (data != 1) {
-                Swal.fire(
-                    'Server Error!',
-                    'Record Not Created',
-                    'error'
-                )
-                $('#dispenser_btn').val("Save");
-                document.getElementById("dispenser_btn").disabled = false;
-            } else {
-
-
-                setTimeout(function() {
+                if (data != 1) {
                     Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
                     )
-                    $('#insert_form1')[0].reset();
-                    $('#add_nozel').modal('hide');
-                    facilities();
                     $('#dispenser_btn').val("Save");
                     document.getElementById("dispenser_btn").disabled = false;
-                    location.reload();
+                } else {
 
 
-                }, 2000);
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        )
+                        $('#insert_form1')[0].reset();
+                        $('#add_nozel').modal('hide');
+                        facilities();
+                        $('#dispenser_btn').val("Save");
+                        document.getElementById("dispenser_btn").disabled = false;
+                        // location.reload();
+
+
+                    }, 2000);
+
+                }
 
             }
+        });
 
-        }
     });
 
-});
+    $('#insert_form1').on("submit", function (event) {
+        event.preventDefault();
+        // alert("Name")
+        var data = new FormData(this);
 
-$('#insert_form1').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var data = new FormData(this);
+        $.ajax({
+            url: "<?php echo $api_url; ?>create/nozzels.php",
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: "POST",
+            data: data,
+            beforeSend: function () {
+                $('#insert1').val("Saving");
+                document.getElementById("insert1").disabled = true;
 
-    $.ajax({
-        url: "<?php echo $api_url; ?>create/nozzels.php",
-        cache: false,
-        contentType: false,
-        processData: false,
-        method: "POST",
-        data: data,
-        beforeSend: function() {
-            $('#insert1').val("Saving");
-            document.getElementById("insert1").disabled = true;
+            },
+            success: function (data) {
+                console.log(data)
 
-        },
-        success: function(data) {
-            console.log(data)
-
-            if (data != 1) {
-                Swal.fire(
-                    'Server Error!',
-                    'Record Not Created',
-                    'error'
-                )
-                $('#insert1').val("Save");
-                document.getElementById("insert1").disabled = false;
-            } else {
-
-
-                setTimeout(function() {
+                if (data != 1) {
                     Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
                     )
-                    $('#insert_form1')[0].reset();
-                    $('#add_nozel').modal('hide');
-                    facilities();
                     $('#insert1').val("Save");
                     document.getElementById("insert1").disabled = false;
-                    location.reload();
+                } else {
 
 
-                }, 2000);
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        )
+                        $('#insert_form1')[0].reset();
+                        $('#add_nozel').modal('hide');
+                        facilities();
+                        $('#insert1').val("Save");
+                        document.getElementById("insert1").disabled = false;
+                        // location.reload();
+
+
+                    }, 2000);
+
+                }
 
             }
+        });
 
-        }
     });
 
-});
 
 
+    $('#tank_form').on("submit", function (event) {
+        event.preventDefault();
+        // alert("Name")
+        var data = new FormData(this);
 
-$('#tank_form').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var data = new FormData(this);
+        $.ajax({
+            url: "<?php echo $api_url; ?>create/create_dealers_tanks.php",
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: "POST",
+            data: data,
+            beforeSend: function () {
+                $('#tank_form_btn').val("Saving");
+                document.getElementById("tank_form_btn").disabled = true;
 
-    $.ajax({
-        url: "<?php echo $api_url; ?>create/create_dealers_tanks.php",
-        cache: false,
-        contentType: false,
-        processData: false,
-        method: "POST",
-        data: data,
-        beforeSend: function() {
-            $('#tank_form_btn').val("Saving");
-            document.getElementById("tank_form_btn").disabled = true;
+            },
+            success: function (data) {
+                console.log(data)
 
-        },
-        success: function(data) {
-            console.log(data)
-
-            if (data != 1) {
-                Swal.fire(
-                    'Server Error!',
-                    'Record Not Created',
-                    'error'
-                )
-                $('#tank_form_btn').val("Save");
-                document.getElementById("tank_form_btn").disabled = false;
-            } else {
-
-
-                setTimeout(function() {
+                if (data != 1) {
                     Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
                     )
-                    $('#tank_form')[0].reset();
-
-                    facilities();
                     $('#tank_form_btn').val("Save");
                     document.getElementById("tank_form_btn").disabled = false;
-                    location.reload();
+                } else {
 
 
-                }, 2000);
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        )
+                        $('#tank_form')[0].reset();
+
+                        facilities();
+                        $('#tank_form_btn').val("Save");
+                        document.getElementById("tank_form_btn").disabled = false;
+                        // location.reload();
+
+
+                    }, 2000);
+
+                }
 
             }
+        });
 
-        }
     });
 
-});
+    $('#nozel_tank_form').on("submit", function (event) {
+        event.preventDefault();
+        // alert("Name")
+        var formData = $(this).serialize();
+        console.log(formData);
+        $.ajax({
+            url: "<?php echo $api_url; ?>create/create_dealers_tanks_nozels.php",
+            type: 'POST',
+            data: formData,
+            beforeSend: function () {
+                $('#nozel_tank_btn').val("Saving");
+                document.getElementById("nozel_tank_btn").disabled = true;
 
-$('#nozel_tank_form').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var formData = $(this).serialize();
-    console.log(formData);
-    $.ajax({
-        url: "<?php echo $api_url; ?>create/create_dealers_tanks_nozels.php",
-        type: 'POST',
-        data: formData,
-        beforeSend: function() {
-            $('#nozel_tank_btn').val("Saving");
-            document.getElementById("nozel_tank_btn").disabled = true;
+            },
+            success: function (data) {
+                console.log(data)
 
-        },
-        success: function(data) {
-            console.log(data)
-
-            if (data != 1) {
-                Swal.fire(
-                    'Server Error!',
-                    'Record Not Created',
-                    'error'
-                )
-                $('#nozel_tank_btn').val("Save");
-                document.getElementById("nozel_tank_btn").disabled = false;
-            } else {
-
-
-                setTimeout(function() {
+                if (data != 1) {
                     Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
                     )
-                    $('#nozel_tank_form')[0].reset();
-
-                    facilities();
                     $('#nozel_tank_btn').val("Save");
                     document.getElementById("nozel_tank_btn").disabled = false;
-                    location.reload();
+                } else {
 
 
-                }, 2000);
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        )
+                        $('#nozel_tank_form')[0].reset();
 
+                        facilities();
+                        $('#nozel_tank_btn').val("Save");
+                        document.getElementById("nozel_tank_btn").disabled = false;
+                        // location.reload();
+
+
+                    }, 2000);
+
+                }
+
+            },
+            error: function (xhr, status, error) {
+                // Handle API errors
+                console.log('Error:', error);
+                console.log('Status:', status);
+                console.log('Response:', xhr.responseText);
             }
 
-        },
-        error: function(xhr, status, error) {
-            // Handle API errors
-            console.log('Error:', error);
-            console.log('Status:', status);
-            console.log('Response:', xhr.responseText);
-        }
+        });
+        console.log('ajax end')
 
     });
-    console.log('ajax end')
 
-});
+    $('#tank_dip_form').on("submit", function (event) {
+        event.preventDefault();
+        // alert("Name")
+        var formData = $(this).serialize();
+        console.log(formData);
+        $.ajax({
+            url: "<?php echo $api_url; ?>update/dealer_tank_dip.php",
+            type: 'POST',
+            data: formData,
+            beforeSend: function () {
+                $('#dip_btn').val("Saving");
+                document.getElementById("dip_btn").disabled = true;
 
-$('#tank_dip_form').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var formData = $(this).serialize();
-    console.log(formData);
-    $.ajax({
-        url: "<?php echo $api_url; ?>update/dealer_tank_dip.php",
-        type: 'POST',
-        data: formData,
-        beforeSend: function() {
-            $('#dip_btn').val("Saving");
-            document.getElementById("dip_btn").disabled = true;
+            },
+            success: function (data) {
+                console.log(data)
 
-        },
-        success: function(data) {
-            console.log(data)
-
-            if (data != 1) {
-                Swal.fire(
-                    'Server Error!',
-                    'Record Not Created',
-                    'error'
-                )
-                $('#dip_btn').val("Save");
-                document.getElementById("dip_btn").disabled = false;
-            } else {
-
-
-                setTimeout(function() {
+                if (data != 1) {
                     Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
                     )
-                    $('#tank_dip_form')[0].reset();
-
-                    facilities();
                     $('#dip_btn').val("Save");
                     document.getElementById("dip_btn").disabled = false;
-                    location.reload();
+                } else {
 
 
-                }, 2000);
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        )
+                        $('#tank_dip_form')[0].reset();
 
+                        facilities();
+                        $('#dip_btn').val("Save");
+                        document.getElementById("dip_btn").disabled = false;
+                        // location.reload();
+
+
+                    }, 2000);
+
+                }
+
+            },
+            error: function (xhr, status, error) {
+                // Handle API errors
+                console.log('Error:', error);
+                console.log('Status:', status);
+                console.log('Response:', xhr.responseText);
             }
 
-        },
-        error: function(xhr, status, error) {
-            // Handle API errors
-            console.log('Error:', error);
-            console.log('Status:', status);
-            console.log('Response:', xhr.responseText);
-        }
+        });
 
     });
 
-});
+    $('#targeted_from').on("submit", function (event) {
+        event.preventDefault();
+        // alert("Name")
+        var formData = $(this).serialize();
+        console.log(formData);
+        $.ajax({
+            url: "<?php echo $api_url; ?>create/create_dealers_product_target.php",
+            type: 'POST',
+            data: formData,
+            beforeSend: function () {
+                $('#target_btn').val("Saving");
+                document.getElementById("target_btn").disabled = true;
 
-$('#targeted_from').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var formData = $(this).serialize();
-    console.log(formData);
-    $.ajax({
-        url: "<?php echo $api_url; ?>create/create_dealers_product_target.php",
-        type: 'POST',
-        data: formData,
-        beforeSend: function() {
-            $('#target_btn').val("Saving");
-            document.getElementById("target_btn").disabled = true;
+            },
+            success: function (data) {
+                console.log(data)
 
-        },
-        success: function(data) {
-            console.log(data)
+                if (data != 1) {
+                    Swal.fire(
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
+                    )
+                    $('#target_btn').val("Save");
+                    document.getElementById("target_btn").disabled = false;
+                } else {
 
-            if (data != 1) {
+
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        )
+                        $('#targeted_from')[0].reset();
+
+                        // facilities();
+                        $('#target_btn').val("Save");
+                        document.getElementById("target_btn").disabled = false;
+                        // location.reload();
+
+
+                    }, 2000);
+
+                }
+
+            },
+            error: function (xhr, status, error) {
+                // Handle API errors
                 Swal.fire(
                     'Server Error!',
-                    'Record Not Created',
+                    'Duplicate Month Entry',
                     'error'
                 )
                 $('#target_btn').val("Save");
                 document.getElementById("target_btn").disabled = false;
-            } else {
-
-
-                setTimeout(function() {
-                    Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
-                    )
-                    $('#targeted_from')[0].reset();
-
-                    // facilities();
-                    $('#target_btn').val("Save");
-                    document.getElementById("target_btn").disabled = false;
-                    location.reload();
-
-
-                }, 2000);
-
+                console.log('Error:', error);
+                console.log('Status:', status);
+                console.log('Response:', xhr.responseText);
             }
 
-        },
-        error: function(xhr, status, error) {
-            // Handle API errors
-            Swal.fire(
-                'Server Error!',
-                'Duplicate Month Entry',
-                'error'
-            )
-            $('#target_btn').val("Save");
-            document.getElementById("target_btn").disabled = false;
-            console.log('Error:', error);
-            console.log('Status:', status);
-            console.log('Response:', xhr.responseText);
-        }
+        });
 
     });
 
-});
+    $('#productts_form').on("submit", function (event) {
+        event.preventDefault();
+        // alert("Name")
+        var formData = $(this).serialize();
+        console.log(formData);
+        $.ajax({
+            url: "<?php echo $api_url; ?>create/create_dealers_products.php",
+            type: 'POST',
+            data: formData,
+            beforeSend: function () {
+                $('#products_btn').val("Saving");
+                document.getElementById("products_btn").disabled = true;
 
-$('#productts_form').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var formData = $(this).serialize();
-    console.log(formData);
-    $.ajax({
-        url: "<?php echo $api_url; ?>create/create_dealers_products.php",
-        type: 'POST',
-        data: formData,
-        beforeSend: function() {
-            $('#products_btn').val("Saving");
-            document.getElementById("products_btn").disabled = true;
+            },
+            success: function (data) {
+                console.log(data)
 
-        },
-        success: function(data) {
-            console.log(data)
-
-            if (data != 1) {
-                Swal.fire(
-                    'Server Error!',
-                    'Record Not Created',
-                    'error'
-                )
-                $('#products_btn').val("Save");
-                document.getElementById("products_btn").disabled = false;
-            } else {
-
-
-                setTimeout(function() {
+                if (data != 1) {
                     Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
                     )
-                    $('#productts_form')[0].reset();
-
-                    // facilities();
                     $('#products_btn').val("Save");
                     document.getElementById("products_btn").disabled = false;
-                    location.reload();
+                } else {
 
 
-                }, 2000);
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        )
+                        $('#productts_form')[0].reset();
 
+                        // facilities();
+                        $('#products_btn').val("Save");
+                        document.getElementById("products_btn").disabled = false;
+                        // location.reload();
+
+
+                    }, 2000);
+
+                }
+
+            },
+            error: function (xhr, status, error) {
+                // Handle API errors
+                console.log('Error:', error);
+                console.log('Status:', status);
+                console.log('Response:', xhr.responseText);
             }
 
-        },
-        error: function(xhr, status, error) {
-            // Handle API errors
-            console.log('Error:', error);
-            console.log('Status:', status);
-            console.log('Response:', xhr.responseText);
-        }
+        });
 
     });
 
-});
+    $('#complaint_form').on("submit", function (event) {
+        event.preventDefault();
+        // alert("Name")
+        var formData = $(this).serialize();
+        console.log(formData);
+        $.ajax({
+            url: "<?php echo $api_url; ?>create/create_complaints.php",
+            type: 'POST',
+            data: formData,
+            beforeSend: function () {
+                $('#complaint_btn').val("Saving");
+                document.getElementById("complaint_btn").disabled = true;
 
-$('#complaint_form').on("submit", function(event) {
-    event.preventDefault();
-    // alert("Name")
-    var formData = $(this).serialize();
-    console.log(formData);
-    $.ajax({
-        url: "<?php echo $api_url; ?>create/create_complaints.php",
-        type: 'POST',
-        data: formData,
-        beforeSend: function() {
-            $('#complaint_btn').val("Saving");
-            document.getElementById("complaint_btn").disabled = true;
+            },
+            success: function (data) {
+                console.log(data)
 
-        },
-        success: function(data) {
-            console.log(data)
-
-            if (data != 1) {
-                Swal.fire(
-                    'Server Error!',
-                    'Record Not Created',
-                    'error'
-                )
-                $('#complaint_btn').val("Save");
-                document.getElementById("complaint_btn").disabled = false;
-            } else {
-
-
-                setTimeout(function() {
+                if (data != 1) {
                     Swal.fire(
-                        'Success!',
-                        'Record Created Successfully',
-                        'success'
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
                     )
-                    $('#complaint_form')[0].reset();
-
-
                     $('#complaint_btn').val("Save");
                     document.getElementById("complaint_btn").disabled = false;
-                    location.reload();
+                } else {
 
 
-                }, 2000);
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        )
+                        $('#complaint_form')[0].reset();
 
+
+                        $('#complaint_btn').val("Save");
+                        document.getElementById("complaint_btn").disabled = false;
+                        // location.reload();
+
+
+                    }, 2000);
+
+                }
+
+            },
+            error: function (xhr, status, error) {
+                // Handle API errors
+                console.log('Error:', error);
+                console.log('Status:', status);
+                console.log('Response:', xhr.responseText);
             }
 
-        },
-        error: function(xhr, status, error) {
-            // Handle API errors
-            console.log('Error:', error);
-            console.log('Status:', status);
-            console.log('Response:', xhr.responseText);
-        }
+        });
 
     });
 
-});
 
-function add_dip(id, old_dip) {
 
-    $('#tank_id').val(id)
-    $('#old_dip').val(old_dip)
-    $('#tank_dip_modal').modal('show')
-}
+    function add_dip(id, old_dip) {
 
-function edit_product_price(id) {
+        $('#tank_id').val(id)
+        $('#old_dip').val(old_dip)
+        $('#tank_dip_modal').modal('show')
+    }
 
-    $('#row_id').val(id)
-    $.ajax({
-        url: "<?php echo $api_url; ?>get/get_dealer_specific_product.php?key=03201232927&dealer_id=" +
-            decryptedId + "&id=" +
-            id + "",
-        method: "GET",
-        dataType: "json",
-        success: function(data) {
-            data = data[0];
-            console.log(data.indent_price)
+    function edit_product_price(id) {
 
-            $('#products_name').val(data.name);
-            $('#from_date').val(data.from);
-            $('#to_date').val(data.to);
-            $('#indent_price_pro').val(parseFloat(data.indent_price));
-            $('#nozel_price_pro').val(parseFloat(data.nozel_price));
-        }
-    });
-    $('#products_modal').modal('show')
-}
+        $('#row_id').val(id)
+        $.ajax({
+            url: "<?p   hp echo $api_url; ?>get/get_dealer_specific_product.php?key=03201232927&dealer_id=" +
+                decryptedId + "&id=" +
+                id + "",
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                data = data[0];
+                console.log(data.indent_price)
 
-function edit_dealers_users(id) {
+                $('#products_name').val(data.name);
+                $('#from_date').val(data.from);
+                $('#to_date').val(data.to);
+                $('#indent_price_pro').val(parseFloat(data.indent_price));
+                $('#nozel_price_pro').val(parseFloat(data.nozel_price));
+            }
+        });
+        $('#products_modal').modal('show')
+    }
 
-    $('#dealer_user_id').val(id)
-    $.ajax({
-        url: "<?php echo $api_url; ?>get/get_dealers_users.php?key=03201232927&dealer_id=" + decryptedId +
-            "&id=" +
-            id + "",
-        method: "GET",
-        dataType: "json",
-        success: function(data) {
-            data = data[0];
-            console.log(data.indent_price)
+    function edit_dealers_users(id) {
 
-            $('#usernames').val(data.name);
-            $('#user_email').val(data.email);
-            $('#user_password').val(data.password);
-            $('#user_phone').val(parseInt(data.contact));
-        }
-    });
-    $('#users_modal').modal('show');
-}
+        $('#dealer_user_id').val(id)
+        $.ajax({
+            url: "<?php echo $api_url; ?>get/get_dealers_users.php?key=03201232927&dealer_id=" + decryptedId +
+                "&id=" +
+                id + "",
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                data = data[0];
+                console.log(data.indent_price)
 
-function edit_dealers_last_recon(nozel_id,recon_id,last_recon_reading,dealer_id,nozel_name,task_id,product_id) {
+                $('#usernames').val(data.name);
+                $('#user_email').val(data.email);
+                $('#user_password').val(data.password);
+                $('#user_phone').val(parseInt(data.contact));
+            }
+        });
+        $('#users_modal').modal('show');
+    }
 
-    $('#recon_id').val(recon_id);
-    $('#nozel_id').val(nozel_id);
-    $('#nozel_last_recon').val(last_recon_reading);
-    $('#nozel_name').val(nozel_name);
-    $('#last_task_id').val(task_id);
-    $('#recon_product_id').val(product_id);
-    
-    $('#recon_update_modal').modal('show');
-}
+    function get_ledger_backlog() {
 
-function get_ledger_backlog() {
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-
-    fetch("<?php echo $api_url; ?>get/get_dealer_ledger_log.php?key=03201232927&dealer_id=" + decryptedId + "",
+        fetch("<?php echo $api_url; ?>get/get_dealer_ledger_log.php?key=03201232927&dealer_id=" + decryptedId + "",
             requestOptions)
-        .then(response => response.json())
-        .then(response => {
-            console.log(response)
-            $('#ledger_logs').empty();
-            if (response.length > 0) {
+            .then(response => response.json())
+            .then(response => {
+                console.log(response)
+                $('#ledger_logs').empty();
+                if (response.length > 0) {
 
 
-                $.each(response, function(index, data) {
+                    $.each(response, function (index, data) {
 
-                    var originalDate = data.created_at;
-                    var dateObject = new Date(originalDate);
+                        var originalDate = data.created_at;
+                        var dateObject = new Date(originalDate);
 
-                    var day = dateObject.getDate(); // Extract the day (returns 25)
-                    var month = dateObject.toLocaleString('en-US', {
-                        month: 'short'
-                    }); // Extract the month (returns "Oct")
+                        var day = dateObject.getDate(); // Extract the day (returns 25)
+                        var month = dateObject.toLocaleString('en-US', {
+                            month: 'short'
+                        }); // Extract the month (returns "Oct")
 
-                    console.log("Day:", day);
-                    console.log("Month:", month);
+                        console.log("Day:", day);
+                        console.log("Month:", month);
+                        $('#ledger_logs').append('<div class="row timeline-right">' +
+                            '<div class="col-md-6">' +
+                            ' <div class="timeline-icon">' +
+                            '<i class="bx bx-briefcase-alt-2 text-primary h2 mb-0"></i>' +
+                            ' </div>' +
+                            '</div>' +
+                            '<div class="col-md-6">' +
+                            '<div class="timeline-box">' +
+                            '<div class="timeline-date bg-primary text-center rounded">' +
+                            '<h3 class="text-white mb-0 font-size-20">' + day + '</h3>' +
+                            '<p class="mb-0 text-white-50">' + month + '</p>' +
+                            '</div>' +
+                            '<div class="event-content">' +
+                            '<div class="timeline-text">' +
+                            // '<h3 class="font-size-17">' + data.description + '</h3>' +
+                            '<p class="mb-0 mt-2 pt-1 text-muted">Previous Ledger : ' + data.old_ledger +
+                            '</p>' +
+
+                            '<p class="mb-0 mt-2 pt-1 text-muted">Update Ledger : ' + data.new_ledger +
+                            '</p>' +
+                            '<p class="mb-0 mt-2 pt-1 text-muted">Description : ' + data.description +
+                            '</p>' +
+                            '<p class="mb-0 mt-2 pt-1 text-muted">Action Time : ' + data.created_at +
+                            '<p class="mb-0 mt-2 pt-1 text-muted">Action By : ' + data.name +
+                            '</p>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>');
+
+                    });
+                } else {
                     $('#ledger_logs').append('<div class="row timeline-right">' +
                         '<div class="col-md-6">' +
                         ' <div class="timeline-icon">' +
@@ -3585,90 +3771,89 @@ function get_ledger_backlog() {
                         '<div class="col-md-6">' +
                         '<div class="timeline-box">' +
                         '<div class="timeline-date bg-primary text-center rounded">' +
-                        '<h3 class="text-white mb-0 font-size-20">' + day + '</h3>' +
-                        '<p class="mb-0 text-white-50">' + month + '</p>' +
+                        '<h3 class="text-white mb-0 font-size-20">---</h3>' +
+                        '<p class="mb-0 text-white-50">--</p>' +
                         '</div>' +
                         '<div class="event-content">' +
                         '<div class="timeline-text">' +
-                        // '<h3 class="font-size-17">' + data.description + '</h3>' +
-                        '<p class="mb-0 mt-2 pt-1 text-muted">Previous Ledger : ' + data.old_ledger +
-                        '</p>' +
-
-                        '<p class="mb-0 mt-2 pt-1 text-muted">Update Ledger : ' + data.new_ledger +
-                        '</p>' +
-                        '<p class="mb-0 mt-2 pt-1 text-muted">Description : ' + data.description +
-                        '</p>' +
-                        '<p class="mb-0 mt-2 pt-1 text-muted">Action Time : ' + data.created_at +
-                        '<p class="mb-0 mt-2 pt-1 text-muted">Action By : ' + data.name +
-                        '</p>' +
+                        '<h3 class="font-size-17">Log Not Found</h3>' +
+                        '<p class="mb-0 mt-2 pt-1 text-muted">Previous Dip : --- </p>' +
+                        '<p class="mb-0 mt-2 pt-1 text-muted">Update Dip : --- </p>' +
+                        '<p class="mb-0 mt-2 pt-1 text-muted">Action Time : --- </p>' +
                         '</div>' +
                         '</div>' +
                         '</div>' +
                         '</div>' +
                         '</div>');
-
-                });
-            } else {
-                $('#ledger_logs').append('<div class="row timeline-right">' +
-                    '<div class="col-md-6">' +
-                    ' <div class="timeline-icon">' +
-                    '<i class="bx bx-briefcase-alt-2 text-primary h2 mb-0"></i>' +
-                    ' </div>' +
-                    '</div>' +
-                    '<div class="col-md-6">' +
-                    '<div class="timeline-box">' +
-                    '<div class="timeline-date bg-primary text-center rounded">' +
-                    '<h3 class="text-white mb-0 font-size-20">---</h3>' +
-                    '<p class="mb-0 text-white-50">--</p>' +
-                    '</div>' +
-                    '<div class="event-content">' +
-                    '<div class="timeline-text">' +
-                    '<h3 class="font-size-17">Log Not Found</h3>' +
-                    '<p class="mb-0 mt-2 pt-1 text-muted">Previous Dip : --- </p>' +
-                    '<p class="mb-0 mt-2 pt-1 text-muted">Update Dip : --- </p>' +
-                    '<p class="mb-0 mt-2 pt-1 text-muted">Action Time : --- </p>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>');
-            }
-            $('#ledger_backlog_modal').modal('show');
-        })
-        .catch(error => console.log('error', error));
+                }
+                $('#ledger_backlog_modal').modal('show');
+            })
+            .catch(error => console.log('error', error));
 
 
 
-}
+    }
 
 
-function get_dip_backlog(id, old_dip) {
+    function get_dip_backlog(id, old_dip) {
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
 
-    fetch("<?php echo $api_url; ?>get/get_dealers_tanks_dip_log.php?key=03201232927&tank_id=" + id + "", requestOptions)
-        .then(response => response.json())
-        .then(response => {
-            console.log(response)
-            $('#order_logs').empty();
-            if (response.length > 0) {
+        fetch("<?php echo $api_url; ?>get/get_dealers_tanks_dip_log.php?key=03201232927&tank_id=" + id + "", requestOptions)
+            .then(response => response.json())
+            .then(response => {
+                console.log(response)
+                $('#order_logs').empty();
+                if (response.length > 0) {
 
 
-                $.each(response, function(index, data) {
+                    $.each(response, function (index, data) {
 
-                    var originalDate = data.created_at;
-                    var dateObject = new Date(originalDate);
+                        var originalDate = data.created_at;
+                        var dateObject = new Date(originalDate);
 
-                    var day = dateObject.getDate(); // Extract the day (returns 25)
-                    var month = dateObject.toLocaleString('en-US', {
-                        month: 'short'
-                    }); // Extract the month (returns "Oct")
+                        var day = dateObject.getDate(); // Extract the day (returns 25)
+                        var month = dateObject.toLocaleString('en-US', {
+                            month: 'short'
+                        }); // Extract the month (returns "Oct")
 
-                    console.log("Day:", day);
-                    console.log("Month:", month);
+                        console.log("Day:", day);
+                        console.log("Month:", month);
+                        $('#order_logs').append('<div class="row timeline-right">' +
+                            '<div class="col-md-6">' +
+                            ' <div class="timeline-icon">' +
+                            '<i class="bx bx-briefcase-alt-2 text-primary h2 mb-0"></i>' +
+                            ' </div>' +
+                            '</div>' +
+                            '<div class="col-md-6">' +
+                            '<div class="timeline-box">' +
+                            '<div class="timeline-date bg-primary text-center rounded">' +
+                            '<h3 class="text-white mb-0 font-size-20">' + day + '</h3>' +
+                            '<p class="mb-0 text-white-50">' + month + '</p>' +
+                            '</div>' +
+                            '<div class="event-content">' +
+                            '<div class="timeline-text">' +
+                            // '<h3 class="font-size-17">' + data.description + '</h3>' +
+                            '<p class="mb-0 mt-2 pt-1 text-muted">Previous Dip : ' + data.previous_dip +
+                            '</p>' +
+
+                            '<p class="mb-0 mt-2 pt-1 text-muted">Update Dip : ' + data.current_dip +
+                            '</p>' +
+                            '<p class="mb-0 mt-2 pt-1 text-muted">Description : ' + data.description +
+                            '</p>' +
+                            '<p class="mb-0 mt-2 pt-1 text-muted">Action Time : ' + data.created_at +
+                            '</p>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>');
+
+                    });
+                } else {
                     $('#order_logs').append('<div class="row timeline-right">' +
                         '<div class="col-md-6">' +
                         ' <div class="timeline-icon">' +
@@ -3678,530 +3863,1345 @@ function get_dip_backlog(id, old_dip) {
                         '<div class="col-md-6">' +
                         '<div class="timeline-box">' +
                         '<div class="timeline-date bg-primary text-center rounded">' +
-                        '<h3 class="text-white mb-0 font-size-20">' + day + '</h3>' +
-                        '<p class="mb-0 text-white-50">' + month + '</p>' +
+                        '<h3 class="text-white mb-0 font-size-20">---</h3>' +
+                        '<p class="mb-0 text-white-50">--</p>' +
                         '</div>' +
                         '<div class="event-content">' +
                         '<div class="timeline-text">' +
-                        // '<h3 class="font-size-17">' + data.description + '</h3>' +
-                        '<p class="mb-0 mt-2 pt-1 text-muted">Previous Dip : ' + data.previous_dip +
-                        '</p>' +
-
-                        '<p class="mb-0 mt-2 pt-1 text-muted">Update Dip : ' + data.current_dip +
-                        '</p>' +
-                        '<p class="mb-0 mt-2 pt-1 text-muted">Description : ' + data.description +
-                        '</p>' +
-                        '<p class="mb-0 mt-2 pt-1 text-muted">Action Time : ' + data.created_at +
-                        '</p>' +
+                        '<h3 class="font-size-17">Log Not Found</h3>' +
+                        '<p class="mb-0 mt-2 pt-1 text-muted">Previous Dip : --- </p>' +
+                        '<p class="mb-0 mt-2 pt-1 text-muted">Update Dip : --- </p>' +
+                        '<p class="mb-0 mt-2 pt-1 text-muted">Action Time : --- </p>' +
                         '</div>' +
                         '</div>' +
                         '</div>' +
                         '</div>' +
                         '</div>');
-
-                });
-            } else {
-                $('#order_logs').append('<div class="row timeline-right">' +
-                    '<div class="col-md-6">' +
-                    ' <div class="timeline-icon">' +
-                    '<i class="bx bx-briefcase-alt-2 text-primary h2 mb-0"></i>' +
-                    ' </div>' +
-                    '</div>' +
-                    '<div class="col-md-6">' +
-                    '<div class="timeline-box">' +
-                    '<div class="timeline-date bg-primary text-center rounded">' +
-                    '<h3 class="text-white mb-0 font-size-20">---</h3>' +
-                    '<p class="mb-0 text-white-50">--</p>' +
-                    '</div>' +
-                    '<div class="event-content">' +
-                    '<div class="timeline-text">' +
-                    '<h3 class="font-size-17">Log Not Found</h3>' +
-                    '<p class="mb-0 mt-2 pt-1 text-muted">Previous Dip : --- </p>' +
-                    '<p class="mb-0 mt-2 pt-1 text-muted">Update Dip : --- </p>' +
-                    '<p class="mb-0 mt-2 pt-1 text-muted">Action Time : --- </p>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>');
-            }
-            $('#dip_backlog_modal').modal('show');
-        })
-        .catch(error => console.log('error', error));
+                }
+                $('#dip_backlog_modal').modal('show');
+            })
+            .catch(error => console.log('error', error));
 
 
 
-}
+    }
 
-function get_product_price_backlog(id) {
+    function get_product_price_backlog(id) {
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-    // console.log("<?php echo $api_url; ?>get/get_dealers_price_backlog.php?key=03201232927&dealer_id="+decryptedId+"&product_id=" +id + "");
-    fetch("<?php echo $api_url; ?>get/get_dealers_price_backlog.php?key=03201232927&dealer_id=" + decryptedId +
-            "&product_id=" +
-            id + "", requestOptions)
-        .then(response => response.json())
-        .then(response => {
-            console.log(response)
-            if (response.length > 0) {
-                product_price_backlog.clear().draw();
-
-                $.each(response, function(index, data) {
-                    product_price_backlog.row.add([
-
-                        index + 1,
-                        data.name,
-                        data.from,
-                        data.to,
-                        data.indent_price,
-                        data.nozel_price,
-                        data.created_at,
-
-                    ]).draw(false);
-
-                });
-            }
-            $('#products_price_backlog_modal').modal('show');
-        })
-        .catch(error => console.log('error', error));
-
-
-
-}
-
-function view_order(id) {
-    if (id != "") {
         var requestOptions = {
             method: 'GET',
             redirect: 'follow'
         };
-        console.log("<?php echo $api_url; ?>get/get_main_sub_orders.php?key=03201232927&id=" + id + "");
-        fetch("<?php echo $api_url; ?>get/get_main_sub_orders.php?key=03201232927&id=" + id + "", requestOptions)
+        // console.log("<?php echo $api_url; ?>get/get_dealers_price_backlog.php?key=03201232927&dealer_id="+decryptedId+"&product_id=" +id + "");
+        fetch("<?php echo $api_url; ?>get/get_dealers_price_backlog.php?key=03201232927&dealer_id=" + decryptedId +
+            "&product_id=" +
+            id + "", requestOptions)
             .then(response => response.json())
             .then(response => {
                 console.log(response)
                 if (response.length > 0) {
-                    suborders_tables.clear().draw();
+                    product_price_backlog.clear().draw();
 
-                    $.each(response, function(index, data) {
-                        suborders_tables.row.add([
+                    $.each(response, function (index, data) {
+                        product_price_backlog.row.add([
+
                             index + 1,
-                            data.date,
                             data.name,
-                            // data.name,
-                            data.product_name,
-                            data.rate,
-                            data.quantity,
-                            data.delivery_based,
-                            data.consignee_name,
-                            data.amount
+                            data.from,
+                            data.to,
+                            data.indent_price,
+                            data.nozel_price,
+                            data.created_at,
 
                         ]).draw(false);
 
                     });
                 }
-                $('#sub_orders_main').modal('show');
+                $('#products_price_backlog_modal').modal('show');
             })
             .catch(error => console.log('error', error));
 
+
+
     }
 
-}
+    function view_order(id) {
+        if (id != "") {
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+            console.log("<?php echo $api_url; ?>get/get_main_sub_orders.php?key=03201232927&id=" + id + "");
+            fetch("<?php echo $api_url; ?>get/get_main_sub_orders.php?key=03201232927&id=" + id + "", requestOptions)
+                .then(response => response.json())
+                .then(response => {
+                    console.log(response)
+                    if (response.length > 0) {
+                        suborders_tables.clear().draw();
+
+                        $.each(response, function (index, data) {
+                            suborders_tables.row.add([
+                                index + 1,
+                                data.date,
+                                data.name,
+                                // data.name,
+                                data.product_name,
+                                data.rate,
+                                data.quantity,
+                                data.delivery_based,
+                                data.consignee_name,
+                                data.amount
+
+                            ]).draw(false);
+
+                        });
+                    }
+                    $('#sub_orders_main').modal('show');
+                })
+                .catch(error => console.log('error', error));
+
+        }
+
+    }
 
 
 
-function displaySurvey(id, inspection_id, dealer_id) {
-    // Clear existing content
-    $('#survey-container').empty();
+    function displaySurvey(id, inspection_id, dealer_id) {
+        // Clear existing content
+        $('#survey-container').empty();
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
 
-    fetch("<?php echo $api_url; ?>get/get_dealer_survey_response.php?key=03201232927&inspection_id=" + inspection_id +
+        fetch("<?php echo $api_url; ?>get/get_dealer_survey_response.php?key=03201232927&inspection_id=" + inspection_id +
             "&task_id=" + id + "&dealer_id=" + dealer_id + "", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result)
-            create_div(result)
-        })
-        .catch(error => console.log('error', error));
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                create_div(result)
+            })
+            .catch(error => console.log('error', error));
 
 
 
-}
+    }
 
-function get_tas_sales_data(task_id, dealer_id) {
-    // Clear existing content
-    // $('#survey-container').empty();
+    function get_tas_sales_data(task_id, dealer_id) {
+        // Clear existing content
+        // $('#survey-container').empty();
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
 
-    fetch("<?php echo $api_url; ?>get/get_dealers_sales_performance.php?key=03201232927&task_id=" + task_id +
+        fetch("<?php echo $api_url; ?>get/get_dealers_sales_performance.php?key=03201232927&task_id=" + task_id +
             "&dealer_id=" + dealer_id + "", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result)
-            if (result.length > 0) {
-                sale_table.clear().draw();
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                if (result.length > 0) {
+                    sale_table.clear().draw();
 
-                $.each(result, function(index, data) {
-                    sale_table.row.add([
-                        index + 1,
-                        data.name,
-                        data.monthly_target,
-                        // data.name,
-                        data.target_achived,
-                        data.differnce,
-                        data.reason,
-                        data.created_at
+                    $.each(result, function (index, data) {
+                        sale_table.row.add([
+                            index + 1,
+                            data.name,
+                            data.monthly_target,
+                            // data.name,
+                            data.target_achived,
+                            data.differnce,
+                            data.reason,
+                            data.created_at
 
-                    ]).draw(false);
+                        ]).draw(false);
 
-                });
-            }
-            $('#sales_performance').modal('show');
-        })
-        .catch(error => console.log('error', error));
+                    });
+                }
+                $('#sales_performance').modal('show');
+            })
+            .catch(error => console.log('error', error));
 
 
 
-}
+    }
 
-function get_task_wet_stock(task_id, dealer_id) {
-    // Clear existing content
-    // $('#survey-container').empty();
+    function get_task_wet_stock(task_id, dealer_id) {
+        // Clear existing content
+        // $('#survey-container').empty();
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
 
-    fetch("<?php echo $api_url; ?>get/get_dealer_wet_stock.php?key=03201232927&task_id=" + task_id +
+        fetch("<?php echo $api_url; ?>get/get_dealer_wet_stock.php?key=03201232927&task_id=" + task_id +
             "&dealer_id=" + dealer_id + "", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result)
-            if (result.length > 0) {
-                wet_stock.clear().draw();
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                if (result.length > 0) {
+                    wet_stock.clear().draw();
 
-                $.each(result, function(index, data) {
-                    wet_stock.row.add([
-                        index + 1,
-                        data.name,
-                        data.lorry_no,
-                        // data.name,
-                        data.dip_old,
-                        data.dip_new,
-                        data.created_at
+                    $.each(result, function (index, data) {
+                        wet_stock.row.add([
+                            index + 1,
+                            data.name,
+                            data.lorry_no,
+                            // data.name,
+                            data.dip_old,
+                            data.dip_new,
+                            data.created_at
 
-                    ]).draw(false);
+                        ]).draw(false);
 
-                });
-            }
-            $('#wet_stock_modal').modal('show');
-        })
-        .catch(error => console.log('error', error));
+                    });
+                }
+                $('#wet_stock_modal').modal('show');
+            })
+            .catch(error => console.log('error', error));
 
 
 
-}
+    }
 
-function get_task_despensing_unit(task_id, dealer_id) {
-    // Clear existing content
-    // $('#survey-container').empty();
+    function get_task_despensing_unit(task_id, dealer_id) {
+        // Clear existing content
+        // $('#survey-container').empty();
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
 
-    fetch("<?php echo $api_url; ?>get/get_dealer_task_despensing_unit.php?key=03201232927&task_id=" + task_id +
+        fetch("<?php echo $api_url; ?>get/get_dealer_task_despensing_unit.php?key=03201232927&task_id=" + task_id +
             "&dealer_id=" + dealer_id + "", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result)
-            if (result.length > 0) {
-                despensing_unit_table.clear().draw();
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                if (result.length > 0) {
+                    despensing_unit_table.clear().draw();
 
-                $.each(result, function(index, data) {
-                    despensing_unit_table.row.add([
-                        index + 1,
-                        data.product_name,
-                        data.nozle_name,
-                        // data.name,
-                        data.old_reading,
-                        data.new_reading,
-                        data.created_at
+                    $.each(result, function (index, data) {
+                        despensing_unit_table.row.add([
+                            index + 1,
+                            data.product_name,
+                            data.nozle_name,
+                            // data.name,
+                            data.old_reading,
+                            data.new_reading,
+                            data.created_at
 
-                    ]).draw(false);
+                        ]).draw(false);
 
-                });
-            }
-            $('#despensing_unit_modal').modal('show');
-        })
-        .catch(error => console.log('error', error));
+                    });
+                }
+                $('#despensing_unit_modal').modal('show');
+            })
+            .catch(error => console.log('error', error));
 
 
 
-}
+    }
 
-function get_task_stock_variations(task_id, dealer_id) {
-    // Clear existing content
+    function get_task_stock_variations(task_id, dealer_id) {
+        // Clear existing content
 
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
 
-    fetch("<?php echo $api_url; ?>get/get_dealer_task_stock_variation.php?key=03201232927&task_id=" + task_id +
+        fetch("<?php echo $api_url; ?>get/get_dealer_task_stock_variation.php?key=03201232927&task_id=" + task_id +
             "&dealer_id=" + dealer_id + "", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result)
-            if (result.length > 0) {
-                stock_variations_table.clear().draw();
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                if (result.length > 0) {
+                    stock_variations_table.clear().draw();
 
-                $.each(result, function(index, data) {
-                    stock_variations_table.row.add([
-                        index + 1,
-                        data.name,
-                        data.opening_stock,
-                        data.purchase_during_inspection_period,
-                        data.total_product_available_for_sale,
-                        data.sales_as_per_meter_reading,
-                        data.book_stock,
-                        data.current_physical_stock,
-                        data.gain_loss,
-                        data.created_at,
+                    $.each(result, function (index, data) {
+                        stock_variations_table.row.add([
+                            index + 1,
+                            data.name,
+                            data.opening_stock,
+                            data.purchase_during_inspection_period,
+                            data.total_product_available_for_sale,
+                            data.sales_as_per_meter_reading,
+                            data.book_stock,
+                            data.current_physical_stock,
+                            data.gain_loss,
+                            data.created_at,
 
-                    ]).draw(false);
+                        ]).draw(false);
 
-                });
-            }
-            $('#stock_variations_modal').modal('show');
-        })
-        .catch(error => console.log('error', error));
+                    });
+                }
+                $('#stock_variations_modal').modal('show');
+            })
+            .catch(error => console.log('error', error));
 
 
 
-}
+    }
 
-function create_div(response) {
-    // Iterate through the API response
-    response.forEach(function(section) {
-        // Create a div for each section
-        var $sectionDiv = $('<div class="col-md-4"></div>');
+    function create_div(response) {
+        // Iterate through the API response
+        response.forEach(function (section) {
+            // Create a div for each section
+            var $sectionDiv = $('<div class="col-md-4"></div>');
 
-        // Append section name
-        $sectionDiv.append('<h2>' + section.name + '</h2>');
+            // Append section name
+            $sectionDiv.append('<h2>' + section.name + '</h2>');
 
-        // Create a div for each question
-        section.Questions.forEach(function(question) {
             // Create a div for each question
-            var $questionDiv = $('<div class="question"></div>');
+            section.Questions.forEach(function (question) {
+                // Create a div for each question
+                var $questionDiv = $('<div class="question"></div>');
 
-            // Append question text
-            $questionDiv.append('<strong>' + question.question + '</strong><br>');
+                // Append question text
+                $questionDiv.append('<strong>' + question.question + '</strong><br>');
 
-            // Append response
-            if (question.response != 'No') {
+                // Append response
+                if (question.response != 'No') {
 
-                $questionDiv.append(
-                    'Answer: <i class="fas fa-check text-success" style="font-size: 20px;font-weight: bold;"></i> <br>'
-                );
-            } else {
-                if (question.cancel_file != null) {
                     $questionDiv.append(
-                        'Answer: <i class="text-danger" style="font-size: 20px;font-weight: bold;">X</i><a href="<?php echo $api_url; ?>uploads/' +
-                        question.cancel_file +
-                        '" target="_blank" style="margin-left: 20px;"><i class="fas fa-image text-info" style="font-size: 20px;font-weight: bold;"></i></a><br>'
+                        'Answer: <i class="fas fa-check text-success" style="font-size: 20px;font-weight: bold;"></i> <br>'
                     );
                 } else {
-                    $questionDiv.append(
-                        'Answer: <i class="text-danger" style="font-size: 20px;font-weight: bold;">X</i><br>'
-                    );
+                    if (question.cancel_file != null) {
+                        $questionDiv.append(
+                            'Answer: <i class="text-danger" style="font-size: 20px;font-weight: bold;">X</i><a href="<?php echo $api_url; ?>uploads/' +
+                            question.cancel_file +
+                            '" target="_blank" style="margin-left: 20px;"><i class="fas fa-image text-info" style="font-size: 20px;font-weight: bold;"></i></a><br>'
+                        );
+                    } else {
+                        $questionDiv.append(
+                            'Answer: <i class="text-danger" style="font-size: 20px;font-weight: bold;">X</i><br>'
+                        );
+                    }
+
+
                 }
 
+                // Append additional information if needed
+                // For example, file, created_at, created_by, etc.
+
+                // Append question div to the section
+                $sectionDiv.append($questionDiv);
+            });
+
+            // Append section div to the survey container
+            $('#survey-container').append($sectionDiv);
+            $('#survey_modal').modal('show');
+        });
+    }
+
+    function decryptId(encryptedId, key, iv) {
+        var decrypted = CryptoJS.AES.decrypt(encryptedId, key, {
+            iv: iv
+        });
+        return decrypted.toString(CryptoJS.enc.Utf8);
+    }
+
+    function deleteDatadispensor(id) {
+        var result = confirm("Are you sure you want to delete this record?");
+
+        // If the user confirms, proceed with deletion
+        if (result) {
+            // Call a function to delete the item
+
+
+            var settings = {
+                "url": "<?php echo $api_url; ?>delete/delete_despensor.php?key=03201232927&id=" + id + "",
+                "method": "GET",
+                "timeout": 0,
+            };
+
+            $.ajax({
+                ...settings,
+                statusCode: {
+                    200: function (response) {
+                        Swal.fire(
+                            'Success!',
+                            'Record Deleted Successfully',
+                            'success'
+                        )
+                        setTimeout(function () {
+
+                            // location.reload();
+
+
+                        }, 2000);
+
+                    },
+                    success: function (data) {
+                        // Additional success handling if needed
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        Swal.fire(
+                            'Server Error!',
+                            'Record Not Deleted',
+                            'error'
+                        )
+
+                        // console.log("Request failed with status code: " + xhr.status);
+                    }
+                }
+            })
+        }
+
+    }
+
+    function deleteDatatank(id) {
+        var result = confirm("Are you sure you want to delete this record?");
+
+        // If the user confirms, proceed with deletion
+        if (result) {
+            // Call a function to delete the item
+
+
+            var settings = {
+                "url": "<?php echo $api_url; ?>delete/delete_tank.php?key=03201232927&id=" + id + "",
+                "method": "GET",
+                "timeout": 0,
+            };
+
+            $.ajax({
+                ...settings,
+                statusCode: {
+                    200: function (response) {
+                        Swal.fire(
+                            'Success!',
+                            'Record Deleted Successfully',
+                            'success'
+                        )
+                        setTimeout(function () {
+
+                            // location.reload();
+
+
+                        }, 2000);
+
+                    },
+                    success: function (data) {
+                        // Additional success handling if needed
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        Swal.fire(
+                            'Server Error!',
+                            'Record Not Deleted',
+                            'error'
+                        )
+
+                        // console.log("Request failed with status code: " + xhr.status);
+                    }
+                }
+            })
+        }
+
+    }
+
+    function deleteDealerSetup(id) {
+        var result = confirm("Are you sure you want to delete this record?");
+
+        // If the user confirms, proceed with deletion
+        if (result) {
+            var dealer_ids__ = $('#refrsh_dealers').val();
+            //   alert(dealer_ids)
+            // Call a function to delete the item
+
+            // console.log("<?php echo $api_url; ?>delete/dealer_setup_delete.php?key=03201232927&id=" + dealer_ids__ + "")
+            var settings = {
+                "url": "<?php echo $api_url; ?>delete/dealer_setup_delete.php?key=03201232927&id=" + dealer_ids__ + "",
+                "method": "GET",
+                "timeout": 0,
+            };
+
+            $.ajax({
+                ...settings,
+                statusCode: {
+                    200: function (response) {
+                        console.log(response)
+                        Swal.fire(
+                            'Success!',
+                            'Record Deleted Successfully',
+                            'success'
+                        )
+                        setTimeout(function () {
+
+                            // location.reload();
+
+
+                        }, 2000);
+
+                    },
+                    success: function (data) {
+                        // Additional success handling if needed
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        Swal.fire(
+                            'Server Error!',
+                            'Record Not Deleted',
+                            'error'
+                        )
+
+                        // console.log("Request failed with status code: " + xhr.status);
+                    }
+                }
+            })
+        }
+
+    }
+
+    function deleteDatanozzels(id) {
+        var result = confirm("Are you sure you want to delete this record?");
+
+        // If the user confirms, proceed with deletion
+        if (result) {
+            // Call a function to delete the item
+
+
+            var settings = {
+                "url": "<?php echo $api_url; ?>delete/delete_nozzels.php?key=03201232927&id=" + id + "&user_id=<?php echo $_SESSION['user_id']; ?>",
+                "method": "GET",
+                "timeout": 0,
+            };
+
+            $.ajax({
+                ...settings,
+                statusCode: {
+                    200: function (response) {
+                        Swal.fire(
+                            'Success!',
+                            'Record Deleted Successfully',
+                            'success'
+                        )
+                        setTimeout(function () {
+
+                            // location.reload();
+
+
+                        }, 2000);
+
+                    },
+                    success: function (data) {
+                        // Additional success handling if needed
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        Swal.fire(
+                            'Server Error!',
+                            'Record Not Deleted',
+                            'error'
+                        )
+
+                        // console.log("Request failed with status code: " + xhr.status);
+                    }
+                }
+            })
+        }
+
+    }
+
+    function delete_dealer_product(id) {
+        var result = confirm("Are you sure you want to delete this record?");
+
+        // If the user confirms, proceed with deletion
+        if (result) {
+            // Call a function to delete the item
+
+
+            var settings = {
+"url": "<?php echo $api_url; ?>delete/delete_dealer_product.php?key=03201232927&id=" + id + "&user_id=<?php echo $_SESSION['user_id']; ?>",
+                "method": "GET",
+                "timeout": 0,
+            };
+
+            $.ajax({
+                ...settings,
+                statusCode: {
+                    200: function (response) {
+                        Swal.fire(
+                            'Success!',
+                            'Record Deleted Successfully',
+                            'success'
+                        )
+                        setTimeout(function () {
+
+                            // location.reload();
+
+
+                        }, 2000);
+
+                    },
+                    success: function (data) {
+                        // Additional success handling if needed
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        Swal.fire(
+                            'Server Error!',
+                            'Record Not Deleted',
+                            'error'
+                        )
+
+                        // console.log("Request failed with status code: " + xhr.status);
+                    }
+                }
+            })
+        }
+
+    }
+
+    function updateSalesAndDifference() {
+        let totalSales = 0;
+
+        // Iterate over each nozzle row
+        $('.nozzle-row').each(function () {
+            const opening = parseFloat($(this).find('.opening-input').val()); // Get opening value
+            const closing = parseFloat($(this).find('.closing-input').val()); // Get closing value
+            const differenceCell = $(this).find('.difference-cell'); // Reference to the difference input
+
+            // Check if closing is greater or equal to opening
+            if (!isNaN(closing) && closing >= opening) {
+                const difference = closing - opening;
+                differenceCell.val(difference.toFixed(2)); // Update the difference field
+                totalSales += difference; // Add to total sales
+            } else {
+                // differenceCell.val('Invalid');  // Show error if closing is less than opening
+                differenceCell.val(''); // Show error if closing is less than opening
+                alert("Closing Reading Shoud be Greater then Closing Reading")
 
             }
+        });
+        $('.totalizer-nozzle-row').each(function () {
+            const opening = parseFloat($(this).find('.opening-input').val()); // Get opening value
+            const closing = parseFloat($(this).find('.closing-input').val()); // Get closing value
+            const differenceCell = $(this).find('.difference-cell'); // Reference to the difference input
 
-            // Append additional information if needed
-            // For example, file, created_at, created_by, etc.
+            // Check if closing is greater or equal to opening
+            if (!isNaN(closing) && closing >= opening) {
+                const difference = closing - opening;
+                differenceCell.val(difference.toFixed(2)); // Update the difference field
+                totalSales += difference; // Add to total sales
+            } else {
+                // differenceCell.val('Invalid');  // Show error if closing is less than opening
+                differenceCell.val(''); // Show error if closing is less than opening
+                alert("Closing Reading Shoud be Greater then Closing Reading")
 
-            // Append question div to the section
-            $sectionDiv.append($questionDiv);
+            }
         });
 
-        // Append section div to the survey container
-        $('#survey-container').append($sectionDiv);
+        // Update the total sales field
+        $('input[name="total_sales"]').val(totalSales.toFixed(2));
+        $('#total_nozel_sales').val(totalSales.toFixed(2));
+        var no_days = $('#no_day_no').val();
+        var daily_sales = totalSales / no_days;
+        $('#average_daily_sales').val(daily_sales.toFixed(2));
+
+        updateBookValue();
+    }
+
+    function updatePhysicalStock() {
+        let totalClosingQty = 0;
+
+        // Iterate through each tank's closing quantity input field
+        $('.closing-qty-input').each(function () {
+            const closingQty = parseFloat($(this).val()); // Get the value of closing qty
+            if (!isNaN(closingQty)) {
+                totalClosingQty += closingQty; // Add to total closing quantity
+            }
+        });
+
+        // Update the Physical Stock field with the total sum
+        $('input[name="sum_of_closing"]').val(totalClosingQty.toFixed(2));
+        $('#total_phy_stock').val(totalClosingQty.toFixed(2));
+        updateBookValue();
+    }
+
+    // Add event listeners to all closing inputs to trigger the calculation on keyup
+    $(document).on('keyup', '.closing-qty-input, .closing-input', function () {
+        updatePhysicalStock(); // Update physical stock when closing qty changes
+        updateSalesAndDifference(); // Update sales difference when closing meter reading changes
+    });
+
+    function updateTotalReceipts() {
+        const inTransit = parseFloat($('input[name="in_transit"]').val()) || 0;
+        const finalReceipts = parseFloat($('input[name="final_receipts"]').val()) || 0;
+
+        // Calculate total receipts based on the given formula
+        const totalReceipts = finalReceipts - inTransit;
+
+        // Update total receipts field
+        $('input[name="total_receipts"]').val(totalReceipts.toFixed(2));
+        $('#total_receipts').val(totalReceipts.toFixed(2));
+        updateBookValue();
+    }
+
+    // Function to update Final Receipts when Total Receipts and In Transit change
+    function updateFinalReceipts() {
+        const totalReceipts = parseFloat($('input[name="total_receipts"]').val()) || 0;
+        const inTransit = parseFloat($('input[name="in_transit"]').val()) || 0;
+
+        // Calculate final receipts based on the formula
+        const finalReceipts = totalReceipts + inTransit;
+
+        // Update final receipts field
+        $('input[name="final_receipts"]').val(finalReceipts.toFixed(2));
+        $('input[name="receipts"]').val(finalReceipts.toFixed(2));
+        // $('#total_receipts').val(finalReceipts.toFixed(2));
+        updateBookValue();
+    }
+
+    // Event listeners for Total Receipts and In Transit inputs
+    $(document).on('keyup', 'input[name="in_transit"], input[name="final_receipts"]', function () {
+        // Update total receipts when in transit or final receipts change
+        updateTotalReceipts();
+        updateBookValue();
+    });
+
+    // Event listener for Total Receipts input
+    $(document).on('keyup', 'input[name="total_receipts"]', function () {
+        // Update final receipts when total receipts or in transit change
+        updateFinalReceipts();
+        updateBookValue();
+    });
+    // Function to update the Book Value based on the formula (C + D - E)
+    function updateBookValue() {
+        const openingStock = parseFloat($('input[name="opening_stock"]').val()) || 0;
+        const receipts = parseFloat($('#total_receipts').val()) || 0;
+        const sales = parseFloat($('input[name="sales"]').val()) || 0;
+
+        // Calculate Book Value
+        const bookValue = openingStock + receipts - sales;
+
+        // Update the Book Value field
+        $('input[name="book_value"]').val(bookValue.toFixed(2));
+        $('#bookss_stock').val(bookValue.toFixed(2));
+        updateVariance();
+        submitStockForm()
+    }
+
+    function updateVariance() {
+        const total_phy_stock = parseFloat($('#total_phy_stock').val()) || 0;
+        const bookss_stock = parseFloat($('#bookss_stock').val()) || 0;
+        const total_sales = parseFloat($('#total_sales').val()) || 0;
+
+        // Calculate Book Value
+        const variance = total_phy_stock - bookss_stock;
+        const variance_per = (variance / total_sales) * 100;
+
+
+
+        // Update the Book Value field
+        $('#variances').val(variance.toFixed(2));
+        $('#net_gain_loss').val(variance.toFixed(2));
+        $('#variance_of_sales').val(variance_per.toFixed(2));
+
+    }
+
+    // Event listeners for Opening Stock, Receipts, and Sales inputs
+    $(document).on('input', 'input[name="opening_stock"], #total_receipts, input[name="sales"]', function () {
+        // Update Book Value when any of these fields change
+        updateBookValue();
+    });
+
+    $(document).on('submit', '#stock_form', function (e) {
+        e.preventDefault(); // Prevent the default form submission
+        // alert("Running");
+
+        // Validate required fields
+        let isValid = true;
+        $('#stock_form [required]').each(function () {
+            if ($(this).val() === '') {
+                $(this).addClass('is-invalid'); // Add invalid class for visual feedback
+                isValid = false;
+            } else {
+                $(this).removeClass('is-invalid'); // Remove invalid class if field is filled
+            }
+        });
+
+        if (!isValid) {
+            Swal.fire(
+                'Validation Error!',
+                'Please fill all required fields.',
+                'warning'
+            );
+            return; // Stop the execution if there are validation errors
+        }
+
+        var data = new FormData(this);
+        $.ajax({
+            url: "<?php echo $api_url; ?>update/update_dealer_last_recon.php",
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: "POST",
+            data: data,
+            beforeSend: function () {
+                $('#insert').val("Saving");
+                document.getElementById("insert").disabled = true;
+            },
+            success: function (data) {
+                console.log(data);
+                if (data != 1) {
+                    Swal.fire(
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
+                    );
+                    $('#insert').val("Save");
+                    document.getElementById("insert").disabled = false;
+                } else {
+                    setTimeout(function () {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        );
+                        // location.reload();
+                    }, 2000);
+                }
+            },
+            error: function (xhr, status, error) {
+                // Handle API errors
+                console.log('Error:', error);
+                console.log('Status:', status);
+                console.log('Response:', xhr.responseText);
+            }
+        });
+    });
+
+
+    function stock_reco_new(data) {
+        // var resp = data[0];
+        data.forEach(resp => {
+            var tank_dip = JSON.parse(resp.tanks);
+            var nozzless = JSON.parse(resp.nozzel);
+            if (data)
+                var is_totalizer_data = resp.is_totalizer_data ? JSON.parse(resp.is_totalizer_data) : [];
+
+            var table = `<form method="post" id="stock_form" enctype="multipart/form-data" class="container-fluid">
+    <div class="row my-3">
+        <div class="col-md-12">
+        <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">
+                                                    Stock Reconcilation ${resp.product_name}</h6>
+            <div class="container">
+                <div class="row">
+                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">Site Name :</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.dealer_name}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">Date :</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.created_at}</div>
+                                                    </div>
+                                                </div>
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="container">
+                <div class="row my-3">
+                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">Product :</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.product_name}</div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">Total Days :</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.total_days}
+                                                        <input type="hidden" id="no_day_no" name="no_day_no" value="${resp.total_days}" class="form-control" required>
+                                                        <input type="hidden" id="tanks_data" name="tanks_data" value="${resp.tanks}" class="form-control" required>
+                                                        <input type="hidden" id="nozels_data" name="nozels_data" value="${resp.nozzel}" class="form-control" required>
+                                                        <input type="hidden" id="totalizer_nozels_data" name="totalizer_nozels_data" value="${resp.istotalizer}" class="form-control" required>
+                                                        <input type="hidden" id="recon_id" name="recon_id" value="${resp.id}" class="form-control" required>
+                                                        <input type="hidden" id="task_id" name="task_id" value="${resp.task_id}" class="form-control" required>
+                                                        <input type="hidden" id="user_id" name="user_id" value="<?php echo $_SESSION['user_id'] ?>" class="form-control" required>
+                                                        <input type="hidden" id="dealer_id" name="dealer_id" value="<?php echo $_SESSION['user_id'] ?>" class="form-control" required>
+                                                        <input type="hidden" id="product_id" name="product_id" value="<?php echo $_SESSION['user_id'] ?>" class="form-control" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                </div>
+            </div>
+
+            <!-- Date Range -->
+            <div class="container">
+                <div class="row my-3">
+                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">From:</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.last_recon_date}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-4">To :</div>
+                                                        <div class="col-md-8" style="border-bottom: 1px solid #000;">${resp.created_at}</div>
+                                                    </div>
+                                                </div>
+                </div>
+            </div>
+
+            <!-- Opening and Closing Dips -->
+            <div class="col-md-12 mt-3">
+                <h6 style="text-align: center; padding: 3px 11px; background: #f2f2f2;">
+                    Opening and Closing Dips
+                </h6>
+                <table class="dynamic_table" style="width:100%">
+                    <tr>
+                        <th></th>
+                        <th colspan="2" style="text-align: center;">Opening</th>
+                        <th></th>
+                        <th colspan="2" style="text-align: center;">Closing</th>
+                    </tr>
+                    <tr>
+                        <th>Tanks</th>
+                        <th>Dip mm</th>
+                        <th>Qty in Ltrs</th>
+                        <td></td>
+                        <th>Dip mm</th>
+                        <th>Qty in Ltrs</th>
+                    </tr>
+
+                    <!-- Loop through tanks data -->
+                    ${tank_dip.map(item => `
+                                <tr class="tank-row">
+                                    <th>${item.name}</th>
+                                    <td><input type="text" name="opening_dip_${item.name}" value="${item.opening_dip}" class="form-control opening-input" readonly required></td>
+                                    <td><input type="text" name="opening_qty_${item.name}" value="${item.opening}" class="form-control opening-qty" readonly required></td>
+                                    <td>
+                                        <input type="hidden" name="tank_id_${item.name}" value="${item.id}" class="form-control tank-id" required>
+                                        <input type="hidden" name="tank_name${item.name}" value="${item.name}" class="form-control tank-name" required>
+                                    </td>
+                                    <td><input type="text" name="closing_dip_${item.name}" value="${item.closing_dip}" class="form-control closing-input" required></td>
+                                    <td><input type="text" name="closing_qty_${item.name}" value="${item.closing}" class="form-control closing-qty-input closing-qty-input" required></td>
+                                </tr>
+                            `).join('')}
+
+                            <tr>
+                                <th colspan="2">Opening Stock</th>
+                                <td><input type="text" name="sum_of_opening" value="${resp.sum_of_opening}" class="form-control" readonly required></td>
+                                <th colspan="2">Physical Stock</th>
+                                <td><input type="text" name="sum_of_closing" value="${resp.sum_of_closing}" class="form-control" readonly required></td>
+                            </tr>
+                </table>
+            </div>
+
+            <!-- Meter Readings -->
+            <div class="col-md-12">
+                <h6 style="text-align: center; padding: 3px 11px; background: #f2f2f2;">
+                    Opening and Closing Meter Readings
+                </h6>
+                <table class="dynamic_table" style="width:100%">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>Opening (A)</th>
+                        <th>Closing (B)</th>
+                        <th>Sales (B-A)</th>
+                    </tr>
+
+                    <!-- Loop through nozzle data -->
+                    ${nozzless.map(item => `
+                        <tr class="nozzle-row">
+                                    <th>${item.name}</th>
+                                    <td>
+                                        <input type="hidden" name="nozzle_id_${item.name}" value="${item.id}" class="form-control nozzle-id" required>
+                                        <input type="hidden" name="nozzle_name_${item.name}" value="${item.name}" class="form-control nozzle-name">
+                                        <input type="hidden" name="nozzle_dispencer_id_${item.name}" value="${item.dispencer_id}" class="form-control dispenser-id" required>
+                                        <input type="hidden" name="nozzle_dispenser_name_${item.name}" value="${item.dispenser_name}" class="form-control dispenser-name" required>
+                                    </td>
+                                    <td></td>
+                                    <td><input type="text" name="nozzle_opening_${item.name}" value="${item.opening}" class="form-control opening-input" readonly required></td>
+                                    <td><input type="text" name="nozzle_closing_${item.name}" value="${item.closing}" class="form-control closing-input" required></td>
+                                    <td><input type="text" name="nozzle_difference_${item.name}" class="form-control difference-cell" readonly value="${parseFloat(item.closing) - parseFloat(item.opening)}" required></td>
+                                </tr>
+                            `).join('')}
+
+                    <!-- Totalizer Data -->
+                    ${is_totalizer_data.map(item => `
+                        <tr class="totalizer-nozzle-row">
+                                    <th>${item.name} Totalizer</th>
+                                    <td>
+                                        <input type="hidden" name="nozzle_id_${item.name}" value="${item.id}" class="form-control totalizer_nozzle-id" required>
+                                        <input type="hidden" name="nozzle_name_${item.name}" value="${item.name}" class="form-control totalizer_nozzle-name" required>
+                                        <input type="hidden" name="nozzle_dispencer_id_${item.name}" value="${item.dispencer_id}" class="form-control dispenser-id" required>
+                                        <input type="hidden" name="nozzle_dispenser_name_${item.name}" value="${item.dispenser_name}" class="form-control dispenser-name" required>
+                                    </td>
+                                    <td></td>
+                                    <td><input type="text" name="nozzle_opening_${item.name}" value="${item.opening}" class="form-control opening-input" readonly required></td>
+                                    <td><input type="text" name="nozzle_closing_${item.name}" value="${item.closing}" class="form-control closing-input" required></td>
+                                    <td><input type="text" name="nozzle_difference_${item.name}" class="form-control difference-cell" readonly value="${parseFloat(item.closing) - parseFloat(item.opening)}" required></td>
+                                </tr>
+                    `).join('')}
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <th colspan="2">Total Sales for the Period</th>
+                        <td> <input type="text" id="total_sales" name="total_sales" class="form-control" value="${resp.total_sales}" readonly required></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-12">
+                <h6 style="text-align: center; padding: 3px 11px; background: #f2f2f2;">
+                </h6>
+                <table class="dynamic_table" style="width:100%">
+    
+    
+   
+
+    <!-- Final Receipts -->
+    <tr>
+        <th>Total Receipts (IN LTRS)</th>
+        <td>
+            <input type="number" name="final_receipts" value="${resp.total_recipt}" class="form-control" required> 
+        </td>
+    </tr>
+    <!-- In Transit -->
+    <tr class="d-none">
+        <th>In Transit (IN LTRS)</th>
+        <td>
+            <input type="number" name="in_transit" value="" class="form-control"> 
+        </td>
+    </tr>
+    <!-- Total Receipts -->
+    <tr class="d-none">
+        <th>Final Receipts (IN LTRS) (Total Receipts - In Transit)</th>
+        <td>
+            <input type="number" name="total_receipts" value="" class="form-control"> 
+        </td>
+    </tr>
+</table>
+
+            </div>
+
+            <!-- Final Analysis -->
+            <div class="col-md-12">
+        <!-- Opening Stock, Receipts, Sales, Book Value Form -->
+        <table class="dynamic_table" style="width:100%">
+    <tr>
+        <th>(C) Opening Stock</th>
+        <th>(D) Final Receipts</th>
+        <th>(E) Sales</th>
+        <th>(C+D-E) Equals to</th>
+        <th>Book Value</th>
+    </tr>
+    <tr>
+        <td><input type="number" name="opening_stock" value="${resp.sum_of_opening}" required class="form-control" readonly></td>
+        <td><input type="number" id="total_receipts" name="receipts" value="${resp.total_recipt}" required class="form-control" readonly></td>
+        <td><input type="number" id="total_nozel_sales" name="sales" value="${resp.total_sales}" required class="form-control" readonly></td>
+        <td style="text-align: center;">=</td>
+        <td><input type="number" name="book_value" value="${parseInt(resp.sum_of_opening) + parseInt(resp.total_recipt) - parseInt(resp.total_sales)}" class="form-control" readonly required></td>
+    </tr>
+</table>
+    </div>
+    <div class="col-md-12">
+                                                <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Final Analysis
+                                                </h6>
+                                              
+                                            </div>
+    <div class="col-md-12">
+        <!-- Physical vs Book Stock Form -->
+        <table class="dynamic_table" style="width:100%">
+            <tr>
+                <th>(F) Physical Stock</th>
+                <th>(G) Book Stock</th>
+                <th>(F-G) Equals to</th>
+                <th>Variance</th>
+            </tr>
+            <tr>
+                <td><input type="number" id="total_phy_stock" name="physical_stock" value="${resp.sum_of_closing}" required class="form-control" readonly></td>
+                <td><input type="number" id="bookss_stock" name="book_stock" value="${resp.book_value}" class="form-control" readonly required></td>
+                <td style="text-align: center;">=</td>
+                <td><input type="number" id="variances" name="variance" value="${parseFloat(resp.sum_of_closing) - parseFloat(resp.book_value)}"  class="form-control" readonly required></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Remarks Section -->
+    <div class="col-md-12">
+        <table class="dynamic_table" style="width:100%">
+            <tr>
+                <th class="w-50">Remarks</th>
+                <td class="w-50">
+                    <textarea name="remarks" rows="3" class="form-control" required>${resp.remark}</textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Shortage Claim Section -->
+    <div class="col-md-12">
+        <table class="dynamic_table" style="width:100%">
+            <tr>
+                <th class="w-50">Shortage Claim for the period (TLs short received by in Ltrs)</th>
+                <td class="w-50">
+                    <input type="number" name="shortage_claim" value="${resp.shortage_claim}" class="form-control" required>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Net Gain or Loss Section -->
+    <div class="col-md-12">
+        <table class="dynamic_table" style="width:100%">
+            <tr>
+                <th class="w-50">Net Gain or Loss</th>
+                <td class="w-50">
+                    <input type="number" id='net_gain_loss' name="net_gain_or_loss" value="${resp.variance}" readonly class="form-control" required>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Variance as % of Sales -->
+    <div class="col-md-12">
+        <table class="dynamic_table" style="width:100%">
+            <tr>
+                <th class="w-50">Variance as % of Sales (for the period.)</th>
+                <td class="w-50">
+                    <input type="number" id="variance_of_sales" name="variance_of_sales" value="${parseFloat(resp.variance_of_sales).toFixed(2)}" readonly class="form-control" required>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Average Daily Sales -->
+    <div class="col-md-12">
+        <table class="dynamic_table" style="width:100%">
+            <tr>
+                <th class="w-50">Average Daily sales</th>
+                <td class="w-50">
+                    <input type="number" id="average_daily_sales" name="average_daily_sales" value="${parseFloat(resp.average_daily_sales).toFixed(2)}" readonly class="form-control" required>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-12">
+        <table class="dynamic_table" style="width:100%">
+            <tr>
+                <th class="w-50">Reason For Update</th>
+                <td class="w-50">
+                    <textarea name="reason" rows="3" class="form-control" required></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+            <!-- Submit Button -->
+            <div class="col-md-12" style="text-align: center;">
+                <button type="submit" class="btn btn-primary" >Update</button>
+            </div>
+        </div>
+    </div>
+</form>`;
+
+            $('#survey-container').append(table);
+            updateSalesAndDifference();
+        });
         $('#survey_modal').modal('show');
+    }
+
+
+    function submitStockForm() {
+        const tanksData = [];
+        const nozzlesData = [];
+        const tot_nozzlesData = [];
+
+        // Collect tank data
+        $('.tank-row').each(function () {
+            // Get the tank row and check if it exists
+            const tankRow = $(this);
+            // const id = tankRow.data('id');  // Assuming each tank row has a data-id attribute
+
+            // Ensure that the tankRow has the required elements
+            console.log(tankRow.find('.tank-id').val())
+            const id = tankRow.find('.tank-id').val() || ''; // Default to empty string if not found
+            const name = tankRow.find('.tank-name').val() || ''; // Default to empty string if not found
+            const opening = tankRow.find('.opening-qty').val() || ''; // Default to empty string if not found
+            const closing = tankRow.find('.closing-qty-input').val() || ''; // Default to empty string if not found
+            const opening_dip = tankRow.find('.opening-input').val() || ''; // Default to empty string if not found
+            const closing_dip = tankRow.find('.closing-input').val() || ''; // Default to empty string if not found
+
+            // Construct the tank object and push to tanksData
+            const tank = {
+                id: id || '', // Default to empty string if not found
+                name: name,
+                opening: opening,
+                closing: closing,
+                opening_dip: opening_dip,
+                closing_dip: closing_dip
+            };
+            tanksData.push(tank);
+        });
+
+        // Collect nozzle data
+        $('.nozzle-row').each(function () {
+            // Get the nozzle row and check if it exists
+            const nozzleRow = $(this);
+            // const id = nozzleRow.data('id');  // Assuming each nozzle row has a data-id attribute
+
+            // Ensure that the nozzleRow has the required elements
+            const id = nozzleRow.find('.nozzle-id').val() || ''; // Default to empty string if not found
+            const name = nozzleRow.find('.nozzle-name').val() || ''; // Default to empty string if not found
+            const opening = nozzleRow.find('.opening-input').val() || ''; // Default to empty string if not found
+            const closing = nozzleRow.find('.closing-input').val() || ''; // Default to empty string if not found
+            const dispenser_id = nozzleRow.find('.dispenser-id').val() ||
+                ''; // Default to empty string if not found
+            const dispenser_name = nozzleRow.find('.dispenser-name').val() ||
+                ''; // Default to empty string if not found
+
+            // Construct the nozzle object and push to nozzlesData
+            const nozzle = {
+                id: id || '', // Default to empty string if not found
+                name: name,
+                opening: opening,
+                closing: closing,
+                dispencer_id: dispenser_id,
+                dispenser_name: dispenser_name
+            };
+            nozzlesData.push(nozzle);
+        });
+
+        $('.totalizer-nozzle-row').each(function () {
+            // Get the nozzle row and check if it exists
+            const nozzleRow = $(this);
+            // const id = nozzleRow.data('id');  // Assuming each nozzle row has a data-id attribute
+
+            // Ensure that the nozzleRow has the required elements
+            const id = nozzleRow.find('.totalizer_nozzle-id').val() || ''; // Default to empty string if not found
+            const name = nozzleRow.find('.totalizer_nozzle-name').val() || ''; // Default to empty string if not found
+            const opening = nozzleRow.find('.opening-input').val() || ''; // Default to empty string if not found
+            const closing = nozzleRow.find('.closing-input').val() || ''; // Default to empty string if not found
+            const dispenser_id = nozzleRow.find('.dispenser-id').val() ||
+                ''; // Default to empty string if not found
+            const dispenser_name = nozzleRow.find('.dispenser-name').val() ||
+                ''; // Default to empty string if not found
+
+            // Construct the nozzle object and push to nozzlesData
+            const nozzle = {
+                id: id || '', // Default to empty string if not found
+                name: name,
+                opening: opening,
+                closing: closing,
+                dispencer_id: dispenser_id,
+                dispenser_name: dispenser_name
+            };
+            tot_nozzlesData.push(nozzle);
+        });
+
+
+        // Combine data into a single object if needed
+        const result = {
+            tanks: tanksData,
+            nozzles: nozzlesData,
+            tot_nozzles: tot_nozzlesData
+        };
+        // console.log("Final results ", result)
+
+        $('#tanks_data').val(JSON.stringify(tanksData, null, 2));
+        $('#nozels_data').val(JSON.stringify(nozzlesData, null, 2));
+        $('#totalizer_nozels_data').val(JSON.stringify(tot_nozzlesData, null, 2));
+
+
+
+        // Output the generated JSON to the console
+        console.log(JSON.stringify(result, null, 2));
+
+
+
+
+    }
+    function check(id) {
+        // Dynamically target the correct checkbox by ID
+        var checkboxValue = $('#statusSwitch_' + id).is(':checked') ? 1 : 0;
+
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo $api_url; ?>update/update_nozzel_activeorinactive.php', // Your backend API
+            data: {
+                checkboxValue: checkboxValue,
+                id: id,
+                user_id: <?php echo $_SESSION['user_id']?>
+            },
+            success: function (response) {
+                console.log('Record Updated Successfully.');
+                alert('Status updated successfully!');
+            },
+            error: function (error) {
+                console.error('Error updating database:', error);
+                alert('Error updating status!');
+            }
+        });
+    }
+    function checks(id, d_id) {
+    // Get the value of the checkbox (0 for unchecked, 1 for checked)
+    var checkboxValue = $('#statusSwitch_' + id).is(':checked') ? 1 : 0;
+
+    $.ajax({
+        type: 'POST',
+        url: '<?php echo $api_url; ?>update/update_dealer_lorries.php', // Correct API path
+        data: {
+            checkboxValue: checkboxValue,
+            id: id,
+            user_id: <?php echo $_SESSION['user_id']?>,
+            dealer_id: d_id
+
+        },
+        success: function(response) {
+            if (response == 1) {
+                console.log('Record Updated Successfully.');
+                alert('Status updated successfully!');
+            } else {
+                console.log('Error updating database.');
+            }
+        },
+        error: function(error) {
+            console.error('Error updating database:', error);
+            alert('Error updating status!');
+        }
+    });
+}
+function dispensor_active(id,dealer_id) {
+    // Dynamically target the correct checkbox by ID
+    var checkboxValue = $('#statusSwitch_' + id).is(':checked') ? 1 : 0;
+
+    $.ajax({
+        type: 'POST',
+        url: '<?php echo $api_url; ?>update/update_dis_noz_status.php', // Your backend API
+        data: {
+            checkboxValue: checkboxValue,
+            disp_id: id,
+            dealer_id: dealer_id,
+            user_id: <?php echo $_SESSION['user_id']?>
+        },
+        success: function(response) {
+            console.log('Record Updated Successfully.');
+            alert('Status updated successfully!');
+        },
+        error: function(error) {
+            console.error('Error updating database:', error);
+            alert('Error updating status!');
+        }
     });
 }
 
-function decryptId(encryptedId, key, iv) {
-    var decrypted = CryptoJS.AES.decrypt(encryptedId, key, {
-        iv: iv
-    });
-    return decrypted.toString(CryptoJS.enc.Utf8);
-}
-
-function deleteDatadispensor(id) {
-    var result = confirm("Are you sure you want to delete this record?");
-
-    // If the user confirms, proceed with deletion
-    if (result) {
-        // Call a function to delete the item
 
 
-        var settings = {
-            "url": "<?php echo $api_url; ?>delete/delete_despensor.php?key=03201232927&id=" + id + "",
-            "method": "GET",
-            "timeout": 0,
-        };
 
-        $.ajax({
-            ...settings,
-            statusCode: {
-                200: function(response) {
-                    Swal.fire(
-                        'Success!',
-                        'Record Deleted Successfully',
-                        'success'
-                    )
-                    setTimeout(function() {
-
-                        location.reload();
-
-
-                    }, 2000);
-
-                },
-                success: function(data) {
-                    // Additional success handling if needed
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                    Swal.fire(
-                        'Server Error!',
-                        'Record Not Deleted',
-                        'error'
-                    )
-
-                    // console.log("Request failed with status code: " + xhr.status);
-                }
-            }
-        })
-    }
-
-}
-
-function deleteDatatank(id) {
-    var result = confirm("Are you sure you want to delete this record?");
-
-    // If the user confirms, proceed with deletion
-    if (result) {
-        // Call a function to delete the item
-
-
-        var settings = {
-            "url": "<?php echo $api_url; ?>delete/delete_tank.php?key=03201232927&id=" + id + "",
-            "method": "GET",
-            "timeout": 0,
-        };
-
-        $.ajax({
-            ...settings,
-            statusCode: {
-                200: function(response) {
-                    Swal.fire(
-                        'Success!',
-                        'Record Deleted Successfully',
-                        'success'
-                    )
-                    setTimeout(function() {
-
-                        location.reload();
-
-
-                    }, 2000);
-
-                },
-                success: function(data) {
-                    // Additional success handling if needed
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                    Swal.fire(
-                        'Server Error!',
-                        'Record Not Deleted',
-                        'error'
-                    )
-
-                    // console.log("Request failed with status code: " + xhr.status);
-                }
-            }
-        })
-    }
-
-}
-
-function deleteDatanozzels(id) {
-    var result = confirm("Are you sure you want to delete this record?");
-
-    // If the user confirms, proceed with deletion
-    if (result) {
-        // Call a function to delete the item
-
-
-        var settings = {
-            "url": "<?php echo $api_url; ?>delete/delete_nozzels.php?key=03201232927&id=" + id + "",
-            "method": "GET",
-            "timeout": 0,
-        };
-
-        $.ajax({
-            ...settings,
-            statusCode: {
-                200: function(response) {
-                    Swal.fire(
-                        'Success!',
-                        'Record Deleted Successfully',
-                        'success'
-                    )
-                    setTimeout(function() {
-
-                        location.reload();
-
-
-                    }, 2000);
-
-                },
-                success: function(data) {
-                    // Additional success handling if needed
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                    Swal.fire(
-                        'Server Error!',
-                        'Record Not Deleted',
-                        'error'
-                    )
-
-                    // console.log("Request failed with status code: " + xhr.status);
-                }
-            }
-        })
-    }
-
-}
-
-// Call the function with your API response
-// displaySurvey(apiResponse);
+    // Call the function with your API response
+    // displaySurvey(apiResponse);
 </script>
 
 

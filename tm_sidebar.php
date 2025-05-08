@@ -48,6 +48,7 @@
                                 data-key="t-level-1.13"> RM Dashboard</a></li>
 
                         <li><a href="dealers.php" data-key="t-level-1.2"> Dealers </a></li>
+                        <li><a href="change_totelizer_request.php" data-key="t-level-1.4"> Totelizer Request </a></li>
                         <li><a href="nozle.php" data-key="t-level-1.6"> Products Price </a></li>
 
                         <li>

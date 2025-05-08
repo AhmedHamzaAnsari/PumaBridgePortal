@@ -1006,7 +1006,7 @@
                         // data.fm_name,
                         data.inspector_name,
                         data.created_at,
-                        status_waiting,
+                        status_waiting || 'N/A',
                         // data.follow_dpt,
                         status_value,
                         status_chat,

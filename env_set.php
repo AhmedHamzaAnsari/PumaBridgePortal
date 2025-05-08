@@ -1,7 +1,7 @@
 <?php
-$api_url = "http://151.106.17.246:8080/PumaBridgePortalApis/";
+$api_url = "http://localhost/PumaBridgePortalApis/";
 
-$api_url_files = "http://151.106.17.246:8080/PumaBridgeFiles/";
+$api_url_files = "http://localhost/PumaBridgeFiles/";
 
 $curl = curl_init();
 
@@ -28,6 +28,6 @@ $data = json_decode($response, true);
 $name = $data['name'];
 $logo = $data['logo'];
 
-
+  
 
 ?>
