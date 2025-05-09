@@ -45,6 +45,7 @@
 
                         <li><a href="users.php" data-key="t-level-1.1"> Users </a></li>
                         <li><a href="dealers.php" data-key="t-level-1.2"> Dealers </a></li>
+                        <li><a href="dealer_location_request.php" data-key="t-level-1.2"> Dealer Location </a></li>
                         <li><a href="omcs_pumps.php" data-key="t-level-1.15">OMCS Dealer</a></li>
                         <li><a href="user_logs.php" data-key="t-level-1.15">User Logs</a></li>
                         <li><a href="user_login_log.php" data-key="t-level-1.15">Team Activity</a></li>
@@ -73,6 +74,7 @@
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="orders_dashboard.php" data-key="t-level-1.16"> Order Dashboard</a></li>
+                                <li><a href="orders_dashboard_A.php" data-key="t-level-1.16"> Order Dashboard A</a></li>
                                 <li><a href="manage_order.php" data-key="t-level-1.3"> Orders </a></li>
                                 <li><a href="manage_blocked_orders.php" data-key="t-level-1.3">Blocked Orders </a></li>
                                 <li><a href="order_shortage.php" data-key="t-level-1.3">Orders Shortages</a></li>
@@ -157,6 +159,8 @@
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="containers_sizes.php" data-key="t-level-1.10"> Container Sizes </a></li>
                                 <!-- <li><a href="complaint_object_part.php" data-key="t-level-1.1">Object Part</a></li> -->
+                                <li><a href="department.php" data-key="t-level-1.10"> Departments </a></li>
+
                         </li>
 
                     </ul>
@@ -872,8 +876,8 @@ function get_settings() {
             var image = $(".logo_image");
 
             // Change the src attribute of the image
-            image.attr("src", "<?php echo $api_url_files; ?>" + logo);
-            $(".small_logo").attr("src", "<?php echo $api_url_files; ?>" + logo);
+            image.attr("src", "<?php echo $api_url; ?>" + logo);
+            $(".small_logo").attr("src", "<?php echo $api_url; ?>" + logo);
             $('.project_name').text(username);
 
             console.log(username)

@@ -784,123 +784,103 @@ dea
         });
 
         $('#insert_form').on("submit", function(event) {
-            event.preventDefault();
-            update_id = $('#dealer_id').val();
+    event.preventDefault();
+    update_id = $('#dealer_id').val();
 
+    if (update_id == 0) {
+        var data = new FormData(this);
 
-            if (update_id == 0) {
+        $.ajax({
+            url: "<?php echo $api_url; ?>create/dealers.php",
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: "POST",
+            data: data,
+            beforeSend: function() {
+                $('#insert').val("Saving");
+                document.getElementById("insert").disabled = true;
+            },
+            success: function(data) {
+                console.log(data);
 
-                var data = new FormData(this);
-
-                $.ajax({
-                    url: "<?php echo $api_url; ?>create/dealers.php",
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    method: "POST",
-                    data: data,
-                    beforeSend: function() {
-                        $('#insert').val("Saving");
-                        document.getElementById("insert").disabled = true;
-
-                    },
-                    success: function(data) {
-                        console.log(data)
-
-                        if (data != 1) {
-                            Swal.fire(
-                                'Server Error!',
-                                'Record Not Created',
-                                'error'
-                            )
-                            $('#insert').val("Save");
-                            document.getElementById("insert").disabled = false;
-                        } else {
-
-
-                            setTimeout(function() {
-                                Swal.fire(
-                                    'Success!',
-                                    'Record Created Successfully',
-                                    'success'
-                                )
-                                $('#insert_form')[0].reset();
-                                $('#offcanvasRight').modal('hide');
-                                fetchtable();
-                                $('#insert').val("Save");
-                                document.getElementById("insert").disabled = false;
-                                location.reload();
-
-                            }, 2000);
-
-                        }
-
-                    },
-
-                    error: function(error) {
-                        console.error('Error fetching data:', error);
-                    }
-
-                });
-
-            } else {
-                var data = new FormData(this);
-
-
-                $.ajax({
-                    url: "<?php echo $api_url; ?>update/dealer_update.php",
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    method: "POST",
-                    data: data,
-                    beforeSend: function() {
-                        var file_
-                        $('#insert').val("Saving");
-                        document.getElementById("insert").disabled = true;
-
-                    },
-                    success: function(data) {
-                        console.log(data)
-
-                        if (data != 1) {
-                            Swal.fire(
-                                'Server Error!',
-                                'Record Not Updated',
-                                'error'
-                            )
-                            $('#insert').val("Save");
-                            document.getElementById("insert").disabled = false;
-                        } else {
-
-
-                            setTimeout(function() {
-                                Swal.fire(
-                                    'Success!',
-                                    'Record Updated Successfully',
-                                    'success'
-                                )
-                                document.getElementById("imagePreview2").src = ""
-                                document.getElementById("imagePreview").src = ""
-                                $('#insert_form')[0].reset();
-                                $('#offcanvasRight').modal('hide');
-                                fetchtable();
-                                $('#insert').val("Save");
-                                document.getElementById("insert").disabled = false;
-                                location.reload();
-
-                            }, 2000);
-
-                        }
-
-                    },
-                    error: function(error) {
-                        console.error('Error fetching data:', error);
-                    }
-                });
+                // Ensure data is treated as a string and use trim()
+                if (data.toString().trim() != "1") {
+                    Swal.fire(
+                        'Server Error!',
+                        'Record Not Created',
+                        'error'
+                    );
+                    $('#insert').val("Save");
+                    document.getElementById("insert").disabled = false;
+                } else {
+                    setTimeout(function() {
+                        Swal.fire(
+                            'Success!',
+                            'Record Created Successfully',
+                            'success'
+                        );
+                        $('#insert_form')[0].reset();
+                        $('#offcanvasRight').modal('hide');
+                        fetchtable();
+                        $('#insert').val("Save");
+                        document.getElementById("insert").disabled = false;
+                    }, 2000);
+                }
+            },
+            error: function(error) {
+                console.error('Error fetching data:', error);
             }
-
         });
+    } else {
+        var data = new FormData(this);
+
+        $.ajax({
+            url: "<?php echo $api_url; ?>update/dealer_update.php",
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: "POST",
+            data: data,
+            beforeSend: function() {
+                $('#insert').val("Saving");
+                document.getElementById("insert").disabled = true;
+            },
+            success: function(data) {
+                console.log(data);
+
+                // Ensure data is treated as a string and use trim()
+                if (data.toString().trim() != "1") {
+                    Swal.fire(
+                        'Server Error!',
+                        'Record Not Updated',
+                        'error'
+                    );
+                    $('#insert').val("Save");
+                    document.getElementById("insert").disabled = false;
+                } else {
+                    setTimeout(function() {
+                        Swal.fire(
+                            'Success!',
+                            'Record Updated Successfully',
+                            'success'
+                        );
+                        document.getElementById("imagePreview2").src = "";
+                        document.getElementById("imagePreview").src = "";
+                        $('#insert_form')[0].reset();
+                        $('#offcanvasRight').modal('hide');
+                        fetchtable();
+                        $('#insert').val("Save");
+                        document.getElementById("insert").disabled = false;
+                    }, 2000);
+                }
+            },
+            error: function(error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    }
+});
 
     })
 
@@ -1140,7 +1120,8 @@ dea
             url: '<?php echo $api_url; ?>update/verify_dealers.php', // Replace with the path to your PHP script
             data: {
                 checkboxValue: checkboxValue,
-                id: id
+                id: id,
+                user_id: <?php echo $_SESSION['user_id']; ?>
             },
             success: function(response) {
                 console.log(response);
